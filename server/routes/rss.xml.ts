@@ -18,12 +18,15 @@ export default defineEventHandler(async (event) => {
   } catch {
     items = ''
   }
+  const lastBuildDate = new Date().toUTCString()
   return `<?xml version="1.0" encoding="UTF-8"?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
-    <title>Vlad Timchenko - Feed</title>
+    <title>Vlad Timchenko · Feed</title>
     <link>${base}/feed</link>
     <description>Software Engineer • Cloud-native .NET</description>
+    <language>en-us</language>
+    <lastBuildDate>${lastBuildDate}</lastBuildDate>
     <atom:link href="${base}/rss.xml" rel="self" type="application/rss+xml"/>
     ${items}
   </channel>

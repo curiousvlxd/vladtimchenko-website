@@ -31,9 +31,9 @@ export default defineNuxtConfig({
 
   app: {
     head: {
-      htmlAttrs: { style: 'background-color: #05090E' },
+      htmlAttrs: { lang: 'en', style: 'background-color: #05090E' },
       bodyAttrs: { style: 'background-color: #05090E' },
-      title: 'Vlad Timchenko - Software Engineer',
+      title: 'Vlad Timchenko · Software Engineer',
       meta: [
         { charset: 'utf-8' },
         { name: 'viewport', content: 'width=device-width, initial-scale=1' },
@@ -41,6 +41,7 @@ export default defineNuxtConfig({
       ],
       link: [
         { rel: 'icon', href: '/favicon.ico' },
+        { rel: 'alternate', type: 'application/rss+xml', title: 'RSS Feed', href: '/rss.xml' },
         { rel: 'prefetch', href: '/feed' },
         { rel: 'preconnect', href: 'https://fonts.googleapis.com' },
         { rel: 'preconnect', href: 'https://fonts.gstatic.com', crossorigin: '' },

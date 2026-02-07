@@ -19,6 +19,17 @@
 import { computed } from 'vue'
 import type { RepoMeta } from '../types/repos'
 
+useHead({
+  title: 'Projects · Vlad Timchenko',
+  meta: [
+    { name: 'description', content: 'Featured open-source and side projects.' },
+    { property: 'og:title', content: 'Projects · Vlad Timchenko' },
+    { property: 'og:description', content: 'Featured open-source and side projects.' },
+    { name: 'twitter:title', content: 'Projects · Vlad Timchenko' },
+    { name: 'twitter:description', content: 'Featured open-source and side projects.' }
+  ]
+})
+
 const { data: repos, pending } = useFetch<RepoMeta[]>('/api/repos', { key: 'repos' })
 const reposList = computed(() => Array.isArray(repos.value) ? repos.value : [])
 </script>

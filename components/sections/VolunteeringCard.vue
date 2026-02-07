@@ -53,8 +53,8 @@
 </template>
 
 <script setup lang="ts">
-import type { VolunteeringEntry } from '~/data/volunteering'
-import { formatVolunteeringPeriod } from '~/data/volunteering'
+import type { VolunteeringEntry } from '../../data/volunteering'
+import { formatVolunteeringPeriod } from '../../data/volunteering'
 
 defineProps<{ entry: VolunteeringEntry }>()
 </script>

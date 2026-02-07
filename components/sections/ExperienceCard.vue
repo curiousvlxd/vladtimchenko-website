@@ -62,8 +62,8 @@
 </template>
 
 <script setup lang="ts">
-import type { ExperienceEntry } from '~/data/experience'
-import { formatPeriod } from '~/data/experience'
+import type { ExperienceEntry } from '../../data/experience'
+import { formatPeriod } from '../../data/experience'
 
 defineProps<{ entry: ExperienceEntry }>()
 </script>

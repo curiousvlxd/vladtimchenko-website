@@ -61,13 +61,18 @@ if (!page.value) {
   throw createError({ statusCode: 404, statusMessage: 'Post not found' })
 }
 
+const pageTitle = computed(() => `${page.value?.title ?? 'Post'} · Vlad Timchenko`)
+const pageDescription = computed(() => (page.value?.description as string) ?? '')
+
 useHead({
-  title: () => `${page.value?.title ?? 'Post'} - Vlad Timchenko`,
+  title: pageTitle,
   meta: [
-    {
-      name: 'description',
-      content: () => (page.value?.description as string) ?? ''
-    }
+    { name: 'description', content: pageDescription },
+    { property: 'og:title', content: pageTitle },
+    { property: 'og:description', content: pageDescription },
+    { property: 'og:type', content: 'article' },
+    { name: 'twitter:title', content: pageTitle },
+    { name: 'twitter:description', content: pageDescription }
   ]
 })
 

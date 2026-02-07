@@ -1,4 +1,4 @@
-const DEFAULT_LOCALE = 'en-GB'
+const DEFAULT_LOCALE = 'en-US'
 
 export function formatBlogDate(
   date: string,

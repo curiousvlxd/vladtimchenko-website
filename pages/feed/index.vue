@@ -113,4 +113,14 @@ const posts = computed<BlogPost[]>(() => {
   })
 })
 
+useHead({
+  title: 'Feed · Vlad Timchenko',
+  meta: [
+    { name: 'description', content: 'Notes and articles on software engineering, cloud-native .NET, and building production systems.' },
+    { property: 'og:title', content: 'Feed · Vlad Timchenko' },
+    { property: 'og:description', content: 'Notes and articles on software engineering, cloud-native .NET, and building production systems.' },
+    { name: 'twitter:title', content: 'Feed · Vlad Timchenko' },
+    { name: 'twitter:description', content: 'Notes and articles on software engineering, cloud-native .NET, and building production systems.' }
+  ]
+})
 </script>

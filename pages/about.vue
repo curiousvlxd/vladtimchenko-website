@@ -14,3 +14,16 @@
     </section>
   </div>
 </template>
+
+<script setup lang="ts">
+useHead({
+  title: 'About · Vlad Timchenko',
+  meta: [
+    { name: 'description', content: 'Software engineer focused on cloud-native .NET, APIs, and scalable systems. Building tools and products that make a difference.' },
+    { property: 'og:title', content: 'About · Vlad Timchenko' },
+    { property: 'og:description', content: 'Software engineer focused on cloud-native .NET, APIs, and scalable systems.' },
+    { name: 'twitter:title', content: 'About · Vlad Timchenko' },
+    { name: 'twitter:description', content: 'Software engineer focused on cloud-native .NET, APIs, and scalable systems.' }
+  ]
+})
+</script>

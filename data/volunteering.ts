@@ -22,20 +22,3 @@ export function formatVolunteeringPeriod(start: string, end: string | null): str
   const endStr = e.toLocaleDateString('en-US', { month: 'short', year: 'numeric' })
   return `${startStr} - ${endStr}`
 }
-
-export function getVolunteeringDurationMonths(start: string, end: string | null): number {
-  const s = new Date(start + '-01')
-  const e = end ? new Date(end + '-01') : new Date()
-  return (e.getFullYear() - s.getFullYear()) * 12 + (e.getMonth() - s.getMonth()) + 1
-}
-
-export function formatVolunteeringDuration(start: string, end: string | null): string {
-  const months = getVolunteeringDurationMonths(start, end)
-  if (months <= 0) return ''
-  if (months === 1) return '1 mo'
-  if (months < 12) return `${months} mos`
-  const years = Math.floor(months / 12)
-  const remainder = months % 12
-  if (remainder === 0) return `${years} ${years === 1 ? 'yr' : 'yrs'}`
-  return `${years} yr ${remainder} mos`
-}

@@ -1,13 +1,16 @@
 <template>
-  <div class="home-content-container flex gap-8 lg:gap-12 mx-auto max-w-6xl px-4 sm:px-6 py-8 sm:py-12">
+  <div class="home-content-container flex gap-8 lg:gap-12 mx-auto max-w-6xl px-4 sm:px-6 pt-8 sm:pt-10 pb-8 sm:pb-12">
     <main id="home-top" class="min-w-0 flex-1 max-w-4xl">
-      <BrandingHeroBannerCard class="mb-10 sm:mb-14" />
+      <BrandingHeroBannerCard class="mb-8 sm:mb-10" />
 
       <section
         :id="tabs[0]?.id || 'about'"
-        class="card-gradient-animated rounded-2xl border border-teal/20 bg-[rgba(24,183,164,0.05)] p-6 sm:p-8 mb-8"
+        :data-section="tabs[0]?.id || 'about'"
+        class="card-gradient-animated rounded-2xl border border-teal/20 bg-[rgba(24,183,164,0.05)] p-6 sm:p-8 mb-8 scroll-mt-24 sm:scroll-mt-28"
       >
-        <h2 class="font-display text-2xl font-semibold text-muted-pale mb-4">
+        <h2
+          class="font-display text-2xl font-semibold text-muted-pale mb-4"
+        >
           {{ home?.about?.title ?? 'About' }}
         </h2>
         <div class="prose prose-invert max-w-none">
@@ -22,10 +25,13 @@
       </section>
 
       <section
-        :id="tabs[1]?.id || 'experience'"
+        :data-section="tabs[1]?.id || 'experience'"
         class="mb-12"
       >
-        <h2 class="font-display text-2xl font-semibold text-muted-pale mb-2">
+        <h2
+          :id="tabs[1]?.id || 'experience'"
+          class="font-display text-2xl font-semibold text-muted-pale mb-2 scroll-mt-24 sm:scroll-mt-28"
+        >
           {{ home?.experience?.title ?? 'Experience' }}
         </h2>
         <p class="text-muted-light text-sm mb-6">
@@ -41,10 +47,13 @@
       </section>
 
       <section
-        :id="tabs[2]?.id || 'volunteering'"
+        :data-section="tabs[2]?.id || 'volunteering'"
         class="mb-12"
       >
-        <h2 class="font-display text-2xl font-semibold text-muted-pale mb-6">
+        <h2
+          :id="tabs[2]?.id || 'volunteering'"
+          class="font-display text-2xl font-semibold text-muted-pale mb-6 scroll-mt-24 sm:scroll-mt-28"
+        >
           {{ home?.volunteering?.title ?? 'Volunteering' }}
         </h2>
         <div class="flex flex-col gap-6">
@@ -57,9 +66,53 @@
       </section>
 
       <section
-        :id="tabs[3]?.id || 'projects'"
+        :data-section="tabs[3]?.id || 'education'"
+        class="mb-12"
       >
-        <h2 class="font-display text-2xl font-semibold text-muted-pale mb-2">
+        <h2
+          :id="tabs[3]?.id || 'education'"
+          class="font-display text-2xl font-semibold text-muted-pale mb-6 scroll-mt-24 sm:scroll-mt-28"
+        >
+          {{ home?.education?.title ?? 'Education' }}
+        </h2>
+        <div class="flex flex-col gap-6">
+          <div
+            v-for="entry in educationEntries"
+            :key="entry.school + entry.degree"
+            class="card-gradient-animated rounded-2xl border border-teal/20 bg-[rgba(24,183,164,0.05)] p-6 sm:p-8 transition-all duration-300 hover:border-teal/40 hover:shadow-[0_0_24px_rgba(24,183,164,0.15)]"
+          >
+            <div class="flex flex-wrap items-center justify-between gap-4">
+              <div>
+                <h3 class="font-display font-semibold text-lg text-muted-pale">
+                  {{ entry.school }}
+                </h3>
+                <p class="mt-1 text-sm text-muted-light">
+                  {{ entry.degree }}, {{ entry.field }}
+                </p>
+                <p class="mt-0.5 text-xs text-muted">
+                  {{ entry.period }}
+                </p>
+              </div>
+              <button
+                type="button"
+                class="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl bg-teal/20 text-teal hover:bg-teal/30 transition-colors text-sm font-medium shrink-0"
+                @click="openDiploma(entry)"
+              >
+                <svg class="w-4 h-4 shrink-0" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                </svg>
+                View diploma
+              </button>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section :data-section="tabs[4]?.id || 'projects'">
+        <h2
+          :id="tabs[4]?.id || 'projects'"
+          class="font-display text-2xl font-semibold text-muted-pale mb-2 scroll-mt-24 sm:scroll-mt-28"
+        >
           {{ home?.projects?.title ?? 'Projects' }}
         </h2>
         <p class="text-muted-light text-sm mb-6">
@@ -88,6 +141,12 @@
       @scroll-to="scrollToSection"
     />
 
+    <PdfModal
+      v-model="diplomaModalOpen"
+      :pdf-url="diplomaModalUrl"
+      :title="diplomaModalTitle"
+    />
+
     <footer class="fixed bottom-0 left-0 right-0 z-40 lg:hidden border-t border-teal/10 bg-bg-card flex flex-col">
       <div class="mx-auto w-full max-w-6xl px-2 pt-2">
         <LayoutSectionNavTabs
@@ -98,40 +157,58 @@
         />
       </div>
       <p class="text-center text-sm text-muted py-3 pb-[max(0.75rem,env(safe-area-inset-bottom))]">
-        © {{ new Date().getFullYear() }} Vlad Timchenko
+        © {{ new Date().getFullYear() }} {{ home?.name ?? 'Vlad Timchenko' }}
       </p>
     </footer>
   </div>
 </template>
 
 <script setup lang="ts">
-import homeData from '~/data/content/home.json'
-import { experienceEntries } from '~/data/experience'
-import { volunteeringEntries } from '~/data/volunteering'
+import homeData from '../data/content/home.json'
+import { educationEntries, type EducationEntry } from '../data/education'
+import { experienceEntries } from '../data/experience'
+import { volunteeringEntries } from '../data/volunteering'
 
 const home = homeData as {
+  name?: string
+  title?: string
   about?: { title?: string; paragraphs?: string[] }
   sectionTabs?: { id: string; label: string }[]
   experience?: { title?: string; commercialLabel?: string }
   volunteering?: { title?: string }
+  education?: { title?: string }
   projects?: { title?: string }
+}
+
+const diplomaModalOpen = ref(false)
+const diplomaModalUrl = ref('')
+const diplomaModalTitle = ref('Diploma')
+
+function openDiploma (entry: EducationEntry) {
+  diplomaModalUrl.value = entry.diplomaUrl
+  diplomaModalTitle.value = `${entry.school} · Diploma`
+  nextTick(() => {
+    diplomaModalOpen.value = true
+  })
 }
 
 const tabs = computed(() => home?.sectionTabs ?? [
   { id: 'about', label: 'About' },
   { id: 'experience', label: 'Experience' },
   { id: 'volunteering', label: 'Volunteering' },
+  { id: 'education', label: 'Education' },
   { id: 'projects', label: 'Projects' }
 ])
 
+const firstTabId = computed(() => tabs.value[0]?.id ?? 'about')
 const activeSection = ref('about')
 const scrollTargetId = ref<string | null>(null)
 
 function scrollToSection(id: string) {
   activeSection.value = id
   scrollTargetId.value = id
-  if (id === 'about') {
-    window.scrollTo({ top: 0, behavior: 'smooth' })
+  if (id === firstTabId.value) {
+    window.scrollTo(0, 0)
   } else {
     document.getElementById(id)?.scrollIntoView({ behavior: 'smooth', block: 'start' })
   }
@@ -140,12 +217,14 @@ function scrollToSection(id: string) {
 
 let observer: IntersectionObserver | null = null
 onMounted(() => {
+  activeSection.value = firstTabId.value
+  window.scrollTo(0, 0)
   observer = new IntersectionObserver(
     (entries) => {
       if (scrollTargetId.value) {
         for (const e of entries) {
           if (!e.isIntersecting) continue
-          const id = e.target.id
+          const id = (e.target as HTMLElement).getAttribute('data-section')
           if (id === scrollTargetId.value && tabs.value.some(t => t.id === id)) {
             activeSection.value = id
           }
@@ -155,8 +234,8 @@ onMounted(() => {
       let topmost: { id: string; top: number } | null = null
       for (const e of entries) {
         if (!e.isIntersecting) continue
-        const id = e.target.id
-        if (!tabs.value.some(t => t.id === id)) continue
+        const id = (e.target as HTMLElement).getAttribute('data-section')
+        if (!id || !tabs.value.some(t => t.id === id)) continue
         const top = e.boundingClientRect.top
         if (topmost === null || top < topmost.top) topmost = { id, top }
       }
@@ -165,9 +244,8 @@ onMounted(() => {
     { rootMargin: '-15% 0px -60% 0px', threshold: 0 }
   )
   nextTick(() => {
-    tabs.value.forEach((tab) => {
-      const el = document.getElementById(tab.id)
-      if (el) observer?.observe(el)
+    document.querySelectorAll('[data-section]').forEach((el) => {
+      observer?.observe(el)
     })
   })
 })
