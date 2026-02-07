@@ -6,7 +6,8 @@ export default defineNuxtConfig({
   modules: ['@nuxt/content', '@nuxtjs/tailwindcss', '@vueuse/motion/nuxt'],
 
   nitro: {
-    preset: 'cloudflare-pages',
+    preset: 'cloudflare_pages',
+    output: { dir: 'dist' },
     prerender: {
       autoSubfolderIndex: false
     }
@@ -18,7 +19,7 @@ export default defineNuxtConfig({
     sources: {
       feed: {
         driver: 'fs',
-        prefix: '/blog',
+        prefix: '/feed',
         base: resolve(process.cwd(), 'data/feed')
       }
     },
