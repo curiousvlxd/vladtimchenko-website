@@ -1,0 +1,99 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --bg: #05090E;
+  --bg-card: #0A1117;
+  --teal: #18B7A4;
+  --teal-dark: #0FA18E;
+  --teal-light: #3FE0C6;
+  --muted: #6C8087;
+  --muted-light: #9FB7BF;
+  --muted-pale: #E6F1F4;
+}
+
+html {
+  scroll-behavior: smooth;
+  scrollbar-gutter: stable;
+}
+
+body {
+  @apply font-sans text-muted-pale antialiased;
+  background-color: var(--bg);
+  position: relative;
+  min-height: 100vh;
+}
+
+body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  background: radial-gradient(
+    ellipse 140% 100% at 60% 30%,
+    rgba(24, 183, 164, 0.06) 0%,
+    transparent 55%
+  );
+  filter: blur(80px);
+  animation: bg-drift 22s ease-in-out infinite;
+  pointer-events: none;
+}
+
+@keyframes bg-drift {
+  0%, 100% { opacity: 1; transform: scale(1) translate(0, 0); }
+  50% { opacity: 0.9; transform: scale(1.04) translate(-2%, 0); }
+}
+
+.card-gradient-animated {
+  position: relative;
+  overflow: hidden;
+}
+
+.card-gradient-animated::before {
+  content: '';
+  position: absolute;
+  inset: -60%;
+  z-index: 0;
+  background: radial-gradient(
+    circle 50% at 50% 50%,
+    rgba(24, 183, 164, 0.14) 0%,
+    rgba(24, 183, 164, 0.06) 40%,
+    transparent 70%
+  );
+  filter: blur(50px);
+  animation: card-glow-drift 16s ease-in-out infinite;
+  pointer-events: none;
+}
+
+.card-gradient-animated > * {
+  position: relative;
+  z-index: 1;
+}
+
+@keyframes card-glow-drift {
+  0%, 100% { transform: translate(0, 0) scale(1); }
+  50% { transform: translate(3%, -3%) scale(1.08); }
+}
+
+.page-enter-active,
+.page-leave-active {
+  transition: opacity 0.2s ease, transform 0.2s ease;
+}
+.page-enter-from,
+.page-leave-to {
+  opacity: 0;
+  transform: translateY(4px);
+}
+
+.prose pre {
+  @apply font-mono text-sm rounded-lg border border-teal/20 bg-bg-card;
+}
+
+.prose code {
+  @apply font-mono text-teal-light px-1.5 py-0.5 rounded bg-teal/10;
+}
+
+.prose pre code {
+  @apply p-0 bg-transparent text-inherit;
+}

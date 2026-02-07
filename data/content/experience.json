@@ -1,0 +1,214 @@
+[
+  {
+    "company": "PrivatBank",
+    "role": ".NET Engineer",
+    "start": "2025-06",
+    "end": null,
+    "location": "Remote",
+    "roleDescription": "Backend engineer working on enterprise grade banking systems.",
+    "highlights": [
+      "Develop and maintain cloud native .NET services for high load financial platforms",
+      "Design resilient background processing pipelines and integration services",
+      "Build and optimize time series data pipelines using TimescaleDB",
+      "Implement event driven processing with Kafka and RabbitMQ",
+      "Improve observability, logging, and incident response workflows using Grafana and Prometheus",
+      "Participate in architecture reviews and system modernization initiatives",
+      "Collaborate with distributed cross functional teams"
+    ],
+    "techStack": [
+      ".NET",
+      "C#",
+      "ASP.NET Core",
+      "Aspire",
+      "Microservices",
+      "Service Oriented Architecture",
+      "PostgreSQL",
+      "TimescaleDB",
+      "Dapper",
+      "Entity Framework Core",
+      "Kafka",
+      "RabbitMQ",
+      "Kubernetes",
+      "Bash",
+      "AWS",
+      "GitLab Runner",
+      "Prometheus",
+      "Grafana"
+    ],
+    "impact": [
+      "Strengthened observability and incident response workflows",
+      "Contributed to modernization and long-term maintainability of core systems",
+      "Enhanced stability of internal integrations and data pipelines"
+    ]
+  },
+  {
+    "company": "Manul Technologies LLP",
+    "role": "Lead .NET Engineer",
+    "start": "2023-05",
+    "end": "2025-06",
+    "location": "Remote",
+    "roleDescription": "Led backend architecture and infrastructure for an industrial IoT and SCADA platform in the oil and gas industry, delivering telemetry ingestion, monitoring, real-time alerting, reporting, and device management services across cloud and edge environments for a multi-tenant system.",
+    "highlights": [
+      "Designed and built .NET microservices and background jobs from scratch, including a configurable reporting and alerting system with localized daily reports and real-time device notifications",
+      "Owned Kubernetes infrastructure on GKE with per-namespace isolation, TLS, Ingress, and PVCs, supporting hybrid deployments using GKE Autopilot for SaaS and GKE Fleet for on-premise clients",
+      "Automated CI/CD pipelines and API documentation delivery to the ReadMe platform using GitHub Actions and Cloud Build",
+      "Optimized time-series workloads in TimescaleDB using hypertables, continuous aggregates, and retention policies for high-frequency telemetry ingestion",
+      "Integrated product and usage analytics via Twilio Segment and Mixpanel to track device and user behavior across environments",
+      "Implemented runtime localization with Tolgee and multi-tenant access control using self-hosted Keycloak with OpenID Connect and fine-grained RBAC",
+      "Integrated industrial protocols including Modbus, LoRaWAN, OPC UA, and Weatherford 8500 and built event-driven pipelines to Node-RED for persistence, alerting, and post-processing",
+      "Led backend engineering efforts, mentoring developers and coordinating architecture and delivery decisions"
+    ],
+    "techStack": [
+      ".NET",
+      "C#",
+      "ASP.NET Core",
+      "Microservices",
+      "PostgreSQL",
+      "TimescaleDB",
+      "Redis",
+      "MartenDB",
+      "Dapper",
+      "Entity Framework Core",
+      "Kubernetes",
+      "Bash",
+      "Google Cloud Platform",
+      "Google Kubernetes Engine",
+      "Google Cloud Bucket",
+      "Google Cloud Run",
+      "Google Cloud Build",
+      "Google Cloud SQL",
+      "Linux",
+      "Prometheus",
+      "Grafana",
+      "RabbitMQ",
+      "Node-RED",
+      "Twilio Segment",
+      "Mixpanel",
+      "Service-Oriented Architecture",
+      "Team Leadership",
+      "JavaScript",
+      "Python"
+    ],
+    "impact": [
+      "Delivered a production-ready IoT backend platform scaling to 200+ industrial devices per client",
+      "Reduced deployment friction and operational overhead for field and engineering teams",
+      "Enabled real-time telemetry-driven decision making with minimal manual intervention"
+    ]
+  },  
+  {
+    "company": "SRG+",
+    "role": "Software Engineer",
+    "start": "2024-02",
+    "end": "2025-01",
+    "location": "Remote",
+    "roleDescription": "Designed, built, and operated the backend for a digital asset management and media streaming startup, owning backend delivery, infrastructure, and production reliability in a small product team. The platform covered the full media lifecycle from upload and processing to delivery and playback and was integrated with programmable digital business cards as physical touchpoints.",
+    "highlights": [
+      "Developed .NET microservices on Google Cloud Run with asynchronous communication using Google Pub/Sub and deferred execution via Cloud Tasks",
+      "Implemented secure HLS media streaming using Bunny Stream with token-based IP validation and integrations with CloudConvert, Vimeo, and Wistia",
+      "Built scalable file storage and post-upload processing pipelines using Cloudflare R2 and Cloudflare Workers",
+      "Implemented authentication, messaging, and notification systems using Auth0 with OTP via Twilio and SendGrid email delivery",
+      "Automated content workflows and product analytics using Zapier, Airtable, Twilio Segment, and Mixpanel",
+      "Developed backend services for dynamic links, QR codes, and programmable digital business cards enabling content sharing through physical cards",
+      "Integrated Apple App Clips using the App Store Connect API to provide instant access to shared content without full app installation",
+      "Owned backend infrastructure, deployment pipelines, and production reliability in a fast-moving startup environment"
+    ],
+    "techStack": [
+      ".NET",
+      "C#",
+      "ASP.NET Core",
+      "Microservices",
+      "Google Cloud Platform",
+      "Google Cloud Run",
+      "Google Cloud Pub/Sub",
+      "Google Cloud Build",
+      "MongoDB",
+      "Auth0",
+      "Cloudflare",
+      "Cloudflare R2",
+      "Cloudflare Workers",
+      "Bunny Stream",
+      "Twilio",
+      "Twilio SendGrid",
+      "Twilio Segment",
+      "Zapier",
+      "Mixpanel",
+      "JavaScript"
+    ],
+    "impact": [
+      "Automated the entire asset publishing and distribution pipeline",
+      "Reduced content onboarding time by ~90%",
+      "Enabled large-scale media sharing during real-world events and networking scenarios"
+    ]
+  },  
+  {
+    "company": "3D Infotech",
+    "role": ".NET Developer",
+    "start": "2022-08",
+    "end": "2023-03",
+    "location": "Remote",
+    "roleDescription": "Worked on desktop automation software for a robotic system, contributing to modernization of the tech stack, architectural improvements, and test automation.",
+    "highlights": [
+      "Migrated core parts of a legacy WinForms application to WPF to improve maintainability and align with modern UI practices",
+      "Refactored the system to a client server architecture, enabling remote license validation and reducing reliance on client-side checks",
+      "Applied the MVVM pattern to improve separation of concerns and simplify long-term UI maintenance",
+      "Built end-to-end UI automation tests using Ranorex Studio, significantly reducing manual regression effort",
+      "Supported QA workflows by maintaining structured and reusable test cases in TestRail",
+      "Contributed to architectural and codebase modernization of a legacy desktop platform"
+    ],
+    "techStack": [
+      ".NET",
+      "C#",
+      ".NET Framework",
+      "ASP.NET",
+      "WPF",
+      "WinForms",
+      "MVVM",
+      "Microsoft SQL Server",
+      "Azure",
+      "Ranorex",
+      "TestRail"
+    ],
+    "impact": [
+      "Improved UI maintainability and long-term stability of the desktop platform",
+      "Reduced day-to-day QA effort by covering key user flows with automated tests",
+      "Cut manual regression testing time by ~40%"
+    ]
+  },
+  {
+    "company": "Upwork",
+    "role": "Freelance Software Developer",
+    "start": "2021-09",
+    "end": "2022-08",
+    "location": "Remote",
+    "roleDescription": "Delivered end-to-end backend and desktop solutions for international clients through freelance projects on Upwork, later transitioning into a long-term contract role at a product company.",
+    "highlights": [
+      "Designed and built RESTful APIs and background workers using ASP.NET Core",
+      "Developed desktop applications using WPF, WinForms, and Avalonia for internal tools and client-facing utilities",
+      "Built automation scripts and small productivity tools in Python",
+      "Integrated custom backend services with existing client systems and workflows",
+      "Provided long-term technical support and iterative improvements for recurring clients"
+    ],
+    "techStack": [
+      ".NET",
+      "C#",
+      "ASP.NET Core",
+      ".NET Framework",
+      "PostgreSQL",
+      "Microsoft SQL Server",
+      "MySQL",
+      "MariaDB",
+      "Azure SQL",
+      "Azure Cosmos DB",
+      "Microsoft Azure",
+      "WPF",
+      "WinForms",
+      "Avalonia",
+      "Python"
+    ],
+    "impact": [
+      "Helped clients replace manual workflows with custom backend tools",
+      "Reduced routine operational tasks from hours to minutes",
+      "Converted short-term freelance engagements into long-term collaborations"
+    ]
+  }
+]

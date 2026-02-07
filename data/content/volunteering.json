@@ -1,0 +1,20 @@
+[
+  {
+    "organization": "Google Cloud",
+    "role": "Coach",
+    "start": "2025-10",
+    "end": "2025-11",
+    "location": "Remote",
+    "description": "Participated in the \"Grow Your Career with Google Cloud\" program as a coach.",
+    "highlights": [
+      "Provided guidance to beginners and students as they explored Google Cloud",
+      "Answered questions, shared advice, and helped clarify GCP concepts",
+      "Supported their learning process and encouraged confidence in using cloud tools"
+    ],
+    "tags": ["Google Cloud Platform", "Google Cloud Build", "Google Cloud Run", "Google Kubernetes Engine", "Google Cloud Bucket"],
+    "link": {
+      "url": "https://www.linkedin.com/feed/update/urn:li:activity:7413175268065824768/",
+      "label": "Post"
+    }
+  }
+]
