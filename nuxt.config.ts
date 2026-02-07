@@ -4,12 +4,16 @@ export default defineNuxtConfig({
   compatibilityDate: '2025-02-07',
   devtools: { enabled: true },
   modules: ['@nuxt/content', '@nuxtjs/tailwindcss', '@vueuse/motion/nuxt'],
+
   nitro: {
+    preset: 'cloudflare-pages',
     prerender: {
       autoSubfolderIndex: false
     }
   },
+
   spaLoadingTemplate: false,
+
   content: {
     sources: {
       feed: {
@@ -23,6 +27,7 @@ export default defineNuxtConfig({
       preload: ['ts', 'vue', 'md', 'mdx', 'json']
     }
   },
+
   app: {
     head: {
       htmlAttrs: { style: 'background-color: #05090E' },
@@ -35,7 +40,7 @@ export default defineNuxtConfig({
       ],
       link: [
         { rel: 'icon', href: '/favicon.ico' },
-        { rel: 'prefetch', href: '/blog' },
+        { rel: 'prefetch', href: '/feed' },
         { rel: 'preconnect', href: 'https://fonts.googleapis.com' },
         { rel: 'preconnect', href: 'https://fonts.gstatic.com', crossorigin: '' },
         { rel: 'stylesheet', href: 'https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&family=Space+Grotesk:wght@400;500;600;700&display=swap' },
@@ -45,7 +50,9 @@ export default defineNuxtConfig({
     },
     pageTransition: { name: 'page', mode: 'out-in' }
   },
+
   css: ['~/assets/css/main.css'],
+
   runtimeConfig: {
     public: {
       siteUrl: process.env.NUXT_PUBLIC_SITE_URL || 'https://vladtimchenko.dev',
