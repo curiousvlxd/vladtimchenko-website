@@ -13,7 +13,8 @@ export default defineEventHandler(async (event) => {
   } catch {
     paths = []
   }
-  const staticUrls = ['', '/about', '/projects', '/blog'].map(
+  const { STATIC_PATHS } = await import('~/constants/navigation')
+  const staticUrls = STATIC_PATHS.map(
     (p) => `<url><loc>${base}${p || '/'}</loc></url>`
   )
   return `<?xml version="1.0" encoding="UTF-8"?>

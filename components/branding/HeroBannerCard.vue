@@ -24,21 +24,17 @@
           "Be curious, not judgemental" - Ted Lasso
         </p>
       </div>
-      <div class="mt-8 pt-8 border-t border-teal/20 flex flex-col sm:flex-row items-center justify-center gap-6 sm:gap-10 flex-wrap">
-        <a :href="`mailto:${CONTACT.EMAIL}`" class="text-teal-light hover:text-teal transition-colors font-medium break-all">
-          {{ CONTACT.EMAIL }}
+      <div class="mt-8 pt-8 border-t border-teal/20 flex flex-wrap items-center justify-center gap-3">
+        <BrandingEmailReveal />
+        <a :href="CONTACT.GITHUB" target="_blank" rel="noopener noreferrer" class="flex items-center justify-center w-11 h-11 rounded-xl bg-teal/15 text-muted-pale hover:bg-teal/25 hover:text-teal transition-colors" aria-label="GitHub">
+          <AppIcon name="github" class="w-5 h-5" />
         </a>
-        <div class="flex gap-3">
-          <a :href="CONTACT.GITHUB" target="_blank" rel="noopener noreferrer" class="flex items-center justify-center w-11 h-11 rounded-xl bg-teal/15 text-muted-pale hover:bg-teal/25 hover:text-teal transition-colors" aria-label="GitHub">
-            <AppIcon name="github" class="w-5 h-5" />
-          </a>
-          <a :href="CONTACT.LINKEDIN" target="_blank" rel="noopener noreferrer" class="flex items-center justify-center w-11 h-11 rounded-xl bg-teal/15 text-muted-pale hover:bg-teal/25 hover:text-teal transition-colors" aria-label="LinkedIn">
-            <AppIcon name="linkedin" class="w-5 h-5" />
-          </a>
-          <a :href="CONTACT.TELEGRAM" target="_blank" rel="noopener noreferrer" class="flex items-center justify-center w-11 h-11 rounded-xl bg-teal/15 text-muted-pale hover:bg-teal/25 hover:text-teal transition-colors" aria-label="Telegram">
-            <AppIcon name="telegram" class="w-5 h-5" />
-          </a>
-        </div>
+        <a :href="CONTACT.LINKEDIN" target="_blank" rel="noopener noreferrer" class="flex items-center justify-center w-11 h-11 rounded-xl bg-teal/15 text-muted-pale hover:bg-teal/25 hover:text-teal transition-colors" aria-label="LinkedIn">
+          <AppIcon name="linkedin" class="w-5 h-5" />
+        </a>
+        <a :href="CONTACT.TELEGRAM" target="_blank" rel="noopener noreferrer" class="flex items-center justify-center w-11 h-11 rounded-xl bg-teal/15 text-muted-pale hover:bg-teal/25 hover:text-teal transition-colors" aria-label="Telegram">
+          <AppIcon name="telegram" class="w-5 h-5" />
+        </a>
       </div>
     </div>
   </section>

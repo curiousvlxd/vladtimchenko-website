@@ -1,4 +1,4 @@
-export type IconName = 'github' | 'linkedin' | 'telegram' | 'menu'
+export type IconName = 'github' | 'linkedin' | 'telegram' | 'menu' | 'email'
 
 const VIEWBOX = '0 0 24 24'
 
@@ -15,6 +15,10 @@ const ICONS: Record<IconName, { content: string; stroke?: boolean }> = {
   menu: {
     stroke: true,
     content: '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/>'
+  },
+  email: {
+    stroke: true,
+    content: '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/>'
   }
 }
 

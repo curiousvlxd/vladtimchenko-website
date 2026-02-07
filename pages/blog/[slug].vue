@@ -1,18 +1,27 @@
 <template>
   <div class="mx-auto max-w-3xl px-4 sm:px-6 py-12">
+    <NuxtLink
+      to="/blog"
+      class="inline-flex items-center gap-2 text-sm text-muted-light hover:text-teal transition-colors mb-8"
+    >
+      <svg class="w-4 h-4 shrink-0" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" aria-hidden="true">
+        <path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7" />
+      </svg>
+      Back to Feed
+    </NuxtLink>
     <article v-if="page" class="prose prose-invert max-w-none">
       <header class="mb-8">
         <h1 class="font-display text-3xl sm:text-4xl font-bold text-muted-pale">
           {{ page.title }}
         </h1>
         <div class="mt-4 flex flex-wrap items-center gap-3 text-sm text-muted">
-          <time :datetime="page.date">{{ formatDate(page.date) }}</time>
+          <time :datetime="page.date">{{ formatBlogDate(page.date, { month: 'long' }) }}</time>
           <span v-if="readingTime">· {{ readingTime.text }}</span>
           <span v-if="page.tags?.length" class="flex gap-2">
             <NuxtLink
               v-for="tag in page.tags"
               :key="tag"
-              :to="`/blog?tag=${tag}`"
+              :to="`/blog?tag=${encodeURIComponent(tag)}`"
               class="px-1.5 py-0.5 rounded bg-teal/15 text-teal-light hover:bg-teal/25"
             >
               {{ tag }}
@@ -61,10 +70,6 @@ useHead({
     }
   ]
 })
-
-function formatDate(d: string): string {
-  return new Date(d).toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric' })
-}
 
 const config = useRuntimeConfig().public
 onMounted(() => {

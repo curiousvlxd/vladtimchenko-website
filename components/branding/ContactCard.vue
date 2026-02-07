@@ -13,14 +13,9 @@
           Open to projects, collaborations, and conversations. Reach out via email or any channel below.
         </p>
         <div class="mt-6">
-          <p class="text-xs text-muted uppercase tracking-wider mb-2">Email</p>
-          <a :href="`mailto:${CONTACT.EMAIL}`" class="text-teal-light hover:text-teal transition-colors font-medium text-lg break-all">
-            {{ CONTACT.EMAIL }}
-          </a>
-        </div>
-        <div class="mt-6">
           <p class="text-xs text-muted uppercase tracking-wider mb-3">Connect</p>
-          <div class="flex flex-wrap gap-3">
+          <div class="flex flex-wrap items-center gap-3 justify-center sm:justify-start">
+            <BrandingEmailReveal />
             <a
               :href="CONTACT.GITHUB"
               target="_blank"

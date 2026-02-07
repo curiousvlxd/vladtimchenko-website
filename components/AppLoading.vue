@@ -1,16 +1,18 @@
 <template>
   <Transition name="loading-fade-out">
     <div
-      v-if="loading"
+      v-show="loading"
       class="fixed inset-0 z-[100] flex flex-col items-center justify-center gap-6 bg-bg"
+      aria-hidden="!loading"
     >
       <img
-        src="/brand/vladtimchenko-white-logo.svg"
+        src="/logo.svg"
         alt=""
         width="120"
         height="120"
         class="shrink-0"
         style="width: 120px; height: 120px; object-fit: contain;"
+        fetchpriority="high"
       />
       <div class="w-48 sm:w-64 h-1 rounded-full bg-bg-card overflow-hidden">
         <div class="h-full rounded-full bg-teal loading-bar" />

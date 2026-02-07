@@ -18,6 +18,12 @@ html {
   scrollbar-gutter: stable;
 }
 
+@media (max-width: 1023px) {
+  html {
+    scroll-behavior: auto;
+  }
+}
+
 body {
   @apply font-sans text-muted-pale antialiased;
   background-color: var(--bg);
@@ -40,6 +46,13 @@ body::before {
   pointer-events: none;
 }
 
+@media (max-width: 1023px) {
+  body::before {
+    filter: blur(40px);
+    animation: none;
+  }
+}
+
 @keyframes bg-drift {
   0%, 100% { opacity: 1; transform: scale(1) translate(0, 0); }
   50% { opacity: 0.9; transform: scale(1.04) translate(-2%, 0); }
@@ -53,16 +66,14 @@ body::before {
 .card-gradient-animated::before {
   content: '';
   position: absolute;
-  inset: -60%;
+  inset: 0;
   z-index: 0;
   background: radial-gradient(
-    circle 50% at 50% 50%,
-    rgba(24, 183, 164, 0.14) 0%,
-    rgba(24, 183, 164, 0.06) 40%,
+    ellipse 120% 80% at 50% 0%,
+    rgba(24, 183, 164, 0.06) 0%,
+    rgba(24, 183, 164, 0.02) 50%,
     transparent 70%
   );
-  filter: blur(50px);
-  animation: card-glow-drift 16s ease-in-out infinite;
   pointer-events: none;
 }
 
@@ -71,9 +82,11 @@ body::before {
   z-index: 1;
 }
 
-@keyframes card-glow-drift {
-  0%, 100% { transform: translate(0, 0) scale(1); }
-  50% { transform: translate(3%, -3%) scale(1.08); }
+@media (max-width: 1023px) {
+  .animate-glow-pulse {
+    animation: none;
+    opacity: 0.6;
+  }
 }
 
 .page-enter-active,

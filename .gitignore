@@ -10,6 +10,7 @@ dist
 
 # Node
 node_modules
+scripts
 
 # IDE
 .idea

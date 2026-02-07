@@ -1,10 +1,10 @@
 export const ASSETS = {
-  LOGO_WHITE: '/brand/vladtimchenko-white-logo.svg',
-  LOGO: '/brand/vladtimchenko-logo.svg',
+  LOGO: '/logo.svg',
+  LOGO_WHITE: '/logo.svg',
   PHOTO: '/me.jpg'
 } as const
 
-export const CRITICAL_ASSETS = [ASSETS.LOGO_WHITE, ASSETS.PHOTO] as const
+export const CRITICAL_ASSETS = [ASSETS.LOGO, ASSETS.PHOTO] as const
 
 export const CONTACT = {
   EMAIL: 'vlxdtimchenko@gmail.com',

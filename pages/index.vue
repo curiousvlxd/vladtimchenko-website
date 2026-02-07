@@ -88,47 +88,19 @@
       @scroll-to="scrollToSection"
     />
 
-    <div class="fixed right-4 bottom-6 z-50 lg:hidden">
-      <button
-        type="button"
-        class="flex items-center gap-2 px-4 py-3 rounded-2xl bg-teal/20 border border-teal/30 text-muted-pale hover:bg-teal/30 shadow-lg font-medium text-sm"
-        aria-label="Jump to section"
-        :aria-expanded="panelOpen"
-        @click="panelOpen = !panelOpen"
-      >
-        <AppIcon name="menu" class="w-5 h-5 shrink-0" />
-        <span>Jump to section</span>
-      </button>
-    </div>
-
-    <Transition name="panel-right">
-      <div
-        v-show="panelOpen"
-        class="fixed inset-0 z-50 lg:hidden"
-        :aria-hidden="!panelOpen"
-      >
-        <div class="absolute inset-0 bg-bg/80 backdrop-blur-sm" @click="panelOpen = false" />
-        <div
-          class="mobile-nav-panel absolute top-0 right-0 bottom-0 w-[min(100vw-2rem,18rem)] pr-[env(safe-area-inset-right)] border-l border-teal/20 bg-bg-card/95 backdrop-blur-sm overflow-auto"
-          @click.stop
-        >
-          <div class="nav-panel-card font-sans rounded-none border-0 h-full flex flex-col">
-            <nav class="flex flex-col flex-1 p-4 gap-0.5" aria-label="Sections">
-                <button
-                  v-for="tab in tabs"
-                  :key="tab.id"
-                  type="button"
-                  :class="['section-tab', activeSection === tab.id ? 'section-tab--active' : 'section-tab--inactive']"
-                  :aria-current="activeSection === tab.id ? 'true' : undefined"
-                  @click="scrollToSection(tab.id); panelOpen = false"
-                >
-                  {{ tab.label }}
-                </button>
-            </nav>
-          </div>
-        </div>
+    <footer class="fixed bottom-0 left-0 right-0 z-40 lg:hidden border-t border-teal/10 bg-bg-card flex flex-col">
+      <div class="mx-auto w-full max-w-6xl px-2 pt-2">
+        <LayoutSectionNavTabs
+          layout="horizontal"
+          :sections="tabs"
+          :active-section="activeSection"
+          @scroll-to="scrollToSection"
+        />
       </div>
-    </Transition>
+      <p class="text-center text-sm text-muted py-3 pb-[max(0.75rem,env(safe-area-inset-bottom))]">
+        © {{ new Date().getFullYear() }} Vlad Timchenko
+      </p>
+    </footer>
   </div>
 </template>
 
@@ -153,7 +125,6 @@ const tabs = computed(() => home?.sectionTabs ?? [
 ])
 
 const activeSection = ref('about')
-const panelOpen = ref(false)
 const scrollTargetId = ref<string | null>(null)
 
 function scrollToSection(id: string) {
@@ -205,51 +176,6 @@ onUnmounted(() => observer?.disconnect())
 const { data: repos, pending } = useFetch<import('../types/repos').RepoMeta[]>('/api/repos', { key: 'repos' })
 const reposList = computed(() => (Array.isArray(repos.value) ? repos.value : []))
 </script>
-
-<style scoped>
-.section-tab {
-  display: block;
-  width: 100%;
-  text-align: left;
-  padding: 0.5rem 0.75rem;
-  border-radius: 0.5rem;
-  font-size: 0.9375rem;
-  font-weight: 500;
-  transition: color 0.25s ease, background-color 0.25s ease;
-}
-.section-tab--inactive {
-  color: #e2e2e2;
-  background: transparent;
-}
-.section-tab--inactive:hover {
-  color: #6ee7b7;
-  background: rgba(30, 59, 59, 0.4);
-}
-.section-tab--active {
-  color: #6ee7b7;
-  background: #1e3b3b;
-}
-.section-tab--active:hover {
-  background: #214343;
-}
-
-.panel-right-enter-active,
-.panel-right-leave-active {
-  transition: opacity 0.2s ease;
-}
-.panel-right-enter-active .mobile-nav-panel,
-.panel-right-leave-active .mobile-nav-panel {
-  transition: transform 0.25s ease-out;
-}
-.panel-right-enter-from,
-.panel-right-leave-to {
-  opacity: 0;
-}
-.panel-right-enter-from .mobile-nav-panel,
-.panel-right-leave-to .mobile-nav-panel {
-  transform: translateX(100%);
-}
-</style>
 
 <style>
 .home-content-container {
