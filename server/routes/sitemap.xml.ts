@@ -5,7 +5,7 @@ export default defineEventHandler(async (event) => {
   const base = config.public?.siteUrl || 'https://vladtimchenko.dev'
   let paths: string[] = []
   try {
-    const posts = await queryContent('/blog').only(['_path', 'date']).find()
+    const posts = await queryContent('/feed').only(['_path', 'date']).find()
     paths = (posts as Array<{ _path: string; date?: string }>).map((p) => {
       const lastmod = p.date ? new Date(p.date).toISOString().slice(0, 10) : ''
       return `<url><loc>${base}${p._path}</loc>${lastmod ? `<lastmod>${lastmod}</lastmod>` : ''}</url>`

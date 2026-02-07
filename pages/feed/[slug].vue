@@ -1,7 +1,7 @@
 <template>
   <div class="mx-auto max-w-3xl px-4 sm:px-6 py-12">
     <NuxtLink
-      to="/blog"
+      to="/feed"
       class="inline-flex items-center gap-2 text-sm text-muted-light hover:text-teal transition-colors mb-8"
     >
       <svg class="w-4 h-4 shrink-0" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" aria-hidden="true">
@@ -21,7 +21,7 @@
             <NuxtLink
               v-for="tag in page.tags"
               :key="tag"
-              :to="`/blog?tag=${encodeURIComponent(tag)}`"
+              :to="`/feed?tag=${encodeURIComponent(tag)}`"
               class="px-1.5 py-0.5 rounded bg-teal/15 text-teal-light hover:bg-teal/25"
             >
               {{ tag }}
@@ -41,8 +41,8 @@
 const route = useRoute()
 const slug = computed(() => route.params.slug as string)
 
-const { data: page, error: pageError } = await useAsyncData(`blog-${slug.value}`, () =>
-  queryContent('/blog', slug.value).findOne()
+const { data: page, error: pageError } = await useAsyncData(`feed-${slug.value}`, () =>
+  queryContent('/feed', slug.value).findOne()
 )
 
 const readingTime = computed(() => {

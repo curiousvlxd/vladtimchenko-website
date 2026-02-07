@@ -5,7 +5,7 @@ export default defineEventHandler(async (event) => {
   const base = config.public?.siteUrl || 'https://vladtimchenko.dev'
   let items = ''
   try {
-    const posts = await queryContent('/blog').sort({ date: -1 }).limit(50).find()
+    const posts = await queryContent('/feed').sort({ date: -1 }).limit(50).find()
     items = (posts as Array<{ _path: string; title?: string; description?: string; date?: string }>)
       .map((p) => {
         const date = p.date ? new Date(p.date).toUTCString() : ''
@@ -22,7 +22,7 @@ export default defineEventHandler(async (event) => {
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>Vlad Timchenko - Feed</title>
-    <link>${base}/blog</link>
+    <link>${base}/feed</link>
     <description>Software Engineer • Cloud-native .NET</description>
     <atom:link href="${base}/rss.xml" rel="self" type="application/rss+xml"/>
     ${items}

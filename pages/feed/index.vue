@@ -20,7 +20,7 @@
     <div v-if="currentTag" class="mb-6 flex flex-wrap items-center gap-2">
       <span class="text-sm text-muted">Tag:</span>
       <span class="px-2 py-1 rounded bg-teal/20 text-teal text-sm font-medium">{{ currentTag }}</span>
-      <NuxtLink to="/blog" class="text-sm text-muted-light hover:text-teal transition-colors">× clear</NuxtLink>
+      <NuxtLink to="/feed" class="text-sm text-muted-light hover:text-teal transition-colors">× clear</NuxtLink>
     </div>
     <ul class="space-y-6">
       <li
@@ -43,7 +43,7 @@
               <NuxtLink
                 v-for="tag in post.tags"
                 :key="tag"
-                :to="`/blog?tag=${encodeURIComponent(tag)}`"
+                :to="`/feed?tag=${encodeURIComponent(tag)}`"
                 class="px-1.5 py-0.5 rounded bg-teal/15 text-teal-light hover:bg-teal/25 transition-colors"
                 @click.stop
               >
@@ -69,8 +69,8 @@ const motionItem = {
 
 const route = useRoute()
 
-const { data: raw } = await useAsyncData('blog-list', () =>
-  queryContent('/blog').sort({ date: -1 }).only(['title', 'description', 'date', 'tags', '_path', 'body']).find()
+const { data: raw } = await useAsyncData('feed-list', () =>
+  queryContent('/feed').sort({ date: -1 }).only(['title', 'description', 'date', 'tags', '_path', 'body']).find()
 )
 
 interface BlogPost {
