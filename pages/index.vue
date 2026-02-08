@@ -215,6 +215,22 @@ function scrollToSection(id: string) {
   setTimeout(() => { scrollTargetId.value = null }, 1200)
 }
 
+const viewportTopOffset = 140
+
+function updateActiveSection() {
+  if (scrollTargetId.value) return
+  const sectionEls = document.querySelectorAll<HTMLElement>('[data-section]')
+  const tabIds = new Set(tabs.value.map((t) => t.id))
+  let activeId = firstTabId.value
+  for (const el of sectionEls) {
+    const id = el.getAttribute('data-section')
+    if (!id || !tabIds.has(id)) continue
+    const top = el.getBoundingClientRect().top
+    if (top <= viewportTopOffset) activeId = id
+  }
+  activeSection.value = activeId
+}
+
 let observer: IntersectionObserver | null = null
 onMounted(() => {
   activeSection.value = firstTabId.value
@@ -225,31 +241,29 @@ onMounted(() => {
         for (const e of entries) {
           if (!e.isIntersecting) continue
           const id = (e.target as HTMLElement).getAttribute('data-section')
-          if (id === scrollTargetId.value && tabs.value.some(t => t.id === id)) {
+          if (id === scrollTargetId.value && tabs.value.some((t) => t.id === id)) {
             activeSection.value = id
           }
         }
         return
       }
-      let topmost: { id: string; top: number } | null = null
-      for (const e of entries) {
-        if (!e.isIntersecting) continue
-        const id = (e.target as HTMLElement).getAttribute('data-section')
-        if (!id || !tabs.value.some(t => t.id === id)) continue
-        const top = e.boundingClientRect.top
-        if (topmost === null || top < topmost.top) topmost = { id, top }
-      }
-      if (topmost) activeSection.value = topmost.id
+      updateActiveSection()
     },
-    { rootMargin: '-15% 0px -60% 0px', threshold: 0 }
+    { rootMargin: '0px 0px -50% 0px', threshold: 0 }
   )
   nextTick(() => {
     document.querySelectorAll('[data-section]').forEach((el) => {
       observer?.observe(el)
     })
   })
+  if (import.meta.client) {
+    window.addEventListener('scroll', updateActiveSection, { passive: true })
+  }
 })
-onUnmounted(() => observer?.disconnect())
+onUnmounted(() => {
+  observer?.disconnect()
+  if (import.meta.client) window.removeEventListener('scroll', updateActiveSection)
+})
 
 const { data: repos, pending } = useFetch<import('../types/repos').RepoMeta[]>('/api/repos', { key: 'repos' })
 const reposList = computed(() => (Array.isArray(repos.value) ? repos.value : []))
