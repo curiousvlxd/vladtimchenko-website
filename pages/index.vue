@@ -1,5 +1,5 @@
 <template>
-  <div class="home-content-container flex gap-8 lg:gap-12 mx-auto max-w-6xl px-4 sm:px-6 pt-8 sm:pt-10 pb-8 sm:pb-12">
+  <div class="home-content-container flex gap-8 lg:gap-12 mx-auto max-w-6xl px-4 sm:px-6 pt-8 sm:pt-10 pb-[7rem] sm:pb-[7rem] lg:pb-12">
     <main id="home-top" class="min-w-0 flex-1 max-w-4xl">
       <BrandingHeroBannerCard class="mb-8 sm:mb-10" />
 
@@ -219,6 +219,14 @@ const viewportTopOffset = 140
 
 function updateActiveSection() {
   if (scrollTargetId.value) return
+  const lastTab = tabs.value[tabs.value.length - 1]
+  if (import.meta.client && typeof window !== 'undefined' && lastTab) {
+    const nearBottom = window.scrollY + window.innerHeight >= document.documentElement.scrollHeight - 80
+    if (nearBottom) {
+      activeSection.value = lastTab.id
+      return
+    }
+  }
   const sectionEls = document.querySelectorAll<HTMLElement>('[data-section]')
   const tabIds = new Set(tabs.value.map((t) => t.id))
   let activeId = firstTabId.value

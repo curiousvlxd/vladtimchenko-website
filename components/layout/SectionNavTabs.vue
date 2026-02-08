@@ -1,26 +1,35 @@
 <template>
   <div class="section-nav-tabs" :class="{ 'section-nav-tabs--horizontal': layout === 'horizontal' }">
     <template v-if="layout === 'horizontal'">
-      <div class="scale-row">
-        <div class="scale-track-h" aria-hidden="true" />
+      <div class="scale-row-h" aria-hidden="true">
+        <div class="scale-track-h" />
         <div
           class="scale-fill-h"
           :style="{ width: scaleFillWidth }"
-          aria-hidden="true"
         />
+        <div class="scale-dots-row-h">
+          <span
+            v-for="tab in sections"
+            :key="'dot-h-' + tab.id"
+            class="scale-dot"
+            :class="{ 'scale-dot--active': activeSection === tab.id }"
+          />
+        </div>
       </div>
-      <nav class="section-nav-tabs__row flex flex-1 gap-0.5" aria-label="Sections">
-        <button
-          v-for="tab in sections"
-          :key="tab.id"
-          type="button"
-          :class="['section-tab section-tab--row', activeSection === tab.id ? 'section-tab--active' : 'section-tab--inactive']"
-          :aria-current="activeSection === tab.id ? 'true' : undefined"
-          @click="$emit('scroll-to', tab.id)"
-        >
-          {{ tab.label }}
-        </button>
-      </nav>
+      <div class="section-nav-tabs__scroll">
+        <nav class="section-nav-tabs__row" aria-label="Sections">
+          <button
+            v-for="tab in sections"
+            :key="tab.id"
+            type="button"
+            :class="['section-tab section-tab--row', activeSection === tab.id ? 'section-tab--active' : 'section-tab--inactive']"
+            :aria-current="activeSection === tab.id ? 'true' : undefined"
+            @click="$emit('scroll-to', tab.id)"
+          >
+            {{ tab.label }}
+          </button>
+        </nav>
+      </div>
     </template>
     <template v-else>
       <div class="flex min-h-0">
@@ -94,7 +103,9 @@ const scaleFillHeight = computed(() => {
 const scaleFillWidth = computed(() => {
   const n = props.sections.length
   if (n === 0) return '0%'
-  const p = ((activeSectionIndex.value + 0.5) / n) * 100
+  const idx = activeSectionIndex.value
+  if (idx >= n - 1) return '100%'
+  const p = ((idx + 0.5) / n) * 100
   return `${p}%`
 })
 </script>
@@ -185,39 +196,94 @@ const scaleFillWidth = computed(() => {
   flex-direction: column;
   gap: 0.5rem;
   padding: 0.5rem 0.75rem;
+  width: 100%;
+  max-width: 100%;
+  min-width: 0;
+  box-sizing: border-box;
+}
+.section-nav-tabs--horizontal .scale-row-h {
+  flex-shrink: 0;
+}
+.section-nav-tabs--horizontal .section-nav-tabs__scroll {
+  flex: 1 1 auto;
+  min-height: 2rem;
+}
+.section-nav-tabs__scroll {
+  width: 100%;
+  min-width: 0;
 }
 .section-nav-tabs__row {
+  display: flex;
   flex-wrap: nowrap;
-  overflow-x: auto;
-  scrollbar-width: none;
-  -webkit-overflow-scrolling: touch;
-}
-.section-nav-tabs__row::-webkit-scrollbar {
-  display: none;
+  width: 100%;
+  gap: 0.125rem;
+  min-height: 2rem;
+  padding: 0;
 }
 .section-tab--row {
   flex: 1 1 0;
   min-width: 0;
   text-align: center;
-  padding: 0.5rem 0.375rem;
-  font-size: 0.8125rem;
+  padding: 0.2rem 0.125rem;
+  font-size: 0.5rem;
+  line-height: 1.2;
   white-space: nowrap;
-}
-.scale-row {
-  position: relative;
-  height: 4px;
-  width: 100%;
-  border-radius: 2px;
-  background: rgba(226, 226, 226, 0.2);
   overflow: hidden;
+  text-overflow: ellipsis;
+}
+@media (min-width: 400px) {
+  .section-tab--row {
+    padding: 0.25rem 0.25rem;
+    font-size: 0.5625rem;
+  }
+}
+.scale-row-h {
+  position: relative;
+  width: 100%;
+  height: 1.25rem;
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+}
+.scale-track-h {
+  position: absolute;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background: rgba(226, 226, 226, 0.2);
+  border-radius: 1px;
+  pointer-events: none;
 }
 .scale-fill-h {
   position: absolute;
   left: 0;
   top: 0;
   bottom: 0;
+  height: 2px;
+  margin: auto 0;
   background: #6ee7b7;
-  border-radius: 2px;
+  border-radius: 1px;
+  pointer-events: none;
   transition: width 0.3s ease-out;
+}
+.scale-dots-row-h {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 0;
+  bottom: 0;
+  z-index: 2;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 2px;
+  pointer-events: none;
+}
+.scale-dots-row-h .scale-dot {
+  flex-shrink: 0;
+  box-shadow: 0 0 0 2px rgba(13, 18, 24, 0.9);
+}
+.scale-dots-row-h .scale-dot--active {
+  box-shadow: 0 0 0 2px rgba(13, 18, 24, 0.9);
 }
 </style>
