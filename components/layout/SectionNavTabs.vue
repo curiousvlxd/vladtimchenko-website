@@ -18,16 +18,16 @@
       </div>
       <div class="section-nav-tabs__scroll">
         <nav class="section-nav-tabs__row" aria-label="Sections">
-          <button
+          <NuxtLink
             v-for="tab in sections"
             :key="tab.id"
-            type="button"
+            :to="tab.id === firstSectionId ? '/' : `/#${tab.id}`"
             :class="['section-tab section-tab--row', activeSection === tab.id ? 'section-tab--active' : 'section-tab--inactive']"
             :aria-current="activeSection === tab.id ? 'true' : undefined"
-            @click="$emit('scroll-to', tab.id)"
+            @click.prevent="$emit('scroll-to', tab.id)"
           >
             {{ tab.label }}
-          </button>
+          </NuxtLink>
         </nav>
       </div>
     </template>
@@ -53,16 +53,16 @@
           </div>
         </div>
         <nav class="flex flex-col flex-1 py-4 pr-4 pl-2 gap-0.5" aria-label="Sections">
-          <button
+          <NuxtLink
             v-for="tab in sections"
             :key="tab.id"
-            type="button"
+            :to="tab.id === firstSectionId ? '/' : `/#${tab.id}`"
             :class="['section-tab', activeSection === tab.id ? 'section-tab--active' : 'section-tab--inactive']"
             :aria-current="activeSection === tab.id ? 'true' : undefined"
-            @click="$emit('scroll-to', tab.id)"
+            @click.prevent="$emit('scroll-to', tab.id)"
           >
             {{ tab.label }}
-          </button>
+          </NuxtLink>
         </nav>
       </div>
     </template>
@@ -79,15 +79,17 @@ const props = withDefaults(
   defineProps<{
     sections: SectionTab[]
     activeSection: string
+    firstSectionId?: string
     layout?: 'vertical' | 'horizontal'
   }>(),
-  { layout: 'vertical' }
+  { firstSectionId: 'about', layout: 'vertical' }
 )
 
 defineEmits<{
   'scroll-to': [id: string]
 }>()
 
+const firstSectionId = computed(() => props.firstSectionId ?? 'about')
 const activeSectionIndex = computed(() => {
   const i = props.sections.findIndex(t => t.id === props.activeSection)
   return i >= 0 ? i : 0
@@ -120,6 +122,7 @@ const scaleFillWidth = computed(() => {
   font-size: 0.9375rem;
   font-weight: 500;
   transition: color 0.25s ease, background-color 0.25s ease;
+  text-decoration: none;
 }
 .section-tab--inactive {
   color: #e2e2e2;

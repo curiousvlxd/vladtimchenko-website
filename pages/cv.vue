@@ -104,17 +104,25 @@ const home = homeData as { name?: string; title?: string; about?: { paragraphs?:
 const cv = cvData as { coreSkills?: string }
 const profileText = home?.about?.paragraphs?.[0] ?? ''
 
+const config = useRuntimeConfig()
+const siteUrl = ((config.public?.siteUrl as string) || 'https://vladtimchenko.dev').replace(/\/+$/, '')
+const cvUrl = `${siteUrl}/cv`
 const cvTitle = `CV · ${home?.name ?? ''}`
 const cvDescription = 'Resume and experience: cloud-native .NET, backend, Google Cloud.'
 useHead({
   title: cvTitle,
+  link: [{ rel: 'canonical', href: cvUrl }],
   meta: [
     { name: 'description', content: cvDescription },
     { property: 'og:title', content: cvTitle },
     { property: 'og:description', content: cvDescription },
+    { property: 'og:url', content: cvUrl },
+    { property: 'og:image', content: `${siteUrl}/me.jpg` },
     { property: 'og:type', content: 'profile' },
+    { name: 'twitter:card', content: 'summary_large_image' },
     { name: 'twitter:title', content: cvTitle },
-    { name: 'twitter:description', content: cvDescription }
+    { name: 'twitter:description', content: cvDescription },
+    { name: 'twitter:image', content: `${siteUrl}/me.jpg` }
   ]
 })
 

@@ -4,7 +4,7 @@
       <BrandingLogoMark size="large" />
       <nav class="flex items-center gap-4 sm:gap-6 text-sm shrink-0" aria-label="Main">
         <a
-          v-for="link in NAV_LINKS"
+          v-for="link in headerLinks"
           :key="link.to"
           :href="link.to"
           class="inline-flex items-center min-h-[44px] min-w-[44px] sm:min-w-0 py-2 px-3 sm:px-2 -my-2 -mx-1 sm:mx-0 rounded text-muted-light hover:text-teal transition-colors touch-manipulation select-none"
@@ -22,6 +22,7 @@
 import type { NavItem } from '~/constants/navigation'
 import { NAV_LINKS } from '~/constants/navigation'
 
+const headerLinks = computed(() => NAV_LINKS.filter((link) => link.to !== '/cv'))
 const route = useRoute()
 
 function isActive(link: NavItem) {

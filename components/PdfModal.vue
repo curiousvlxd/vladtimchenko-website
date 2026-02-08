@@ -40,7 +40,6 @@
             </div>
           </header>
           <div class="relative flex-1 min-h-0 flex flex-col bg-[#0d1218] overflow-hidden pdf-content-area">
-            <!-- On mobile: primary CTA opens PDF in new tab for reliable iOS/Android viewing -->
             <div v-if="iframeSrc && isMobile" class="flex flex-col flex-1 min-h-0 p-4 sm:p-6">
               <div class="flex flex-col items-center justify-center gap-4 flex-1 rounded-xl border border-teal/20 bg-bg-card/50 py-8 px-4">
                 <p class="text-muted-pale text-sm text-center">

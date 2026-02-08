@@ -11,7 +11,7 @@
 <script setup lang="ts">
 const route = useRoute()
 const config = useRuntimeConfig()
-const siteUrl = (config.public?.siteUrl as string) || 'https://vladtimchenko.dev'
+const siteUrl = ((config.public?.siteUrl as string) || 'https://vladtimchenko.dev').replace(/\/+$/, '')
 
 const canonicalUrl = computed(() => {
   const path = route.path === '/' ? '' : route.path

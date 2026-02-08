@@ -35,9 +35,9 @@
         <a :href="CONTACT.TELEGRAM" target="_blank" rel="noopener noreferrer" class="flex items-center justify-center w-11 h-11 rounded-xl bg-teal/15 text-muted-pale hover:bg-teal/25 hover:text-teal transition-colors" aria-label="Telegram">
           <AppIcon name="telegram" class="w-5 h-5" />
         </a>
-        <NuxtLink to="/cv" class="flex items-center justify-center gap-2 w-11 h-11 sm:w-auto sm:px-4 rounded-xl bg-teal/15 text-muted-pale hover:bg-teal/25 hover:text-teal transition-colors text-sm font-medium shrink-0" aria-label="CV">
-          <AppIcon name="resume" class="w-5 h-5" />
-          <span class="hidden sm:inline">CV</span>
+        <NuxtLink to="/cv" class="flex items-center justify-center gap-2 h-11 px-4 rounded-xl bg-teal/15 text-muted-pale hover:bg-teal/25 hover:text-teal transition-colors text-sm font-medium shrink-0" aria-label="CV">
+          <AppIcon name="resume" class="w-5 h-5 shrink-0" />
+          <span>CV</span>
         </NuxtLink>
       </div>
     </div>

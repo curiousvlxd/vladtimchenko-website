@@ -123,4 +123,8 @@ useHead({
     { name: 'twitter:description', content: 'Notes and articles on software engineering, cloud-native .NET, and building production systems.' }
   ]
 })
+
+onMounted(() => {
+  if (import.meta.client) window.scrollTo(0, 0)
+})
 </script>

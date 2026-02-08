@@ -62,7 +62,7 @@ if (!page.value) {
 }
 
 const pageTitle = computed(() => `${page.value?.title ?? 'Post'} · Vlad Timchenko`)
-const pageDescription = computed(() => (page.value?.description as string) ?? '')
+const pageDescription = computed(() => (page.value?.description ?? (page.value as { excerpt?: string })?.excerpt) ?? '')
 
 useHead({
   title: pageTitle,

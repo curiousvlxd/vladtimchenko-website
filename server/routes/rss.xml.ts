@@ -2,7 +2,7 @@ export default defineEventHandler(async (event) => {
   setHeader(event, 'Content-Type', 'application/rss+xml; charset=utf-8')
   setHeader(event, 'Cache-Control', 'public, max-age=3600')
   const config = useRuntimeConfig(event)
-  const base = config.public?.siteUrl || 'https://vladtimchenko.dev'
+  const base = (config.public?.siteUrl || 'https://vladtimchenko.dev').replace(/\/+$/, '')
   let items = ''
   try {
     const posts = await queryContent('/feed').sort({ date: -1 }).limit(50).find()

@@ -4,8 +4,8 @@
       <BrandingHeroBannerCard class="mb-8 sm:mb-10" />
 
       <section
-        :id="tabs[0]?.id || 'about'"
-        :data-section="tabs[0]?.id || 'about'"
+        id="about"
+        data-section="about"
         class="card-gradient-animated rounded-2xl border border-teal/20 bg-[rgba(24,183,164,0.05)] p-6 sm:p-8 mb-8 scroll-mt-24 sm:scroll-mt-28"
       >
         <h2
@@ -25,12 +25,12 @@
       </section>
 
       <section
-        :data-section="tabs[1]?.id || 'experience'"
-        class="mb-12"
+        id="experience"
+        data-section="experience"
+        class="mb-12 scroll-mt-24 sm:scroll-mt-28"
       >
         <h2
-          :id="tabs[1]?.id || 'experience'"
-          class="font-display text-2xl font-semibold text-muted-pale mb-3 scroll-mt-24 sm:scroll-mt-28"
+          class="font-display text-2xl font-semibold text-muted-pale mb-3"
         >
           {{ home?.experience?.title ?? 'Experience' }}
         </h2>
@@ -53,12 +53,12 @@
       </section>
 
       <section
-        :data-section="tabs[2]?.id || 'volunteering'"
-        class="mb-12"
+        id="volunteering"
+        data-section="volunteering"
+        class="mb-12 scroll-mt-24 sm:scroll-mt-28"
       >
         <h2
-          :id="tabs[2]?.id || 'volunteering'"
-          class="font-display text-2xl font-semibold text-muted-pale mb-6 scroll-mt-24 sm:scroll-mt-28"
+          class="font-display text-2xl font-semibold text-muted-pale mb-6"
         >
           {{ home?.volunteering?.title ?? 'Volunteering' }}
         </h2>
@@ -72,12 +72,12 @@
       </section>
 
       <section
-        :data-section="tabs[3]?.id || 'education'"
-        class="mb-12"
+        id="education"
+        data-section="education"
+        class="mb-12 scroll-mt-24 sm:scroll-mt-28"
       >
         <h2
-          :id="tabs[3]?.id || 'education'"
-          class="font-display text-2xl font-semibold text-muted-pale mb-6 scroll-mt-24 sm:scroll-mt-28"
+          class="font-display text-2xl font-semibold text-muted-pale mb-6"
         >
           {{ home?.education?.title ?? 'Education' }}
         </h2>
@@ -114,10 +114,13 @@
         </div>
       </section>
 
-      <section :data-section="tabs[4]?.id || 'projects'">
+      <section
+        id="projects"
+        data-section="projects"
+        class="scroll-mt-24 sm:scroll-mt-28"
+      >
         <h2
-          :id="tabs[4]?.id || 'projects'"
-          class="font-display text-2xl font-semibold text-muted-pale mb-2 scroll-mt-24 sm:scroll-mt-28"
+          class="font-display text-2xl font-semibold text-muted-pale mb-2"
         >
           {{ home?.projects?.title ?? 'Projects' }}
         </h2>
@@ -144,6 +147,7 @@
     <LayoutSectionNavSidebar
       :sections="tabs"
       :active-section="activeSection"
+      :first-section-id="firstTabId"
       @scroll-to="scrollToSection"
     />
 
@@ -159,6 +163,7 @@
           layout="horizontal"
           :sections="tabs"
           :active-section="activeSection"
+          :first-section-id="firstTabId"
           @scroll-to="scrollToSection"
         />
       </div>
@@ -213,12 +218,28 @@ const scrollTargetId = ref<string | null>(null)
 function scrollToSection(id: string) {
   activeSection.value = id
   scrollTargetId.value = id
+  const path = typeof window !== 'undefined' ? window.location.pathname : '/'
   if (id === firstTabId.value) {
-    window.scrollTo(0, 0)
+    if (typeof history !== 'undefined') history.pushState(null, '', path)
+    window.scrollTo({ top: 0, behavior: 'smooth' })
   } else {
+    if (typeof history !== 'undefined') history.pushState(null, '', `${path}#${id}`)
     document.getElementById(id)?.scrollIntoView({ behavior: 'smooth', block: 'start' })
   }
   setTimeout(() => { scrollTargetId.value = null }, 1200)
+}
+
+function syncFromHash() {
+  if (typeof window === 'undefined') return
+  const hash = window.location.hash.slice(1)
+  const validIds = new Set(tabs.value.map((t) => t.id))
+  if (hash && validIds.has(hash)) {
+    activeSection.value = hash
+    nextTick(() => document.getElementById(hash)?.scrollIntoView({ behavior: 'auto', block: 'start' }))
+  } else {
+    activeSection.value = firstTabId.value
+    window.scrollTo(0, 0)
+  }
 }
 
 const viewportTopOffset = 140
@@ -230,6 +251,7 @@ function updateActiveSection() {
     const nearBottom = window.scrollY + window.innerHeight >= document.documentElement.scrollHeight - 80
     if (nearBottom) {
       activeSection.value = lastTab.id
+      history.replaceState(null, '', window.location.pathname + '#' + lastTab.id)
       return
     }
   }
@@ -243,12 +265,26 @@ function updateActiveSection() {
     if (top <= viewportTopOffset) activeId = id
   }
   activeSection.value = activeId
+  if (import.meta.client && typeof window !== 'undefined') {
+    const path = window.location.pathname
+    const newUrl = path + (activeId === firstTabId.value ? '' : '#' + activeId)
+    if (window.location.pathname + window.location.hash !== newUrl) {
+      history.replaceState(null, '', newUrl)
+    }
+  }
 }
 
 let observer: IntersectionObserver | null = null
+function onPopState() {
+  syncFromHash()
+}
 onMounted(() => {
-  activeSection.value = firstTabId.value
-  window.scrollTo(0, 0)
+  if (import.meta.client && typeof window !== 'undefined') {
+    syncFromHash()
+    window.addEventListener('popstate', onPopState)
+  } else {
+    activeSection.value = firstTabId.value
+  }
   observer = new IntersectionObserver(
     (entries) => {
       if (scrollTargetId.value) {
@@ -276,7 +312,10 @@ onMounted(() => {
 })
 onUnmounted(() => {
   observer?.disconnect()
-  if (import.meta.client) window.removeEventListener('scroll', updateActiveSection)
+  if (import.meta.client) {
+    window.removeEventListener('scroll', updateActiveSection)
+    window.removeEventListener('popstate', onPopState)
+  }
 })
 
 const { data: repos, pending } = useFetch<import('../types/repos').RepoMeta[]>('/api/repos', { key: 'repos' })

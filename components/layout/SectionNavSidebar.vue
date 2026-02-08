@@ -8,6 +8,7 @@
       <LayoutSectionNavTabs
         :sections="sections"
         :active-section="activeSection"
+        :first-section-id="firstSectionId"
         @scroll-to="$emit('scroll-to', $event)"
       />
     </div>
@@ -18,6 +19,7 @@
 defineProps<{
   sections: { id: string; label: string }[]
   activeSection: string
+  firstSectionId?: string
 }>()
 
 defineEmits<{
