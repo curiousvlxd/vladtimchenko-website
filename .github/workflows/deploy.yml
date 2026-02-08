@@ -12,13 +12,10 @@ concurrency:
 permissions:
   contents: write
 
-env:
-  CF_PAGES_PROJECT: ${{ vars.CF_PAGES_PROJECT }}
-  SITE_URL: ${{ vars.SITE_URL }}
-
 jobs:
   deploy:
     runs-on: ubuntu-latest
+    environment: Production
 
     steps:
       - name: Checkout
@@ -40,19 +37,36 @@ jobs:
         uses: cloudflare/wrangler-action@v3
         with:
           apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
-          accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
-          command: pages deploy dist --project-name=${{ env.CF_PAGES_PROJECT }} --branch=main
+          accountId: ${{ vars.CLOUDFLARE_ACCOUNT_ID }}
+          command: pages deploy dist --project-name=${{ vars.CF_PAGES_PROJECT }} --branch=main
+
+      - name: Detect screenshot-relevant changes
+        id: changes
+        uses: dorny/paths-filter@v3
+        with:
+          filters: |
+            screenshots:
+              - src/**
+              - public/**
+              - nuxt.config.*
+              - tsconfig.json
+              - package.json
+              - package-lock.json
+              - tailwind.config.ts
 
       - name: Install Playwright browsers
+        if: steps.changes.outputs.screenshots == 'true'
         run: npx playwright install chromium --with-deps
 
       - name: Capture docs screenshots
+        if: steps.changes.outputs.screenshots == 'true'
         env:
-          BASE_URL: ${{ env.SITE_URL }}
+          BASE_URL: ${{ vars.SITE_URL }}
           SCREENSHOTS_DIR: screenshots
         run: node scripts/documentation/capture-docs.mjs
 
       - name: Publish screenshots to assets branch
+        if: steps.changes.outputs.screenshots == 'true'
         uses: peaceiris/actions-gh-pages@v4
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
