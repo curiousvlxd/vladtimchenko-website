@@ -37,7 +37,8 @@ export default defineNuxtConfig({
       meta: [
         { charset: 'utf-8' },
         { name: 'viewport', content: 'width=device-width, initial-scale=1' },
-        { name: 'description', content: 'Software Engineer • Cloud-native .NET' }
+        { name: 'description', content: 'Vlad Timchenko • Software Engineer • Cloud-native .NET' },
+        { name: 'keywords', content: 'Vlad Timchenko, Vladyslav Timchenko, Software Engineer, .NET, backend' }
       ],
       link: [
         { rel: 'icon', href: '/favicon.ico' },

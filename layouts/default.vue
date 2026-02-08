@@ -23,13 +23,13 @@ useHead({
   meta: [
     { property: 'og:url', content: canonicalUrl },
     { property: 'og:title', content: 'Vlad Timchenko · Software Engineer' },
-    { property: 'og:description', content: 'Software Engineer • Cloud-native .NET' },
+    { property: 'og:description', content: 'Vlad Timchenko • Software Engineer • Cloud-native .NET' },
     { property: 'og:image', content: `${siteUrl}/me.jpg` },
     { property: 'og:site_name', content: 'Vlad Timchenko' },
     { property: 'og:type', content: 'website' },
     { name: 'twitter:card', content: 'summary_large_image' },
     { name: 'twitter:title', content: 'Vlad Timchenko · Software Engineer' },
-    { name: 'twitter:description', content: 'Software Engineer • Cloud-native .NET' },
+    { name: 'twitter:description', content: 'Vlad Timchenko • Software Engineer • Cloud-native .NET' },
     { name: 'twitter:image', content: `${siteUrl}/me.jpg` }
   ]
 })

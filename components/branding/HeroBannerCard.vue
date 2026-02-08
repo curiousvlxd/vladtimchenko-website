@@ -48,7 +48,7 @@
 import homeData from '../../data/content/home.json'
 import { ASSETS, CONTACT, HEADLINE } from '~/constants'
 
-const home = homeData as { name?: string; title?: string }
+const home = homeData as { name?: string }
 const motionFade = {
   initial: { opacity: 0, y: 12 },
   enter: { opacity: 1, y: 0 },
