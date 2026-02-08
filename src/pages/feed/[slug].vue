@@ -31,8 +31,9 @@
       </header>
       <ContentRenderer v-if="page.body" :value="page" tag="div" class="content-body" />
     </article>
-    <section v-if="page" class="mt-12 pt-8 border-t border-teal/20">
-      <div id="giscus" class="min-h-[200px]" />
+    <section v-if="page && giscusEnabled" class="mt-12 pt-8 border-t border-teal/20">
+      <h2 class="font-display text-xl font-semibold text-muted-pale mb-4">Comments</h2>
+      <div id="giscus" class="min-h-[200px] rounded-2xl border border-teal/20 bg-bg-card/50 overflow-hidden" />
     </section>
   </div>
 </template>
@@ -77,8 +78,10 @@ useHead({
 })
 
 const config = useRuntimeConfig().public
+const giscusEnabled = computed(() => Boolean(config.giscusRepo && config.giscusRepoId))
+
 onMounted(() => {
-  if (typeof window === 'undefined' || !config.giscusRepo) return
+  if (typeof window === 'undefined' || !giscusEnabled.value) return
   const s = document.createElement('script')
   s.src = 'https://giscus.app/client.js'
   s.setAttribute('data-repo', config.giscusRepo)
@@ -90,8 +93,9 @@ onMounted(() => {
   s.setAttribute('data-reactions-enabled', '1')
   s.setAttribute('data-emit-metadata', '0')
   s.setAttribute('data-input-position', 'bottom')
-  s.setAttribute('data-theme', 'dark')
+  s.setAttribute('data-theme', `${config.siteUrl}${config.giscusThemePath || '/giscus-theme.css'}`)
   s.setAttribute('data-lang', 'en')
+  s.setAttribute('data-loading', 'lazy')
   s.setAttribute('crossorigin', 'anonymous')
   s.async = true
   document.getElementById('giscus')?.appendChild(s)

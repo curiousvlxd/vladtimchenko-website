@@ -29,13 +29,15 @@
         class="card-gradient-animated rounded-2xl border border-teal/20 bg-[rgba(24,183,164,0.05)] p-6 hover:border-teal/30 transition-colors overflow-hidden"
         v-motion="motionItem"
       >
-        <NuxtLink :to="post._path" class="block group">
-          <h2 class="font-display text-xl font-semibold text-muted-pale group-hover:text-teal transition-colors">
-            {{ post.title }}
-          </h2>
-          <p v-if="post.description" class="mt-2 text-sm text-muted-light line-clamp-2">
-            {{ post.description }}
-          </p>
+        <div class="block group">
+          <NuxtLink :to="post._path" class="block">
+            <h2 class="font-display text-xl font-semibold text-muted-pale group-hover:text-teal transition-colors">
+              {{ post.title }}
+            </h2>
+            <p v-if="post.description" class="mt-2 text-sm text-muted-light line-clamp-2">
+              {{ post.description }}
+            </p>
+          </NuxtLink>
           <div class="mt-3 flex flex-wrap items-center gap-3 text-xs text-muted">
             <time :datetime="post.date">{{ formatBlogDate(post.date) }}</time>
             <span v-if="post.readingTime">· {{ post.readingTime.text }}</span>
@@ -45,13 +47,12 @@
                 :key="tag"
                 :to="`/feed?tag=${encodeURIComponent(tag)}`"
                 class="px-1.5 py-0.5 rounded bg-teal/15 text-teal-light hover:bg-teal/25 transition-colors"
-                @click.stop
               >
                 {{ tag }}
               </NuxtLink>
             </span>
           </div>
-        </NuxtLink>
+        </div>
       </li>
     </ul>
     <p v-if="posts.length === 0" class="text-muted-light">

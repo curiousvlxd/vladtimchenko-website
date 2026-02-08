@@ -67,7 +67,7 @@
                   aria-hidden="true"
                 >
                   <img
-                    src="/logo.svg"
+                    :src="logoSrc"
                     alt=""
                     width="80"
                     height="80"
@@ -101,6 +101,8 @@ const props = defineProps<{
   pdfUrl: string
   title?: string
 }>()
+import { ASSETS } from '~/constants'
+const logoSrc = ASSETS.LOGO
 
 const emit = defineEmits<{ 'update:modelValue': [value: boolean] }>()
 

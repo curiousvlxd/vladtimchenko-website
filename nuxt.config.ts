@@ -1,7 +1,15 @@
 import { resolve } from 'node:path'
+import { PUBLIC_ASSETS } from './src/constants/public-assets'
+
+const DEFAULT_GITHUB_SITE_REPO = 'curiousvlxd/vladtimchenko-website'
 
 export default defineNuxtConfig({
   compatibilityDate: '2025-02-07',
+  srcDir: 'src/',
+  dir: {
+    // public остаётся в корне проекта, а не в src/public
+    public: resolve(process.cwd(), 'public')
+  },
   devtools: { enabled: true },
   modules: ['@nuxt/content', '@nuxtjs/tailwindcss', '@vueuse/motion/nuxt'],
 
@@ -20,7 +28,7 @@ export default defineNuxtConfig({
       feed: {
         driver: 'fs',
         prefix: '/feed',
-        base: resolve(process.cwd(), 'data/feed')
+        base: resolve(process.cwd(), 'src/data/feed')
       }
     },
     highlight: {
@@ -40,24 +48,22 @@ export default defineNuxtConfig({
         { name: 'description', content: 'Vlad Timchenko • Software Engineer • Cloud-native .NET' },
         { name: 'keywords', content: 'Vlad Timchenko, Vladyslav Timchenko, Software Engineer, .NET, backend' },
         { name: 'msapplication-TileColor', content: '#05090E' },
-        { name: 'msapplication-TileImage', content: '/mstile-150x150.png' },
+        { name: 'msapplication-TileImage', content: PUBLIC_ASSETS.MSTILE },
         { name: 'theme-color', content: '#05090E' }
       ],
       link: [
-        { rel: 'icon', href: '/favicon.ico', sizes: 'any' },
-        { rel: 'icon', type: 'image/svg+xml', href: '/logo.svg' },
-        { rel: 'icon', type: 'image/png', href: '/favicon-32x32.png', sizes: '32x32' },
-        { rel: 'icon', type: 'image/png', href: '/favicon-16x16.png', sizes: '16x16' },
-        { rel: 'apple-touch-icon', href: '/apple-touch-icon.png', sizes: '180x180' },
-        { rel: 'manifest', href: '/site.webmanifest' },
-        { rel: 'mask-icon', href: '/safari-pinned-tab.svg', color: '#18B7A4' },
+        { rel: 'icon', href: PUBLIC_ASSETS.FAVICON, sizes: 'any' },
+        { rel: 'icon', type: 'image/svg+xml', href: PUBLIC_ASSETS.LOGO },
+        { rel: 'icon', type: 'image/png', href: PUBLIC_ASSETS.FAVICON_32, sizes: '32x32' },
+        { rel: 'icon', type: 'image/png', href: PUBLIC_ASSETS.FAVICON_16, sizes: '16x16' },
+        { rel: 'apple-touch-icon', href: PUBLIC_ASSETS.APPLE_TOUCH, sizes: '180x180' },
+        { rel: 'manifest', href: PUBLIC_ASSETS.MANIFEST },
+        { rel: 'mask-icon', href: PUBLIC_ASSETS.MASK_ICON, color: '#18B7A4' },
         { rel: 'alternate', type: 'application/rss+xml', title: 'RSS Feed', href: '/rss.xml' },
         { rel: 'prefetch', href: '/feed' },
         { rel: 'preconnect', href: 'https://fonts.googleapis.com' },
         { rel: 'preconnect', href: 'https://fonts.gstatic.com', crossorigin: '' },
         { rel: 'stylesheet', href: 'https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&family=Space+Grotesk:wght@400;500;600;700&display=swap' },
-        { rel: 'preload', href: '/logo.svg', as: 'image' },
-        { rel: 'preload', href: '/me.jpg', as: 'image' }
       ]
     },
     pageTransition: { name: 'page', mode: 'out-in' }
@@ -66,12 +72,17 @@ export default defineNuxtConfig({
   css: ['~/assets/css/main.css'],
 
   runtimeConfig: {
+    server: {
+      githubSiteRepo: process.env.GITHUB_SITE_REPO ?? DEFAULT_GITHUB_SITE_REPO
+    },
     public: {
       siteUrl: process.env.NUXT_PUBLIC_SITE_URL || 'https://vladtimchenko.dev',
-      giscusRepo: '',
-      giscusRepoId: '',
-      giscusCategory: '',
-      giscusCategoryId: ''
+      siteRepoUrl: `https://github.com/${process.env.GITHUB_SITE_REPO ?? DEFAULT_GITHUB_SITE_REPO}`,
+      giscusRepo: process.env.GISCUS_REPO ?? 'curiousvlxd/vladtimchenko-website',
+      giscusRepoId: process.env.GISCUS_REPO_ID ?? 'R_kgDORK_eZw',
+      giscusCategory: process.env.GISCUS_CATEGORY ?? 'Announcements',
+      giscusCategoryId: process.env.GISCUS_CATEGORY_ID ?? 'DIC_kwDORK_eZ84C2ECR',
+      giscusThemePath: process.env.GISCUS_THEME_PATH ?? PUBLIC_ASSETS.GISCUS_THEME
     }
   }
 })

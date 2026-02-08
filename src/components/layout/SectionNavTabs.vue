@@ -26,7 +26,7 @@
             :aria-current="activeSection === tab.id ? 'true' : undefined"
             @click.prevent="$emit('scroll-to', tab.id)"
           >
-            {{ tab.label }}
+            <span class="section-tab--row__label">{{ tab.label }}</span>
           </NuxtLink>
         </nav>
       </div>
@@ -226,18 +226,26 @@ const scaleFillWidth = computed(() => {
 .section-tab--row {
   flex: 1 1 0;
   min-width: 0;
-  text-align: center;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   padding: 0.2rem 0.125rem;
-  font-size: 0.5rem;
+  overflow: hidden;
+}
+.section-tab--row__label {
+  font-size: clamp(0.5rem, min(0.8rem, 2.2vw), 0.8rem);
   line-height: 1.2;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
+  min-width: 0;
+  max-width: 100%;
+  text-align: center;
+  display: block;
 }
 @media (min-width: 400px) {
   .section-tab--row {
     padding: 0.25rem 0.25rem;
-    font-size: 0.5625rem;
   }
 }
 .scale-row-h {

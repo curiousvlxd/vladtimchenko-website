@@ -157,7 +157,7 @@
       :title="diplomaModalTitle"
     />
 
-    <footer class="fixed bottom-0 left-0 right-0 z-40 lg:hidden border-t border-teal/10 bg-bg-card flex flex-col">
+    <footer class="fixed bottom-0 left-0 right-0 z-40 lg:hidden border-t border-white/5 bg-bg/40 backdrop-blur-xl flex flex-col">
       <div class="mx-auto w-full max-w-6xl px-2 pt-2">
         <LayoutSectionNavTabs
           layout="horizontal"
@@ -167,9 +167,23 @@
           @scroll-to="scrollToSection"
         />
       </div>
-      <p class="text-center text-sm text-muted py-3 pb-[max(0.75rem,env(safe-area-inset-bottom))]">
-        © {{ new Date().getFullYear() }} {{ home?.name ?? 'Vlad Timchenko' }}
-      </p>
+      <div class="mt-2.5 pt-2 border-t border-white/[0.06] px-2 pb-[max(0.5rem,env(safe-area-inset-bottom))]">
+        <p class="text-center text-sm text-muted flex flex-wrap items-center justify-center gap-x-2 gap-y-1 py-0.5">
+          <span>© {{ new Date().getFullYear() }} {{ home?.name ?? 'Vlad Timchenko' }}</span>
+          <span aria-hidden="true" class="text-muted/60">·</span>
+          <a
+            :href="siteRepo?.url || siteRepoUrl"
+            target="_blank"
+            rel="noopener noreferrer"
+            class="inline-flex items-center gap-1.5 text-muted-light hover:text-teal transition-colors"
+          >
+            <span aria-hidden="true">★</span>
+            <span v-if="siteRepo && siteRepo.stars >= 0">{{ siteRepo.stars }}</span>
+            <span v-if="siteRepo">·</span>
+            <span>View source on GitHub</span>
+          </a>
+        </p>
+      </div>
     </footer>
   </div>
 </template>
@@ -258,11 +272,16 @@ function updateActiveSection() {
   const sectionEls = document.querySelectorAll<HTMLElement>('[data-section]')
   const tabIds = new Set(tabs.value.map((t) => t.id))
   let activeId = firstTabId.value
+  let bestDistance = Infinity
   for (const el of sectionEls) {
     const id = el.getAttribute('data-section')
     if (!id || !tabIds.has(id)) continue
     const top = el.getBoundingClientRect().top
-    if (top <= viewportTopOffset) activeId = id
+    const distance = Math.abs(top - viewportTopOffset)
+    if (distance < bestDistance) {
+      bestDistance = distance
+      activeId = id
+    }
   }
   activeSection.value = activeId
   if (import.meta.client && typeof window !== 'undefined') {
@@ -320,6 +339,8 @@ onUnmounted(() => {
 
 const { data: repos, pending } = useFetch<import('../types/repos').RepoMeta[]>('/api/repos', { key: 'repos' })
 const reposList = computed(() => (Array.isArray(repos.value) ? repos.value : []))
+const { public: { siteRepoUrl } } = useRuntimeConfig()
+const { data: siteRepo } = await useFetch<{ stars: number; url: string }>('/api/site-repo', { key: 'site-repo' })
 </script>
 
 <style>

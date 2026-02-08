@@ -1,7 +1,9 @@
+import { PUBLIC_ASSETS } from './public-assets'
+
 export const ASSETS = {
-  LOGO: '/logo.svg',
-  LOGO_WHITE: '/logo.svg',
-  PHOTO: '/me.jpg'
+  LOGO: PUBLIC_ASSETS.LOGO,
+  LOGO_WHITE: PUBLIC_ASSETS.LOGO,
+  PHOTO: PUBLIC_ASSETS.PHOTO
 } as const
 
 export const HEADLINE = 'Software Engineer • Cloud-native .NET' as const

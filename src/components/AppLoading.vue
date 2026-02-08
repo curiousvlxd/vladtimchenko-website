@@ -6,7 +6,7 @@
       aria-hidden="!loading"
     >
       <img
-        src="/logo.svg"
+        :src="logoSrc"
         alt=""
         width="120"
         height="120"
@@ -23,6 +23,8 @@
 
 <script setup lang="ts">
 const loading = useState('app-loading', () => true)
+import { ASSETS } from '~/constants'
+const logoSrc = ASSETS.LOGO
 
 onMounted(() => {
   const hide = () => { loading.value = false }
