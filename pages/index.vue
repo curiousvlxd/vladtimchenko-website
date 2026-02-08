@@ -30,13 +30,19 @@
       >
         <h2
           :id="tabs[1]?.id || 'experience'"
-          class="font-display text-2xl font-semibold text-muted-pale mb-2 scroll-mt-24 sm:scroll-mt-28"
+          class="font-display text-2xl font-semibold text-muted-pale mb-3 scroll-mt-24 sm:scroll-mt-28"
         >
           {{ home?.experience?.title ?? 'Experience' }}
         </h2>
-        <p class="text-muted-light text-sm mb-6">
-          {{ home?.experience?.commercialLabel ?? 'Commercial experience' }}
-        </p>
+        <div class="flex flex-wrap items-center gap-3 mb-6">
+          <div class="inline-flex flex-col rounded-2xl border border-teal/30 bg-gradient-to-br from-teal/15 to-teal/5 px-6 py-4 shadow-[0_0_0_1px_rgba(24,183,164,0.08),0_4px_12px_-2px_rgba(0,0,0,0.2)]">
+            <span class="font-display text-lg font-semibold tracking-tight text-teal">{{ getTotalExperienceDisplay() }}</span>
+          </div>
+          <div class="inline-flex flex-col rounded-2xl border border-teal/30 bg-gradient-to-br from-teal/15 to-teal/5 px-6 py-4 shadow-[0_0_0_1px_rgba(24,183,164,0.08),0_4px_12px_-2px_rgba(0,0,0,0.2)]">
+            <span class="text-xs font-medium uppercase tracking-wider text-teal mb-0.5">Domains</span>
+            <span class="text-sm text-muted-light">{{ EXPERIENCE_DOMAINS.join(', ') }}</span>
+          </div>
+        </div>
         <div class="flex flex-col gap-6">
           <SectionsExperienceCard
             v-for="entry in experienceEntries"
@@ -166,7 +172,7 @@
 <script setup lang="ts">
 import homeData from '../data/content/home.json'
 import { educationEntries, type EducationEntry } from '../data/education'
-import { experienceEntries } from '../data/experience'
+import { experienceEntries, EXPERIENCE_DOMAINS, getTotalExperienceDisplay } from '../data/experience'
 import { volunteeringEntries } from '../data/volunteering'
 
 const home = homeData as {

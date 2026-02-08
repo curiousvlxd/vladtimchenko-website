@@ -1,4 +1,4 @@
-export type IconName = 'github' | 'linkedin' | 'telegram' | 'menu' | 'email' | 'back' | 'resume' | 'download'
+export type IconName = 'github' | 'linkedin' | 'telegram' | 'menu' | 'email' | 'back' | 'resume' | 'download' | 'streak'
 
 const ICONS: Record<IconName, { content: string; stroke?: boolean }> = {
   github: {
@@ -29,6 +29,10 @@ const ICONS: Record<IconName, { content: string; stroke?: boolean }> = {
   download: {
     stroke: true,
     content: '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 16.5v2.25A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75V16.5m-13.5-9L12 3m0 0l4.5 4.5M12 3v13.5"/>'
+  },
+  streak: {
+    stroke: true,
+    content: '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.5 14.5A2.5 2.5 0 0011 12c0-1.38-.5-2-1-3-1.08-2.08-.7-3.96.24-5.24.94-1.29 2.31-2.25 4.26-2.25 1.95 0 3.32.96 4.26 2.25.94 1.28 1.02 3.16.24 5.24-.5 1-.5 1.62-1 3a2.5 2.5 0 002.5 2.5z"/>'
   }
 }
 
