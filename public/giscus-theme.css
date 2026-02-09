@@ -1,5 +1,5 @@
-/*! Giscus theme – vladtimchenko.dev design system (MIT) */
-
+:root,
+html,
 main {
   --color-prettylights-syntax-comment: #6C8087;
   --color-prettylights-syntax-constant: #3FE0C6;

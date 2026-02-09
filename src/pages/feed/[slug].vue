@@ -82,6 +82,10 @@ const giscusEnabled = computed(() => Boolean(config.giscusRepo && config.giscusR
 
 onMounted(() => {
   if (typeof window === 'undefined' || !giscusEnabled.value) return
+  const container = document.getElementById('giscus')
+  if (!container) return
+  if (document.querySelector('script[src*="giscus.app/client.js"]')) return
+  const themeUrl = new URL(config.giscusThemePath || '/giscus-theme.css', window.location.origin).toString()
   const s = document.createElement('script')
   s.src = 'https://giscus.app/client.js'
   s.setAttribute('data-repo', config.giscusRepo)
@@ -92,12 +96,12 @@ onMounted(() => {
   s.setAttribute('data-strict', '0')
   s.setAttribute('data-reactions-enabled', '1')
   s.setAttribute('data-emit-metadata', '0')
-  s.setAttribute('data-input-position', 'bottom')
-  s.setAttribute('data-theme', `${config.siteUrl}${config.giscusThemePath || '/giscus-theme.css'}`)
+  s.setAttribute('data-input-position', 'top')
+  s.setAttribute('data-theme', themeUrl)
   s.setAttribute('data-lang', 'en')
   s.setAttribute('data-loading', 'lazy')
   s.setAttribute('crossorigin', 'anonymous')
   s.async = true
-  document.getElementById('giscus')?.appendChild(s)
+  container.appendChild(s)
 })
 </script>

@@ -7,7 +7,6 @@ export default defineNuxtConfig({
   compatibilityDate: '2025-02-07',
   srcDir: 'src/',
   dir: {
-    // public остаётся в корне проекта, а не в src/public
     public: resolve(process.cwd(), 'public')
   },
   devtools: { enabled: true },
