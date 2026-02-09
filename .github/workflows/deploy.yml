@@ -72,4 +72,5 @@ jobs:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           publish_branch: assets
           publish_dir: screenshots
+          commit_message: "chore: update screenshots (${{ github.sha }})"
           force_orphan: true
