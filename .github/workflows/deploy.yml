@@ -65,12 +65,20 @@ jobs:
           SCREENSHOTS_DIR: screenshots
         run: node scripts/documentation/capture-docs.mjs
 
+      - name: Capture docs screenshots
+        if: steps.changes.outputs.screenshots == 'true'
+        env:
+          BASE_URL: ${{ vars.SITE_URL }}
+          SCREENSHOTS_DIR: dist/screenshots
+        run: node scripts/documentation/capture-docs.mjs
+      
       - name: Publish screenshots to assets branch
         if: steps.changes.outputs.screenshots == 'true'
         uses: peaceiris/actions-gh-pages@v4
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           publish_branch: assets
-          publish_dir: screenshots
+          publish_dir: dist
           commit_message: "chore: update screenshots (${{ github.sha }})"
           force_orphan: true
+
