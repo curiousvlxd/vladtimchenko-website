@@ -72,61 +72,53 @@ Optional:
 
 ---
 
-## Screenshots
+## Showcase
 
 Generated automatically by scripts/documentation/capture-docs.mjs and published to the assets branch.  
 Used as a visual showcase of layout, content structure, and integrations.
 
 ### About
-Hero section and intro block.
 
 ![About](https://raw.githubusercontent.com/curiousvlxd/vladtimchenko-website/assets/screenshots/1-home-about-section.png)
 
 ---
 
 ### CV
-Full CV page layout.
 
 ![CV](https://raw.githubusercontent.com/curiousvlxd/vladtimchenko-website/assets/screenshots/2-home-cv.png)
 
 ---
 
 ### Experience
-Professional experience section.
 
 ![Experience](https://raw.githubusercontent.com/curiousvlxd/vladtimchenko-website/assets/screenshots/3-home-experience-section.png)
 
 ---
 
 ### Volunteering
-Volunteering and community involvement.
 
 ![Volunteering](https://raw.githubusercontent.com/curiousvlxd/vladtimchenko-website/assets/screenshots/4-home-volunteering-section.png)
 
 ---
 
 ### Education
-Education background section.
 
 ![Education](https://raw.githubusercontent.com/curiousvlxd/vladtimchenko-website/assets/screenshots/5-home-education-section.png)
 
 ---
 
 ### Projects
-Featured projects and external links.
 
 ![Projects](https://raw.githubusercontent.com/curiousvlxd/vladtimchenko-website/assets/screenshots/6-home-projects-section.png)
 
 ---
 
 ### Feed
-Blog feed index.
 
 ![Feed](https://raw.githubusercontent.com/curiousvlxd/vladtimchenko-website/assets/screenshots/7-feed-list.png)
 
 ---
 
 ### Article
-Blog post with content and comments.
 
 ![Article](https://raw.githubusercontent.com/curiousvlxd/vladtimchenko-website/assets/screenshots/8-feed-first-article.png)
