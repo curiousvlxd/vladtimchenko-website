@@ -33,7 +33,7 @@
     </article>
     <section v-if="page && giscusEnabled" class="mt-12 pt-8 border-t border-teal/20">
       <h2 class="font-display text-xl font-semibold text-muted-pale mb-4">Comments</h2>
-      <div id="giscus" class="min-h-[200px] rounded-2xl border border-teal/20 bg-bg-card/50 overflow-hidden" />
+      <div id="giscus" class="giscus min-h-[200px] rounded-2xl border border-teal/20 bg-bg-card/50 overflow-hidden" />
     </section>
   </div>
 </template>
