@@ -85,6 +85,14 @@ main {
   --color-social-reaction-bg-reacted-hover: var(--color-scale-blue-8);
 }
 
+main {
+  padding: 1.25rem 1.5rem;
+}
+
+main > * + * {
+  margin-top: 1.25rem;
+}
+
 main .pagination-loader-container {
   background-image: url("https://github.com/images/modules/pulls/progressive-disclosure-line-dark.svg");
 }

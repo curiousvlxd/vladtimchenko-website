@@ -80,28 +80,64 @@ useHead({
 const config = useRuntimeConfig().public
 const giscusEnabled = computed(() => Boolean(config.giscusRepo && config.giscusRepoId))
 
+function sendGiscusConfig(): boolean {
+  const iframe = document.querySelector<HTMLIFrameElement>('iframe.giscus-frame')
+  if (!iframe?.contentWindow) return false
+  const themeUrl = new URL(config.giscusThemePath || '/giscus-theme.css', window.location.origin).toString()
+  iframe.contentWindow.postMessage(
+    { giscus: { setConfig: { theme: themeUrl } } },
+    'https://giscus.app'
+  )
+  return true
+}
+
+function ensureSingleGiscusFrame() {
+  const n = document.querySelectorAll('iframe.giscus-frame').length
+  if (n !== 1 && import.meta.dev) {
+    console.warn('[giscus] iframe.giscus-frame count:', n, '(expected 1)')
+  }
+}
+
 onMounted(() => {
   if (typeof window === 'undefined' || !giscusEnabled.value) return
   const container = document.getElementById('giscus')
   if (!container) return
-  if (document.querySelector('script[src*="giscus.app/client.js"]')) return
-  const themeUrl = new URL(config.giscusThemePath || '/giscus-theme.css', window.location.origin).toString()
-  const s = document.createElement('script')
-  s.src = 'https://giscus.app/client.js'
-  s.setAttribute('data-repo', config.giscusRepo)
-  s.setAttribute('data-repo-id', config.giscusRepoId)
-  s.setAttribute('data-category', config.giscusCategory)
-  s.setAttribute('data-category-id', config.giscusCategoryId)
-  s.setAttribute('data-mapping', 'pathname')
-  s.setAttribute('data-strict', '0')
-  s.setAttribute('data-reactions-enabled', '1')
-  s.setAttribute('data-emit-metadata', '0')
-  s.setAttribute('data-input-position', 'top')
-  s.setAttribute('data-theme', themeUrl)
-  s.setAttribute('data-lang', 'en')
-  s.setAttribute('data-loading', 'lazy')
-  s.setAttribute('crossorigin', 'anonymous')
-  s.async = true
-  container.appendChild(s)
+  const hasScript = !!document.querySelector('script[data-giscus-script="true"]')
+  if (!hasScript) {
+    const themeUrl = new URL(config.giscusThemePath || '/giscus-theme.css', window.location.origin).toString()
+    const s = document.createElement('script')
+    s.src = 'https://giscus.app/client.js'
+    s.setAttribute('data-giscus-script', 'true')
+    s.setAttribute('data-repo', config.giscusRepo)
+    s.setAttribute('data-repo-id', config.giscusRepoId)
+    s.setAttribute('data-category', config.giscusCategory)
+    s.setAttribute('data-category-id', config.giscusCategoryId)
+    s.setAttribute('data-mapping', 'pathname')
+    s.setAttribute('data-strict', '0')
+    s.setAttribute('data-reactions-enabled', '1')
+    s.setAttribute('data-emit-metadata', '0')
+    s.setAttribute('data-input-position', 'top')
+    s.setAttribute('data-theme', themeUrl)
+    s.setAttribute('data-lang', 'en')
+    s.setAttribute('data-loading', 'lazy')
+    s.setAttribute('crossorigin', 'anonymous')
+    s.async = true
+    document.head.appendChild(s)
+  }
+  setTimeout(ensureSingleGiscusFrame, 2500)
 })
+
+watch(
+  () => route.path,
+  async () => {
+    if (!giscusEnabled.value || !import.meta.client) return
+    await nextTick()
+    let tries = 0
+    const t = setInterval(() => {
+      tries++
+      if (sendGiscusConfig() || tries >= 10) clearInterval(t)
+    }, 200)
+  },
+  { immediate: false }
+)
 </script>
