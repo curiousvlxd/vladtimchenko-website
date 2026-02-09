@@ -1,7 +1,7 @@
 <template>
-  <div class="min-h-screen flex flex-col bg-bg overflow-x-hidden">
+  <div class="flex flex-col bg-bg overflow-x-hidden min-h-[100svh]">
     <LayoutHeader />
-    <main class="flex-1 pt-14 sm:pt-20" style="padding-bottom: calc(5rem + env(safe-area-inset-bottom, 0px));">
+    <main class="flex-1 pt-14 sm:pt-20" style="padding-bottom: 5rem;">
       <slot />
     </main>
     <LayoutFooter />

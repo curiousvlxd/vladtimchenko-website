@@ -36,7 +36,7 @@ function parseMonth(value: string): Date {
 
 export function formatPeriod(start: string, end: string | null): string {
   const s = parseMonth(start)
-  const startStr = s.toLocaleDateString(undefined, {
+  const startStr = s.toLocaleDateString('en-US', {
     month: 'short',
     year: 'numeric',
   })
@@ -44,7 +44,7 @@ export function formatPeriod(start: string, end: string | null): string {
   if (!end) return `${startStr} - Present`
 
   const e = parseMonth(end)
-  const endStr = e.toLocaleDateString(undefined, {
+  const endStr = e.toLocaleDateString('en-US', {
     month: 'short',
     year: 'numeric',
   })

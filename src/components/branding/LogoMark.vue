@@ -1,8 +1,8 @@
 <template>
   <a
     href="/"
-    class="logo-link inline-flex items-center focus:outline-none focus-visible:ring-2 focus-visible:ring-teal focus-visible:ring-offset-2 focus-visible:ring-offset-bg rounded-lg transition-opacity duration-200 hover:opacity-100 hover:brightness-125"
-    :class="size === 'large' ? 'shrink-0 w-16 sm:w-56 md:w-72' : 'min-w-0 max-w-[45vw] sm:max-w-none'"
+    class="logo-link inline-flex items-center justify-center focus:outline-none focus-visible:ring-2 focus-visible:ring-teal focus-visible:ring-offset-2 focus-visible:ring-offset-bg rounded-lg transition-opacity duration-200 hover:opacity-100 hover:brightness-125"
+    :class="size === 'large' ? 'shrink-0 p-1.5 sm:p-2' : 'min-w-0 max-w-[45vw] sm:max-w-none p-1'"
     :style="linkStyle"
     @click="onLogoClick"
   >

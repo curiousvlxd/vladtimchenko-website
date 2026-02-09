@@ -29,6 +29,7 @@ body {
   background-color: var(--bg);
   position: relative;
   min-height: 100vh;
+  min-height: 100svh;
 }
 
 body::before {

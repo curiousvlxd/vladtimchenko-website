@@ -20,7 +20,7 @@
     <div v-if="currentTag" class="mb-6 flex flex-wrap items-center gap-2">
       <span class="text-sm text-muted">Tag:</span>
       <span class="px-2 py-1 rounded bg-teal/20 text-teal text-sm font-medium">{{ currentTag }}</span>
-      <NuxtLink to="/feed" class="text-sm text-muted-light hover:text-teal transition-colors">× clear</NuxtLink>
+      <NuxtLink :to="clearTagLink" class="text-sm text-muted-light hover:text-teal transition-colors">× clear</NuxtLink>
     </div>
     <ul class="space-y-6">
       <li
@@ -30,7 +30,7 @@
         v-motion="motionItem"
       >
         <div class="block group">
-          <NuxtLink :to="post._path" class="block">
+          <NuxtLink :to="getPostLink(post._path)" class="block">
             <h2 class="font-display text-xl font-semibold text-muted-pale group-hover:text-teal transition-colors">
               {{ post.title }}
             </h2>
@@ -40,12 +40,11 @@
           </NuxtLink>
           <div class="mt-3 flex flex-wrap items-center gap-3 text-xs text-muted">
             <time :datetime="post.date">{{ formatBlogDate(post.date) }}</time>
-            <span v-if="post.readingTime">· {{ post.readingTime.text }}</span>
             <span v-if="post.tags?.length" class="flex gap-2">
               <NuxtLink
                 v-for="tag in post.tags"
                 :key="tag"
-                :to="`/feed?tag=${encodeURIComponent(tag)}`"
+                :to="getTagLink(tag)"
                 class="px-1.5 py-0.5 rounded bg-teal/15 text-teal-light hover:bg-teal/25 transition-colors"
               >
                 {{ tag }}
@@ -71,7 +70,7 @@ const motionItem = {
 const route = useRoute()
 
 const { data: raw } = await useAsyncData('feed-list', () =>
-  queryContent('/feed').sort({ date: -1 }).only(['title', 'description', 'date', 'tags', '_path', 'body']).find()
+  queryContent('/feed').sort({ date: -1 }).only(['title', 'description', 'date', 'tags', '_path']).find()
 )
 
 interface BlogPost {
@@ -80,7 +79,6 @@ interface BlogPost {
   description?: string
   date?: string
   tags?: string[]
-  readingTime: { text: string }
 }
 
 const searchQuery = ref('')
@@ -90,16 +88,26 @@ const currentTag = computed(() => {
   return typeof tag === 'string' ? tag : null
 })
 
-const allPosts = computed<BlogPost[]>(() => {
-  const list = (raw.value ?? []) as Array<Record<string, unknown> & { body?: string; tags?: string[] }>
-  return list.map((p) => {
-    const body = p.body ?? ''
-    const words = (typeof body === 'string' ? body : '').replace(/<[^>]+>/g, ' ').split(/\s+/).filter(Boolean).length
-    const minutes = Math.max(1, Math.ceil(words / 200))
-    const { body: _, ...rest } = p
-    return { ...rest, readingTime: { text: `${minutes} min read` } } as BlogPost
-  })
+const clearTagLink = computed(() => {
+  const q = { ...route.query }
+  delete q.tag
+  delete q.giscus
+  return { path: '/feed', query: q }
 })
+
+function getPostLink(path: string) {
+  const query = { ...route.query }
+  delete query.giscus
+  return { path, query }
+}
+
+function getTagLink(tag: string) {
+  const query = { ...route.query }
+  delete query.giscus
+  return { path: '/feed', query: { ...query, tag } }
+}
+
+const allPosts = computed<BlogPost[]>(() => (raw.value ?? []) as BlogPost[])
 
 const posts = computed<BlogPost[]>(() => {
   let list = allPosts.value

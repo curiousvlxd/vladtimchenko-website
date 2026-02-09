@@ -7,6 +7,7 @@
         id="about"
         data-section="about"
         class="card-gradient-animated rounded-2xl border border-teal/20 bg-[rgba(24,183,164,0.05)] p-6 sm:p-8 mb-8 scroll-mt-24 sm:scroll-mt-28"
+        v-motion="motionFade"
       >
         <h2
           class="font-display text-2xl font-semibold text-muted-pale mb-4"
@@ -35,10 +36,16 @@
           {{ home?.experience?.title ?? 'Experience' }}
         </h2>
         <div class="flex flex-wrap items-center gap-3 mb-6">
-          <div class="inline-flex flex-col rounded-2xl border border-teal/30 bg-gradient-to-br from-teal/15 to-teal/5 px-6 py-4 shadow-[0_0_0_1px_rgba(24,183,164,0.08),0_4px_12px_-2px_rgba(0,0,0,0.2)]">
+          <div 
+            class="inline-flex flex-col rounded-2xl border border-teal/30 bg-gradient-to-br from-teal/15 to-teal/5 px-6 py-4 shadow-[0_0_0_1px_rgba(24,183,164,0.08),0_4px_12px_-2px_rgba(0,0,0,0.2)]"
+            v-motion="motionItem"
+          >
             <span class="font-display text-lg font-semibold tracking-tight text-teal">{{ getTotalExperienceDisplay() }}</span>
           </div>
-          <div class="inline-flex flex-col rounded-2xl border border-teal/30 bg-gradient-to-br from-teal/15 to-teal/5 px-6 py-4 shadow-[0_0_0_1px_rgba(24,183,164,0.08),0_4px_12px_-2px_rgba(0,0,0,0.2)]">
+          <div 
+            class="inline-flex flex-col rounded-2xl border border-teal/30 bg-gradient-to-br from-teal/15 to-teal/5 px-6 py-4 shadow-[0_0_0_1px_rgba(24,183,164,0.08),0_4px_12px_-2px_rgba(0,0,0,0.2)]"
+            v-motion="motionItem"
+          >
             <span class="text-xs font-medium uppercase tracking-wider text-teal mb-0.5">Domains</span>
             <span class="text-sm text-muted-light">{{ EXPERIENCE_DOMAINS.join(', ') }}</span>
           </div>
@@ -86,6 +93,7 @@
             v-for="entry in educationEntries"
             :key="entry.school + entry.degree"
             class="card-gradient-animated rounded-2xl border border-teal/20 bg-[rgba(24,183,164,0.05)] p-6 sm:p-8 transition-all duration-300 hover:border-teal/40 hover:shadow-[0_0_24px_rgba(24,183,164,0.15)]"
+            v-motion="motionItem"
           >
             <div class="flex flex-wrap items-center justify-between gap-4">
               <div>
@@ -113,6 +121,11 @@
           </div>
         </div>
       </section>
+
+      <SectionsTestimonialsSection
+        :title="home?.testimonials?.title ?? 'Testimonials'"
+        :description="home?.testimonials?.description"
+      />
 
       <section
         id="projects"
@@ -194,6 +207,18 @@ import { educationEntries, type EducationEntry } from '../data/education'
 import { experienceEntries, EXPERIENCE_DOMAINS, getTotalExperienceDisplay } from '../data/experience'
 import { volunteeringEntries } from '../data/volunteering'
 
+const motionFade = {
+  initial: { opacity: 0, y: 12 },
+  enter: { opacity: 1, y: 0 },
+  transition: { duration: 0.4 }
+}
+
+const motionItem = {
+  initial: { opacity: 0, y: 12 },
+  enter: { opacity: 1, y: 0 },
+  transition: { duration: 0.3 }
+}
+
 const home = homeData as {
   name?: string
   title?: string
@@ -202,6 +227,7 @@ const home = homeData as {
   experience?: { title?: string; commercialLabel?: string }
   volunteering?: { title?: string }
   education?: { title?: string }
+  testimonials?: { title?: string; description?: string }
   projects?: { title?: string }
 }
 
@@ -222,6 +248,7 @@ const tabs = computed(() => home?.sectionTabs ?? [
   { id: 'experience', label: 'Experience' },
   { id: 'volunteering', label: 'Volunteering' },
   { id: 'education', label: 'Education' },
+  { id: 'testimonials', label: 'Testimonials' },
   { id: 'projects', label: 'Projects' }
 ])
 
@@ -232,15 +259,43 @@ const scrollTargetId = ref<string | null>(null)
 function scrollToSection(id: string) {
   activeSection.value = id
   scrollTargetId.value = id
-  const path = typeof window !== 'undefined' ? window.location.pathname : '/'
-  if (id === firstTabId.value) {
-    if (typeof history !== 'undefined') history.pushState(null, '', path)
-    window.scrollTo({ top: 0, behavior: 'smooth' })
-  } else {
-    if (typeof history !== 'undefined') history.pushState(null, '', `${path}#${id}`)
-    document.getElementById(id)?.scrollIntoView({ behavior: 'smooth', block: 'start' })
+
+  if (typeof window === 'undefined') return
+
+  const path = window.location.pathname
+  const search = window.location.search
+
+  if (typeof history !== 'undefined') {
+    const hash = id === firstTabId.value ? '' : `#${id}`
+    history.pushState(null, '', `${path}${search}${hash}`)
   }
-  setTimeout(() => { scrollTargetId.value = null }, 1200)
+
+  let frame = 0
+  const maxFrames = 30
+
+  const performScroll = () => {
+    if (frame++ > maxFrames) {
+      scrollTargetId.value = null
+      return
+    }
+
+    if (id === firstTabId.value) {
+      window.scrollTo({ top: 0, behavior: 'smooth' })
+      setTimeout(() => { scrollTargetId.value = null }, 1200)
+      return
+    }
+
+    const el = document.getElementById(id)
+    if (el) {
+      el.scrollIntoView({ behavior: 'smooth', block: 'start' })
+      setTimeout(() => { scrollTargetId.value = null }, 1200)
+      return
+    }
+
+    requestAnimationFrame(performScroll)
+  }
+
+  requestAnimationFrame(performScroll)
 }
 
 function syncFromHash() {
@@ -260,15 +315,6 @@ const viewportTopOffset = 140
 
 function updateActiveSection() {
   if (scrollTargetId.value) return
-  const lastTab = tabs.value[tabs.value.length - 1]
-  if (import.meta.client && typeof window !== 'undefined' && lastTab) {
-    const nearBottom = window.scrollY + window.innerHeight >= document.documentElement.scrollHeight - 80
-    if (nearBottom) {
-      activeSection.value = lastTab.id
-      history.replaceState(null, '', window.location.pathname + '#' + lastTab.id)
-      return
-    }
-  }
   const sectionEls = document.querySelectorAll<HTMLElement>('[data-section]')
   const tabIds = new Set(tabs.value.map((t) => t.id))
   let activeId = firstTabId.value
@@ -286,8 +332,10 @@ function updateActiveSection() {
   activeSection.value = activeId
   if (import.meta.client && typeof window !== 'undefined') {
     const path = window.location.pathname
-    const newUrl = path + (activeId === firstTabId.value ? '' : '#' + activeId)
-    if (window.location.pathname + window.location.hash !== newUrl) {
+    const search = window.location.search
+    const newUrl = path + search + (activeId === firstTabId.value ? '' : '#' + activeId)
+    const currentUrl = window.location.pathname + window.location.search + window.location.hash
+    if (currentUrl !== newUrl) {
       history.replaceState(null, '', newUrl)
     }
   }
@@ -337,10 +385,21 @@ onUnmounted(() => {
   }
 })
 
-const { data: repos, pending } = useFetch<import('../types/repos').RepoMeta[]>('/api/repos', { key: 'repos' })
+const nuxtApp = useNuxtApp()
+const { data: repos, pending } = useFetch<import('../types/repos').RepoMeta[]>('/api/repos', { 
+  key: 'repos',
+  getCachedData: (key) => {
+    return nuxtApp.payload.data[key] || nuxtApp.static.data[key]
+  }
+})
 const reposList = computed(() => (Array.isArray(repos.value) ? repos.value : []))
 const { public: { siteRepoUrl } } = useRuntimeConfig()
-const { data: siteRepo } = await useFetch<{ stars: number; url: string }>('/api/site-repo', { key: 'site-repo' })
+const { data: siteRepo } = await useFetch<{ stars: number; url: string }>('/api/site-repo', { 
+  key: 'site-repo',
+  getCachedData: (key) => {
+    return nuxtApp.payload.data[key] || nuxtApp.static.data[key]
+  }
+})
 </script>
 
 <style>

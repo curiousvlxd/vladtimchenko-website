@@ -1,5 +1,18 @@
 {
-  "origins": ["https://vladtimchenko.dev"],
-  "originsRegex": ["http://localhost:[0-9]+", "http://127.0.0.1:[0-9]+"],
+  "origins": [
+    "https://vladtimchenko.dev",
+    "https://www.vladtimchenko.dev",
+    "http://vladtimchenko.dev",
+    "http://www.vladtimchenko.dev"
+  ],
+  "originsRegex": [
+    "http://localhost:[0-9]+",
+    "http://127.0.0.1:[0-9]+",
+    "https://localhost:[0-9]+",
+    "https://127.0.0.1:[0-9]+",
+    "https://.*\\.vladtimchenko\\.dev",
+    "http://.*\\.vladtimchenko\\.dev",
+    "https://.*\\.pages\\.dev"
+  ],
   "defaultCommentOrder": "newest"
 }

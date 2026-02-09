@@ -17,6 +17,15 @@ export default defineNuxtConfig({
     output: { dir: 'dist' },
     prerender: {
       autoSubfolderIndex: false
+    },
+    routeRules: {
+      '/giscus-theme.css': {
+        headers: {
+          'Access-Control-Allow-Origin': '*',
+          'Access-Control-Allow-Methods': 'GET, OPTIONS',
+          'Access-Control-Allow-Headers': 'Content-Type'
+        }
+      }
     }
   },
 
@@ -65,7 +74,7 @@ export default defineNuxtConfig({
         { rel: 'stylesheet', href: 'https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&family=Space+Grotesk:wght@400;500;600;700&display=swap' },
       ]
     },
-    pageTransition: { name: 'page', mode: 'out-in' }
+    pageTransition: false
   },
 
   css: ['~/assets/css/main.css'],

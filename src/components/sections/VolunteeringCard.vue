@@ -1,5 +1,8 @@
 <template>
-  <article class="card-gradient-animated rounded-2xl border border-teal/20 bg-[rgba(24,183,164,0.05)] overflow-hidden hover:border-teal/30 transition-colors">
+  <article 
+    class="card-gradient-animated rounded-2xl border border-teal/20 bg-[rgba(24,183,164,0.05)] overflow-hidden hover:border-teal/30 transition-colors"
+    v-motion="motionItem"
+  >
     <div class="p-6 sm:p-8">
       <div class="flex flex-wrap items-baseline justify-between gap-2">
         <div>
@@ -57,4 +60,10 @@ import type { VolunteeringEntry } from '../../data/volunteering'
 import { formatVolunteeringPeriod } from '../../data/volunteering'
 
 defineProps<{ entry: VolunteeringEntry }>()
+
+const motionItem = {
+  initial: { opacity: 0, y: 12 },
+  enter: { opacity: 1, y: 0 },
+  transition: { duration: 0.3 }
+}
 </script>

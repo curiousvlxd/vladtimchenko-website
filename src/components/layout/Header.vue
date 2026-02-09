@@ -34,6 +34,8 @@ function isActive(link: NavItem) {
 function onNavClick(e: MouseEvent, to: string) {
   if (e.ctrlKey || e.metaKey || e.button === 1) return
   e.preventDefault()
-  void navigateTo(to)
+  const query = { ...route.query }
+  delete query.giscus
+  void navigateTo({ path: to, query })
 }
 </script>

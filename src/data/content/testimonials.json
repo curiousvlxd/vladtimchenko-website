@@ -1,0 +1,30 @@
+[
+  {
+    "id": "arkhat-sultabayev-short",
+    "text": "I had the pleasure of working with Vlad, and he consistently demonstrated good technical expertise and problem-solving abilities. He approaches challenges with confidence and delivers high-quality solutions.\n\nVlad is not only a skilled engineer but also a supportive teammate who helps everyone do their best.\n\nI highly recommend him for any development team looking for a reliable and skilled contributor.",
+    "author": "Arkhat Sultabayev",
+    "position": "Technical Director at Manul",
+    "date": "25 July 2025"
+  },
+  {
+    "id": "serge-charatovich",
+    "text": "Vladyslav was one of the first engineers to join SRG+ and played a crucial role in building the backend foundation of our Digital Asset Management platform. From the start, he showed a rare combination of technical depth, initiative, and product awareness that had a clear impact on both the speed and quality of our development.\n\nHe led the design and implementation of core backend services using .NET and Google Cloud Run, managed our MongoDB data layer, and set up Mixpanel for actionable analytics. His approach to architecture emphasized clarity, performance, and long-term maintainability.\n\nA standout part of his work was asset handling. Vladyslav integrated Cloudflare R2 as our object storage - streamlining how we managed uploaded assets. He also implemented custom Cloudflare Workers for file validation and post-processing to keep everything lightweight, efficient, and serverless.\n\nHe handled a wide range of third-party integrations - including Auth0 for authentication, external APIs, and various internal services - always with a focus on reliability, clean interfaces, and future-proofing.\n\nVladyslav doesn't just deliver what's asked - he asks the right questions, challenges assumptions when appropriate, and consistently thinks a few steps ahead. He was a calm, thoughtful, and trusted member of the team - someone I'd gladly work with again.",
+    "author": "Serge Creator Charatovich",
+    "position": "Founder of SRG+",
+    "date": "21 July 2025"
+  },
+  {
+    "id": "todd-cook",
+    "text": "We worked with Vladyslav on some challenging .Net projects and we certainly recommend him. He is knowledgeable, enthusiastic, and good communication.\n\nIf you have the opportunity to work with him, we suggest that you take it.",
+    "author": "Todd Cook",
+    "position": "Senior Software Engineer",
+    "date": "4 August 2024"
+  },
+  {
+    "id": "arkhat-sultabayev",
+    "text": "Vlad was leading our team and mentored me and other team members throughout the project. I would like to highlight Vlad's vision, because he is not only able to spot the perspective features in his main areas of expertise, but also able to find something valuable for other members during research. Vlad is a strong researcher, striving for best-practice and safest and most efficient solutions in long-term scale.\n\nVlad's another strong side is his team management skills: efficiently allocating team resources, keeping all team members informed and following team guidelines and deadlines.\n\nVlad shown great expertise at setting up the CI/CD, both hosted on cloud and on private servers, helping the team to build automatized infrastructure. The same is applicable also to maintaining the databases both on cloud and on private servers.\n\nBesides this, I would also like to highlight Vlad's debugging skills for frontend, backend, DevOps, and many other areas. He has a great vision for critical points of the logs and recovering the system really fast.\n\nHis another strong point is striving to optimize current solution, which led us to faster working web application with minimized server response time.\n\nThe final point is him being a great mentor. He thoroughly researches the area, has well-developed communication skills, and he is able to explain complex things in a simple way. Vlad's high expertise and communication gave me and other team members many valuable insights, and we never felt pressure not knowing how to implement something new, because he was always there to help.\n\nIn conclusion, Vlad as a colleague is a reliable team member, strong researcher, and a patient mentor.",
+    "author": "Aldiyar Aspandiyar",
+    "position": "Software Engineer",
+    "date": "22 July 2025"
+  }
+]

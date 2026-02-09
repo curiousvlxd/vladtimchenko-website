@@ -85,12 +85,51 @@ main {
   --color-social-reaction-bg-reacted-hover: var(--color-scale-blue-8);
 }
 
-main {
-  padding: 1.5rem 2rem;
+html,
+body {
+  margin: 0;
+  padding: 0;
+  background: transparent;
 }
 
-main > * + * {
-  margin-top: 1.25rem;
+main,
+main.gsc-main {
+  padding: 20px 20px !important;
+  box-sizing: border-box;
+}
+
+.gsc-header,
+.gsc-reactions,
+.gsc-comment-box,
+.gsc-timeline {
+  margin: 0 !important;
+}
+
+.gsc-reactions {
+  justify-content: flex-start !important;
+}
+
+.gsc-header {
+  padding: 0 !important;
+}
+
+.gsc-comment-box {
+  margin-top: 12px !important;
+}
+
+.gsc-timeline {
+  margin-top: 14px !important;
+}
+
+.gsc-comment-box-textarea,
+.gsc-reply-box-textarea,
+.gsc-comment-box-preview {
+  border-radius: 16px !important;
+}
+
+.gsc-comment,
+.gsc-reply {
+  border-radius: 16px !important;
 }
 
 main .pagination-loader-container {

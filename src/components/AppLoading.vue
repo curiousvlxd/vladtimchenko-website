@@ -15,7 +15,10 @@
         fetchpriority="high"
       />
       <div class="w-48 sm:w-64 h-1 rounded-full bg-bg-card overflow-hidden">
-        <div class="h-full rounded-full bg-teal loading-bar" />
+        <div
+          class="h-full rounded-full bg-teal loading-bar"
+          :style="{ width: progress + '%' }"
+        />
       </div>
     </div>
   </Transition>
@@ -23,33 +26,61 @@
 
 <script setup lang="ts">
 const loading = useState('app-loading', () => true)
+const appReady = useState('app-ready', () => false)
 import { ASSETS } from '~/constants'
 const logoSrc = ASSETS.LOGO
 
+const progress = ref(0)
+let timer: ReturnType<typeof setInterval> | null = null
+
+function startProgress() {
+  if (timer) return
+  timer = setInterval(() => {
+    if (appReady.value) return
+    if (progress.value < 80) {
+      progress.value = Math.min(80, progress.value + 5)
+    } else if (progress.value < 92) {
+      progress.value = Math.min(92, progress.value + 1)
+    }
+  }, 80)
+}
+
 onMounted(() => {
-  const hide = () => { loading.value = false }
-  if (document.readyState !== 'loading') {
-    hide()
-  } else {
-    document.addEventListener('DOMContentLoaded', hide, { once: true })
+  progress.value = 10
+  startProgress()
+})
+
+watch(
+  appReady,
+  (ready) => {
+    if (!ready) return
+    if (timer) {
+      clearInterval(timer)
+      timer = null
+    }
+    progress.value = 100
+    setTimeout(() => {
+      loading.value = false
+    }, 200)
+  },
+  { immediate: true }
+)
+
+onUnmounted(() => {
+  if (timer) {
+    clearInterval(timer)
   }
 })
 </script>
 
 <style scoped>
 .loading-bar {
-  animation: loading 1.2s ease-in-out infinite;
-  width: 40%;
-}
-
-@keyframes loading {
-  0% { transform: translateX(-100%); }
-  50% { transform: translateX(150%); }
-  100% { transform: translateX(-100%); }
+  width: 0;
+  transition: width 0.25s ease-out;
 }
 
 .loading-fade-out-leave-active {
-  transition: opacity 0.3s ease;
+  transition: opacity 0.15s ease;
 }
 .loading-fade-out-leave-to {
   opacity: 0;

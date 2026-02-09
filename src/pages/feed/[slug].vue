@@ -1,7 +1,7 @@
 <template>
   <div class="mx-auto max-w-3xl px-4 sm:px-6 py-12">
     <NuxtLink
-      to="/feed"
+      :to="backToFeedLink"
       class="inline-flex items-center gap-2 text-sm text-muted-light hover:text-teal transition-colors mb-8"
     >
       <svg class="w-4 h-4 shrink-0" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" aria-hidden="true">
@@ -21,7 +21,7 @@
             <NuxtLink
               v-for="tag in page.tags"
               :key="tag"
-              :to="`/feed?tag=${encodeURIComponent(tag)}`"
+              :to="getTagLink(tag)"
               class="px-1.5 py-0.5 rounded bg-teal/15 text-teal-light hover:bg-teal/25"
             >
               {{ tag }}
@@ -33,7 +33,27 @@
     </article>
     <section v-if="page && giscusEnabled" class="mt-12 pt-8 border-t border-teal/20">
       <h2 class="font-display text-xl font-semibold text-muted-pale mb-4">Comments</h2>
-      <div id="giscus" class="giscus min-h-[200px] rounded-2xl border border-teal/20 bg-bg-card/50 overflow-hidden" />
+      <div class="min-h-[200px] rounded-2xl border border-teal/20 bg-bg-card/50 overflow-hidden">
+        <ClientOnly>
+          <GiscusComments
+            :repo="config.giscusRepo"
+            :repo-id="config.giscusRepoId"
+            :category="config.giscusCategory"
+            :category-id="config.giscusCategoryId"
+            mapping="specific"
+            :term="giscusTerm"
+            strict="0"
+            reactions-enabled="1"
+            emit-metadata="0"
+            input-position="top"
+            :theme="giscusTheme"
+            lang="en"
+          />
+          <template #fallback>
+            <div class="min-h-[200px]" />
+          </template>
+        </ClientOnly>
+      </div>
     </section>
   </div>
 </template>
@@ -78,66 +98,50 @@ useHead({
 })
 
 const config = useRuntimeConfig().public
-const giscusEnabled = computed(() => Boolean(config.giscusRepo && config.giscusRepoId))
+const giscusEnabled = computed(
+  () =>
+    Boolean(
+      config.giscusRepo &&
+        config.giscusRepoId &&
+        config.giscusCategory &&
+        config.giscusCategoryId
+    )
+)
 
-function sendGiscusConfig(): boolean {
-  const iframe = document.querySelector<HTMLIFrameElement>('iframe.giscus-frame')
-  if (!iframe?.contentWindow) return false
-  const themeUrl = new URL(config.giscusThemePath || '/giscus-theme.css', window.location.origin).toString()
-  iframe.contentWindow.postMessage(
-    { giscus: { setConfig: { theme: themeUrl } } },
-    'https://giscus.app'
-  )
-  return true
-}
+const requestURL = import.meta.server ? useRequestURL() : null
 
-function ensureSingleGiscusFrame() {
-  const n = document.querySelectorAll('iframe.giscus-frame').length
-  if (n !== 1 && import.meta.dev) {
-    console.warn('[giscus] iframe.giscus-frame count:', n, '(expected 1)')
+const giscusTheme = computed(() => {
+  const localHosts = ['localhost', '127.0.0.1', '0.0.0.0', '[::1]']
+
+  if (import.meta.server) {
+    const origin = requestURL?.origin || ''
+    const hostname = requestURL?.hostname || ''
+    const isLocalhost = localHosts.includes(hostname)
+    if (isLocalhost) return 'dark'
+    return `${origin}${config.giscusThemePath || '/giscus-theme.css'}`
   }
-}
 
-onMounted(() => {
-  if (typeof window === 'undefined' || !giscusEnabled.value) return
-  const container = document.getElementById('giscus')
-  if (!container) return
-  const hasScript = !!document.querySelector('script[data-giscus-script="true"]')
-  if (!hasScript) {
-    const themeUrl = new URL(config.giscusThemePath || '/giscus-theme.css', window.location.origin).toString()
-    const s = document.createElement('script')
-    s.src = 'https://giscus.app/client.js'
-    s.setAttribute('data-giscus-script', 'true')
-    s.setAttribute('data-repo', config.giscusRepo)
-    s.setAttribute('data-repo-id', config.giscusRepoId)
-    s.setAttribute('data-category', config.giscusCategory)
-    s.setAttribute('data-category-id', config.giscusCategoryId)
-    s.setAttribute('data-mapping', 'pathname')
-    s.setAttribute('data-strict', '0')
-    s.setAttribute('data-reactions-enabled', '1')
-    s.setAttribute('data-emit-metadata', '0')
-    s.setAttribute('data-input-position', 'top')
-    s.setAttribute('data-theme', themeUrl)
-    s.setAttribute('data-lang', 'en')
-    s.setAttribute('data-loading', 'lazy')
-    s.setAttribute('crossorigin', 'anonymous')
-    s.async = true
-    document.head.appendChild(s)
-  }
-  setTimeout(ensureSingleGiscusFrame, 2500)
+  if (typeof window === 'undefined') return ''
+
+  const { origin, hostname } = window.location
+  const isLocalhost = localHosts.includes(hostname)
+  if (isLocalhost) return 'dark'
+
+  return `${origin}${config.giscusThemePath || '/giscus-theme.css'}`
 })
 
-watch(
-  () => route.path,
-  async () => {
-    if (!giscusEnabled.value || !import.meta.client) return
-    await nextTick()
-    let tries = 0
-    const t = setInterval(() => {
-      tries++
-      if (sendGiscusConfig() || tries >= 10) clearInterval(t)
-    }, 200)
-  },
-  { immediate: false }
-)
+const giscusTerm = computed(() => `/feed/${slug.value}`)
+
+const backToFeedLink = computed(() => {
+  const query = { ...route.query }
+  delete query.giscus
+  return { path: '/feed', query }
+})
+
+function getTagLink(tag: string) {
+  const query = { ...route.query }
+  delete query.giscus
+  return { path: '/feed', query: { ...query, tag } }
+}
+
 </script>
