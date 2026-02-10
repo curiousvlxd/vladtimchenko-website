@@ -9,7 +9,21 @@
       </svg>
       Back to Feed
     </NuxtLink>
-    <article v-if="page" class="prose prose-invert max-w-none">
+    <div v-if="pending" class="animate-pulse space-y-6">
+      <div class="h-9 w-3/4 rounded bg-teal/20" />
+      <div class="flex gap-3">
+        <div class="h-4 w-24 rounded bg-teal/10" />
+        <div class="h-4 w-16 rounded bg-teal/10" />
+      </div>
+      <div class="space-y-3 pt-4">
+        <div class="h-4 w-full rounded bg-teal/10" />
+        <div class="h-4 w-full rounded bg-teal/10" />
+        <div class="h-4 w-2/3 rounded bg-teal/10" />
+        <div class="h-4 w-full rounded bg-teal/10" />
+        <div class="h-4 w-4/5 rounded bg-teal/10" />
+      </div>
+    </div>
+    <article v-else-if="page" class="prose prose-invert max-w-none">
       <header class="mb-8">
         <h1 class="font-display text-3xl sm:text-4xl font-bold text-muted-pale">
           {{ page.title }}
@@ -31,6 +45,12 @@
       </header>
       <ContentRenderer v-if="page.body" :value="page" tag="div" class="content-body" />
     </article>
+    <section v-else-if="pageError" class="text-muted-light">
+      <p>Failed to load post.</p>
+    </section>
+    <section v-else-if="!page" class="text-muted-light">
+      <p>Post not found.</p>
+    </section>
     <section v-if="page && giscusEnabled" class="mt-12 pt-8 border-t border-teal/20">
       <h2 class="font-display text-xl font-semibold text-muted-pale mb-4">Comments</h2>
       <div class="min-h-[200px] rounded-2xl border border-teal/20 bg-bg-card/50 overflow-hidden">
@@ -62,7 +82,7 @@
 const route = useRoute()
 const slug = computed(() => route.params.slug as string)
 
-const { data: page, error: pageError } = await useAsyncData(`feed-${slug.value}`, () =>
+const { data: page, pending, error: pageError } = useLazyAsyncData(`feed-${slug.value}`, () =>
   queryContent('/feed', slug.value).findOne()
 )
 
@@ -75,12 +95,11 @@ const readingTime = computed(() => {
   return { text: `${minutes} min read` }
 })
 
-if (pageError.value) {
-  throw createError({ statusCode: 500, statusMessage: 'Failed to load post' })
-}
-if (!page.value) {
-  throw createError({ statusCode: 404, statusMessage: 'Post not found' })
-}
+watch([pending, page, pageError], () => {
+  if (pending.value) return
+  if (pageError.value) throw createError({ statusCode: 500, statusMessage: 'Failed to load post' })
+  if (!page.value) throw createError({ statusCode: 404, statusMessage: 'Post not found' })
+}, { immediate: true })
 
 const pageTitle = computed(() => `${page.value?.title ?? 'Post'} · Vlad Timchenko`)
 const pageDescription = computed(() => (page.value?.description ?? (page.value as { excerpt?: string })?.excerpt) ?? '')

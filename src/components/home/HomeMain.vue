@@ -321,4 +321,9 @@ const { data: repos, pending } = useFetch<import('../../types/repos').RepoMeta[]
   getCachedData: (key) => nuxtApp.payload.data[key] || nuxtApp.static.data[key]
 })
 const reposList = computed(() => (Array.isArray(repos.value) ? repos.value : []))
+
+const emit = defineEmits<{ mounted: [] }>()
+onMounted(() => {
+  nextTick(() => emit('mounted'))
+})
 </script>

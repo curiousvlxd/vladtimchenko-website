@@ -24,7 +24,15 @@
       <span class="px-2 py-1 rounded bg-teal/20 text-teal text-sm font-medium">{{ currentTag }}</span>
       <NuxtLink :to="clearTagLink" class="text-sm text-muted-light hover:text-teal transition-colors">× clear</NuxtLink>
     </div>
-    <ul class="space-y-6">
+    <div v-if="pending" class="space-y-6">
+      <div v-for="i in 5" :key="i" class="rounded-2xl border border-teal/20 bg-bg-card p-6 animate-pulse">
+        <div class="h-6 w-3/4 rounded bg-teal/20 mb-3" />
+        <div class="h-4 w-full rounded bg-teal/10 mb-2" />
+        <div class="h-4 w-1/2 rounded bg-teal/10 mb-3" />
+        <div class="h-3 w-24 rounded bg-teal/10" />
+      </div>
+    </div>
+    <ul v-else class="space-y-6">
       <li
         v-for="post in posts"
         :key="post._path"
@@ -56,7 +64,7 @@
         </div>
       </li>
     </ul>
-    <p v-if="posts.length === 0" class="text-muted-light">
+    <p v-if="!pending && posts.length === 0" class="text-muted-light">
       {{ searchQuery || currentTag ? 'No posts match.' : 'No posts yet.' }}
     </p>
   </div>
@@ -71,7 +79,7 @@ const motionItem = {
 
 const route = useRoute()
 
-const { data: raw } = await useAsyncData('feed-list', () =>
+const { data: raw, pending } = await useAsyncData('feed-list', () =>
   queryContent('/feed').sort({ date: -1 }).only(['title', 'description', 'date', 'tags', '_path']).find()
 )
 

@@ -1,6 +1,7 @@
 <template>
   <div class="home-content-container flex gap-8 lg:gap-12 mx-auto max-w-6xl px-4 sm:px-6 pt-8 sm:pt-10 pb-[7rem] sm:pb-[7rem] lg:pb-12">
-    <HomeMain :open-diploma="openDiploma" />
+    <HomeMainSkeleton v-show="!homeReady" class="min-w-0 flex-1 max-w-4xl" />
+    <HomeMain v-show="homeReady" :open-diploma="openDiploma" @mounted="homeReady = true" />
 
     <LayoutSectionNavSidebar
       :sections="tabs"
@@ -60,6 +61,7 @@
 <script setup lang="ts">
 import homeData from '../data/content/home.json'
 
+const homeReady = ref(false)
 const home = homeData as { name?: string; sectionTabs?: { id: string; label: string }[] }
 
 const tabs = computed(() => home?.sectionTabs ?? [

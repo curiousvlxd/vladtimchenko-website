@@ -1,5 +1,6 @@
 <template>
-  <div class="cv-page mx-auto max-w-5xl px-4 sm:px-6 py-8 sm:py-12">
+  <CvSkeleton v-show="!cvReady" />
+  <div v-show="cvReady" class="cv-page mx-auto max-w-5xl px-4 sm:px-6 py-8 sm:py-12">
     <div class="cv-actions no-print mb-6 flex flex-wrap items-center gap-3">
       <NuxtLink to="/" class="inline-flex items-center gap-2 text-sm text-muted-light hover:text-teal transition-colors">
         <AppIcon name="back" class="w-4 h-4" />
@@ -128,6 +129,11 @@ useHead({
 
 const cvDocumentRef = ref<HTMLElement | null>(null)
 const pdfExporting = ref(false)
+const cvReady = ref(false)
+
+onMounted(() => {
+  nextTick(() => { cvReady.value = true })
+})
 
 async function exportPdf () {
   if (pdfExporting.value) return
