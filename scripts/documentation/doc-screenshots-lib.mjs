@@ -2,7 +2,7 @@ export const VIEWPORT = { width: 1280, height: 800 }
 export const VIEWPORT_ABOUT = { width: 1280, height: 1100 }
 export const DEVICE_SCALE_FACTOR = 2
 
-export const HOME_SECTIONS = ['about', 'experience', 'volunteering', 'education', 'projects']
+export const HOME_SECTIONS = ['about', 'experience', 'volunteering', 'education', 'testimonials', 'projects', 'contact']
 
 const DEVMODS_SELECTORS = [
   '[id*="nuxt-devtools"]',

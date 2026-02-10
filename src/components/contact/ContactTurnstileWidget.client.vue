@@ -34,6 +34,7 @@ function render() {
     sitekey: siteKey,
     theme: 'dark',
     size: 'normal',
+    appearance: 'interaction-only',
     callback: (t: string) => {
       token.value = t
     },
@@ -69,6 +70,6 @@ defineExpose({
 
 <style scoped>
 .contact-turnstile {
-  min-height: 4rem;
+  min-height: 0;
 }
 </style>

@@ -29,6 +29,10 @@ Used to fetch stars and repository metadata for the site repository (/api/site-r
 **Giscus:**  
 Comments on feed posts via GitHub Discussions. Configuration and theme are provided through runtime config. Allowed origins include production and localhost for local development.
 
+**Contact form & anti-spam**  
+The "Get in touch" form uses **Formspree** and submits directly from the browser (no backend).  
+Bot protection is provided by **Cloudflare Turnstile**, a privacy-friendly CAPTCHA alternative.
+
 **Server routes:**
 - /rss.xml - RSS feed
 - /sitemap.xml - sitemap
@@ -53,7 +57,7 @@ The workflow:
 Concurrency is enabled to cancel in-progress runs on new pushes.
 
 **Screenshots automation:**  
-When src/**, public/**, or relevant config or dependency files change, the workflow:
+When src/\*\*, public/\*\*, or relevant config or dependency files change, the workflow:
 - runs Playwright
 - captures documentation screenshots
 - publishes them to the assets branch under screenshots
@@ -107,18 +111,30 @@ Used as a visual showcase of layout, content structure, and integrations.
 
 ---
 
+### Testimonials
+
+![Testimonials](https://raw.githubusercontent.com/curiousvlxd/vladtimchenko-website/assets/screenshots/6-home-testimonials-section.png)
+
+---
+
 ### Projects
 
-![Projects](https://raw.githubusercontent.com/curiousvlxd/vladtimchenko-website/assets/screenshots/6-home-projects-section.png)
+![Projects](https://raw.githubusercontent.com/curiousvlxd/vladtimchenko-website/assets/screenshots/7-home-projects-section.png)
+
+---
+
+### Get in touch
+
+![Get in touch](https://raw.githubusercontent.com/curiousvlxd/vladtimchenko-website/assets/screenshots/8-home-contact-section.png)
 
 ---
 
 ### Feed
 
-![Feed](https://raw.githubusercontent.com/curiousvlxd/vladtimchenko-website/assets/screenshots/7-feed-list.png)
+![Feed](https://raw.githubusercontent.com/curiousvlxd/vladtimchenko-website/assets/screenshots/9-feed-list.png)
 
 ---
 
 ### Article
 
-![Article](https://raw.githubusercontent.com/curiousvlxd/vladtimchenko-website/assets/screenshots/8-feed-first-article.png)
+![Article](https://raw.githubusercontent.com/curiousvlxd/vladtimchenko-website/assets/screenshots/10-feed-first-article.png)
