@@ -1,5 +1,5 @@
 <template>
-  <article 
+  <article
     class="card-gradient-animated rounded-2xl border border-teal/20 bg-[rgba(24,183,164,0.05)] overflow-hidden hover:border-teal/40 hover:shadow-[0_0_24px_rgba(24,183,164,0.15)] transition-all duration-300 cursor-pointer h-full flex flex-col p-6 sm:p-8 min-h-[320px]"
     v-motion="motionItem"
     @click="$emit('click', testimonial)"
@@ -58,6 +58,7 @@
 <script setup lang="ts">
 import type { Testimonial } from '../../../data/testimonials'
 import { getParagraphs, getInitials, needsReadMore } from '../../../utils/testimonials'
+import { motionItem } from '../../../constants/motion'
 
 const props = defineProps<{
   testimonial: Testimonial
@@ -72,12 +73,6 @@ const textRef = ref<HTMLElement>()
 const paragraphs = computed(() => getParagraphs(props.testimonial.text))
 const initials = computed(() => getInitials(props.testimonial.author))
 const showReadMore = computed(() => needsReadMore(textRef.value ?? null))
-
-const motionItem = {
-  initial: { opacity: 0, y: 12 },
-  enter: { opacity: 1, y: 0 },
-  transition: { duration: 0.3 }
-}
 </script>
 
 <style scoped>
@@ -86,11 +81,11 @@ const motionItem = {
     padding: 20px;
     min-height: 300px;
   }
-  
+
   .line-clamp-5 {
     -webkit-line-clamp: 4;
   }
-  
+
   .h-\[60px\] {
     height: 50px;
   }

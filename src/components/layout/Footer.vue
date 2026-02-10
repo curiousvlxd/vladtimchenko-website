@@ -18,6 +18,17 @@
           <span v-if="siteRepo">·</span>
           <span>View source on GitHub</span>
         </a>
+        <span aria-hidden="true" class="text-muted/60">·</span>
+        <a
+          href="/rss.xml"
+          target="_blank"
+          rel="noopener noreferrer"
+          class="inline-flex items-center gap-1.5 text-muted-light hover:text-teal transition-colors"
+          title="RSS feed"
+        >
+          <AppIcon name="rss" class="w-4 h-4 text-teal/80" />
+          <span>RSS</span>
+        </a>
       </p>
     </div>
   </footer>

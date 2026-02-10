@@ -22,7 +22,7 @@
               </svg>
             </button>
           </div>
-          
+
           <div class="overflow-y-auto flex-1 min-h-0 p-8 pt-4">
             <div class="flex items-center gap-2 mb-4 pb-3 border-b border-teal/20">
               <div class="w-6 h-6 flex items-center justify-center bg-[#0077b5] rounded text-white shrink-0">
@@ -76,13 +76,43 @@ defineEmits<{
   close: []
 }>()
 
-const paragraphs = computed(() => 
+const paragraphs = computed(() =>
   props.testimonial ? getParagraphs(props.testimonial.text) : []
 )
 
-const initials = computed(() => 
+const initials = computed(() =>
   props.testimonial ? getInitials(props.testimonial.author) : ''
 )
+
+let scrollY = 0
+
+watch(
+  () => props.testimonial,
+  (value) => {
+    if (!import.meta.client || typeof document === 'undefined') return
+    if (value) {
+      scrollY = window.scrollY || window.pageYOffset || 0
+      document.body.style.overflow = 'hidden'
+      document.body.style.position = 'fixed'
+      document.body.style.top = `-${scrollY}px`
+      document.body.style.width = '100%'
+    } else {
+      document.body.style.overflow = ''
+      document.body.style.position = ''
+      document.body.style.top = ''
+      document.body.style.width = ''
+      window.scrollTo({ top: scrollY })
+    }
+  }
+)
+
+onUnmounted(() => {
+  if (!import.meta.client || typeof document === 'undefined') return
+  document.body.style.overflow = ''
+  document.body.style.position = ''
+  document.body.style.top = ''
+  document.body.style.width = ''
+})
 </script>
 
 <style scoped>

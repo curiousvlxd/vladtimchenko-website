@@ -1,15 +1,22 @@
+import { serverQueryContent } from '#content/server'
+
 export default defineEventHandler(async (event) => {
   setHeader(event, 'Content-Type', 'application/rss+xml; charset=utf-8')
-  setHeader(event, 'Cache-Control', 'public, max-age=3600')
+  setHeader(event, 'Cache-Control', 'public, max-age=0, s-maxage=3600, stale-while-revalidate=86400')
   const config = useRuntimeConfig(event)
   const base = (config.public?.siteUrl || 'https://vladtimchenko.dev').replace(/\/+$/, '')
   let items = ''
   try {
-    const posts = await queryContent('/feed').sort({ date: -1 }).limit(50).find()
+    const posts = await serverQueryContent(event)
+      .where({ _path: /^\/?feed\// })
+      .sort({ date: -1 })
+      .limit(50)
+      .find()
     items = (posts as Array<{ _path: string; title?: string; description?: string; date?: string }>)
       .map((p) => {
         const date = p.date ? new Date(p.date).toUTCString() : ''
-        const link = `${base}${p._path}`
+        const path = p._path.startsWith('/') ? p._path : `/${p._path}`
+        const link = `${base}${path}`
         const title = p.title ?? 'Post'
         const desc = p.description ?? ''
         return `<item><title>${escapeXml(title)}</title><link>${escapeXml(link)}</link><guid isPermaLink="true">${escapeXml(link)}</guid><pubDate>${date}</pubDate><description>${escapeXml(desc)}</description></item>`

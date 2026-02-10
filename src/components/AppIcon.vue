@@ -1,6 +1,6 @@
 <template>
   <svg
-    class="shrink-0"
+    class="shrink-0 overflow-visible"
     :class="$attrs.class"
     :fill="icon.stroke ? 'none' : 'currentColor'"
     :stroke="icon.stroke ? 'currentColor' : undefined"

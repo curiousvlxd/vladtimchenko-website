@@ -2,7 +2,7 @@
   <Teleport to="body">
     <Transition name="pdf-modal">
       <div
-        v-if="modelValue"
+        v-if="isOpen"
         class="pdf-modal-overlay fixed inset-0 z-[100] flex items-end sm:items-center justify-center p-0 sm:p-4 bg-black/80 backdrop-blur-md safe-area-pad"
         role="dialog"
         aria-modal="true"
@@ -12,7 +12,7 @@
         <div class="pdf-modal-box relative w-full sm:max-w-4xl h-[85dvh] sm:h-[88vh] flex flex-col rounded-t-2xl sm:rounded-2xl border border-teal/30 border-b-0 sm:border-b bg-bg-card overflow-hidden shadow-[0_0_0_1px_rgba(24,183,164,0.1),0_25px_50px_-12px_rgba(0,0,0,0.5),0_0_40px_-10px_rgba(24,183,164,0.15)]">
           <div class="pdf-modal-gradient pointer-events-none absolute inset-0 rounded-t-2xl sm:rounded-2xl opacity-100" aria-hidden="true" />
           <header class="relative flex items-center justify-between shrink-0 px-4 sm:px-5 py-3 sm:py-4 border-b border-teal/20 bg-bg-card/90">
-            <span class="font-display text-sm font-medium text-muted-pale truncate pr-2">{{ title }}</span>
+            <span class="font-display text-sm font-medium text-muted-pale truncate pr-2">{{ titleValue }}</span>
             <div class="flex items-center gap-1 shrink-0">
               <a
                 v-if="iframeSrc"
@@ -97,18 +97,22 @@
 
 <script setup lang="ts">
 const props = defineProps<{
-  modelValue: boolean
-  pdfUrl: string
-  title?: string
+  modelValue: MaybeRef<boolean>
+  pdfUrl: MaybeRef<string>
+  title?: MaybeRef<string>
 }>()
 import { ASSETS } from '~/constants'
 const logoSrc = ASSETS.LOGO
 
 const emit = defineEmits<{ 'update:modelValue': [value: boolean] }>()
 
+const isOpen = computed(() => unref(props.modelValue))
+const pdfUrlValue = computed(() => unref(props.pdfUrl))
+const titleValue = computed(() => unref(props.title))
+
 const iframeSrc = computed(() => {
-  if (!props.modelValue) return ''
-  const url = props.pdfUrl?.trim()
+  if (!isOpen.value) return ''
+  const url = pdfUrlValue.value?.trim()
   if (!url) return ''
   if (url.startsWith('http://') || url.startsWith('https://')) return url
   if (import.meta.client && typeof window !== 'undefined') {
@@ -130,7 +134,7 @@ function onIframeLoad () {
   pdfLoading.value = false
 }
 
-watch(() => props.modelValue, (open) => {
+watch(isOpen, (open) => {
   if (import.meta.client && typeof document !== 'undefined') {
     document.body.style.overflow = open ? 'hidden' : ''
   }

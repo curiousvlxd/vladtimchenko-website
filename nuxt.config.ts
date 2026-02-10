@@ -80,12 +80,11 @@ export default defineNuxtConfig({
   css: ['~/assets/css/main.css'],
 
   runtimeConfig: {
-    server: {
-      githubSiteRepo: process.env.GITHUB_SITE_REPO ?? DEFAULT_GITHUB_SITE_REPO
-    },
+    githubSiteRepo: process.env.GITHUB_SITE_REPO ?? DEFAULT_GITHUB_SITE_REPO,
     public: {
       siteUrl: process.env.NUXT_PUBLIC_SITE_URL || 'https://vladtimchenko.dev',
-      siteRepoUrl: `https://github.com/${process.env.GITHUB_SITE_REPO ?? DEFAULT_GITHUB_SITE_REPO}`,
+      turnstileSiteKey: process.env.NUXT_PUBLIC_TURNSTILE_SITE_KEY ?? '',
+      formspreeFormId: process.env.NUXT_PUBLIC_FORMSPREE_FORM_ID ?? '',
       giscusRepo: process.env.GISCUS_REPO ?? 'curiousvlxd/vladtimchenko-website',
       giscusRepoId: process.env.GISCUS_REPO_ID ?? 'R_kgDORK_eZw',
       giscusCategory: process.env.GISCUS_CATEGORY ?? 'Announcements',

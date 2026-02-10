@@ -5,7 +5,7 @@ export default defineEventHandler(async (event) => {
   setHeader(event, 'Cache-Control', `public, s-maxage=${CACHE_MAX_AGE}, stale-while-revalidate`)
 
   const config = useRuntimeConfig(event)
-  const siteRepo = config.server?.githubSiteRepo
+  const siteRepo = config.githubSiteRepo
   if (!siteRepo) {
     return { stars: 0, url: config.public.siteRepoUrl || '' }
   }

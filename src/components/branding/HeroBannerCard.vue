@@ -21,7 +21,7 @@
           {{ HEADLINE }}
         </p>
         <p class="mt-3 text-muted text-sm">
-          "Be curious, not judgemental" · Ted Lasso
+          "Be curious, not judgemental" - Ted Lasso
         </p>
       </div>
       <div class="mt-8 pt-8 border-t border-teal/20 flex flex-wrap items-center justify-center gap-3">

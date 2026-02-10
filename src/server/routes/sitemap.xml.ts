@@ -1,3 +1,5 @@
+import { serverQueryContent } from '#content/server'
+
 export default defineEventHandler(async (event) => {
   setHeader(event, 'Content-Type', 'application/xml; charset=utf-8')
   setHeader(event, 'Cache-Control', 'public, max-age=3600')
@@ -9,10 +11,14 @@ export default defineEventHandler(async (event) => {
   )
   let paths: string[] = []
   try {
-    const posts = await queryContent('/feed').only(['_path', 'date']).find()
+    const posts = await serverQueryContent(event)
+      .where({ _path: /^\/?feed\// })
+      .only(['_path', 'date'])
+      .find()
     paths = (posts as Array<{ _path: string; date?: string }>).map((p) => {
+      const path = p._path.startsWith('/') ? p._path : `/${p._path}`
       const lastmod = p.date ? new Date(p.date).toISOString().slice(0, 10) : ''
-      return `<url><loc>${base}${p._path}</loc>${lastmod ? `<lastmod>${lastmod}</lastmod>` : ''}</url>`
+      return `<url><loc>${base}${path}</loc>${lastmod ? `<lastmod>${lastmod}</lastmod>` : ''}</url>`
     })
   } catch {
     paths = []

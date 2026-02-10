@@ -1,11 +1,13 @@
 <template>
   <div class="mx-auto max-w-4xl px-4 sm:px-6 py-12">
-    <h1 class="font-display text-3xl font-bold text-muted-pale mb-2">
-      Feed
-    </h1>
-    <p class="text-muted-light mb-10">
-      Notes and articles.
-    </p>
+    <div class="mb-6">
+      <h1 class="font-display text-3xl font-bold text-muted-pale mb-1">
+        Feed
+      </h1>
+      <p class="text-muted-light">
+        Notes and articles.
+      </p>
+    </div>
     <div class="mb-6">
       <label for="feed-search" class="sr-only">Search by title or tag</label>
       <input
