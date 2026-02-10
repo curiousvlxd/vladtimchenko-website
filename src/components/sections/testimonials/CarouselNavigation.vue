@@ -14,15 +14,15 @@
 
     <div 
       ref="containerRef"
-      class="relative overflow-hidden flex-1 w-full py-0.5"
+      class="carousel-viewport relative overflow-hidden flex-1 min-w-0 w-full py-0.5 px-2"
       @mouseenter="$emit('mouse-enter')"
       @mouseleave="$emit('mouse-leave')"
       @mousemove="$emit('mouse-move', $event)"
     >
       <div
         ref="carouselRef"
-        class="testimonials-carousel flex w-full"
-        :style="{ transform: `translateX(-${currentIndex * slideWidth}%)` }"
+        class="testimonials-carousel flex"
+        :style="{ transform: `translate3d(-${currentIndex * slideWidth}%, 0, 0) translateZ(0)` }"
         @touchstart="$emit('touch-start', $event)"
         @touchmove="$emit('touch-move', $event)"
         @touchend="$emit('touch-end', $event)"
@@ -79,8 +79,15 @@ defineExpose({
 </script>
 
 <style scoped>
+.carousel-viewport {
+  overflow: hidden;
+  isolation: isolate;
+}
+
 .testimonials-carousel {
-  transition: transform 0.5s cubic-bezier(0.4, 0, 0.2, 1);
-  will-change: transform;
+  width: 100%;
+  flex-shrink: 0;
+  backface-visibility: hidden;
+  transition: transform 0.45s cubic-bezier(0.25, 0.46, 0.45, 0.94);
 }
 </style>

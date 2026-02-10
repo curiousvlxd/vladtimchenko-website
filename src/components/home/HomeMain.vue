@@ -219,13 +219,15 @@
         <div class="space-y-1.5">
           <label for="message" class="block text-sm font-medium text-muted-light">Your message</label>
           <textarea
+            ref="messageTextareaRef"
             id="message"
             name="message"
             rows="4"
             v-model="contactMessage"
-            class="block w-full rounded-xl px-3 py-2 text-sm text-muted-pale placeholder:text-muted/70 transition-colors bg-bg-card border border-white/10 focus:outline-none resize-y"
+            class="contact-message-textarea block w-full min-h-[6.5rem] max-h-48 rounded-xl px-3 py-2 text-sm text-muted-pale placeholder:text-muted/70 transition-colors bg-bg-card border border-white/10 focus:outline-none resize-none overflow-y-auto"
             :class="contactErrors.message ? 'border-red-500 focus:border-red-400 focus:ring-1 focus:ring-red-400' : 'focus:border-teal focus:ring-1 focus:ring-teal'"
             placeholder="How can I help you?"
+            @input="adjustMessageHeight"
           />
           <p v-if="contactErrors.message" class="mt-1 text-xs text-red-400">{{ contactErrors.message }}</p>
         </div>
@@ -288,6 +290,15 @@ const {
 } = useContactForm()
 
 const contactTurnstileRef = ref<InstanceType<typeof ContactTurnstileWidget> | null>(null)
+const messageTextareaRef = ref<HTMLTextAreaElement | null>(null)
+const MESSAGE_TEXTAREA_MAX_HEIGHT = 192
+
+function adjustMessageHeight() {
+  const el = messageTextareaRef.value
+  if (!el) return
+  el.style.height = 'auto'
+  el.style.height = `${Math.min(el.scrollHeight, MESSAGE_TEXTAREA_MAX_HEIGHT)}px`
+}
 
 const config = useRuntimeConfig().public
 const contactFormAction = computed(() => {
@@ -324,6 +335,36 @@ const reposList = computed(() => (Array.isArray(repos.value) ? repos.value : [])
 
 const emit = defineEmits<{ mounted: [] }>()
 onMounted(() => {
-  nextTick(() => emit('mounted'))
+  nextTick(() => {
+    adjustMessageHeight()
+    emit('mounted')
+  })
 })
+
+watch(contactMessage, () => nextTick(adjustMessageHeight))
 </script>
+
+<style scoped>
+.contact-message-textarea {
+  scrollbar-width: thin;
+  scrollbar-color: rgba(24, 183, 164, 0.5) rgba(255, 255, 255, 0.06);
+}
+
+.contact-message-textarea::-webkit-scrollbar {
+  width: 8px;
+}
+
+.contact-message-textarea::-webkit-scrollbar-track {
+  background: rgba(255, 255, 255, 0.06);
+  border-radius: 4px;
+}
+
+.contact-message-textarea::-webkit-scrollbar-thumb {
+  background: rgba(24, 183, 164, 0.5);
+  border-radius: 4px;
+}
+
+.contact-message-textarea::-webkit-scrollbar-thumb:hover {
+  background: rgba(24, 183, 164, 0.7);
+}
+</style>

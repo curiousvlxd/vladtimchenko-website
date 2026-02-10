@@ -36,8 +36,12 @@
 
 <script setup lang="ts">
 const route = useRoute()
+const nuxtApp = useNuxtApp()
 const { public: { siteRepoUrl } } = useRuntimeConfig()
-const { data: siteRepo } = await useFetch<{ stars: number; url: string }>('/api/site-repo', { key: 'site-repo' })
+const { data: siteRepo } = await useFetch<{ stars: number; url: string }>('/api/site-repo', {
+  key: 'site-repo',
+  getCachedData: (key) => nuxtApp.payload.data[key] || nuxtApp.static.data[key]
+})
 const isMobile = ref(false)
 let resizeTimeout: ReturnType<typeof setTimeout> | null = null
 

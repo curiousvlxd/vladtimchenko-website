@@ -84,37 +84,17 @@ const initials = computed(() =>
   props.testimonial ? getInitials(props.testimonial.author) : ''
 )
 
-let scrollY = 0
-
 watch(
   () => props.testimonial,
   (value) => {
     if (!import.meta.client || typeof document === 'undefined') return
-    if (value) {
-      scrollY = window.scrollY || window.pageYOffset || 0
-      document.body.style.overflow = 'hidden'
-      document.body.style.position = 'fixed'
-      document.body.style.top = `-${scrollY}px`
-      document.body.style.width = '100%'
-    } else {
-      const savedY = scrollY
-      document.body.style.overflow = ''
-      document.body.style.position = ''
-      document.body.style.top = ''
-      document.body.style.width = ''
-      requestAnimationFrame(() => {
-        window.scrollTo(0, savedY)
-      })
-    }
+    document.body.style.overflow = value ? 'hidden' : ''
   }
 )
 
 onUnmounted(() => {
   if (!import.meta.client || typeof document === 'undefined') return
   document.body.style.overflow = ''
-  document.body.style.position = ''
-  document.body.style.top = ''
-  document.body.style.width = ''
 })
 </script>
 

@@ -24,10 +24,10 @@
       </div>
     </div>
 
-    <div class="flex-1 relative mb-3 min-h-[120px]">
+    <div class="testimonial-text-block flex-1 relative mb-3 min-h-[120px]">
       <div
         ref="textRef"
-        class="text-[15px] text-muted-pale leading-relaxed overflow-hidden"
+        class="text-[15px] text-muted-pale leading-relaxed overflow-hidden relative z-0"
         :class="{ 'line-clamp-5': showReadMore }"
       >
         <p
@@ -72,10 +72,49 @@ defineEmits<{
 const textRef = ref<HTMLElement>()
 const paragraphs = computed(() => getParagraphs(props.testimonial.text))
 const initials = computed(() => getInitials(props.testimonial.author))
-const showReadMore = computed(() => needsReadMore(textRef.value ?? null))
+const showReadMore = ref(false)
+
+function updateReadMore() {
+  showReadMore.value = needsReadMore(textRef.value ?? null)
+}
+
+let ro: ResizeObserver | null = null
+
+onMounted(() => {
+  updateReadMore()
+  const el = textRef.value
+  if (el) {
+    ro = new ResizeObserver(() => updateReadMore())
+    ro.observe(el)
+  }
+})
+
+onUnmounted(() => {
+  ro?.disconnect()
+})
+
+watch(textRef, (el) => {
+  if (el) {
+    nextTick(() => {
+      updateReadMore()
+      if (ro) ro.disconnect()
+      ro = new ResizeObserver(() => updateReadMore())
+      ro.observe(el)
+    })
+  }
+})
 </script>
 
 <style scoped>
+.testimonial-text-block {
+  isolation: isolate;
+}
+
+.line-clamp-5 {
+  -webkit-line-clamp: 5;
+  line-clamp: 5;
+}
+
 @media (max-width: 640px) {
   article {
     padding: 20px;
@@ -84,10 +123,7 @@ const showReadMore = computed(() => needsReadMore(textRef.value ?? null))
 
   .line-clamp-5 {
     -webkit-line-clamp: 4;
-  }
-
-  .h-\[60px\] {
-    height: 50px;
+    line-clamp: 4;
   }
 }
 </style>

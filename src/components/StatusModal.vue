@@ -74,36 +74,17 @@ function close() {
   emit('update:modelValue', false)
 }
 
-let scrollY = 0
 watch(
   () => props.modelValue,
   (isOpen) => {
     if (!import.meta.client || typeof document === 'undefined') return
-    if (isOpen) {
-      scrollY = window.scrollY || window.pageYOffset || 0
-      document.body.style.overflow = 'hidden'
-      document.body.style.position = 'fixed'
-      document.body.style.top = `-${scrollY}px`
-      document.body.style.width = '100%'
-    } else {
-      const savedY = scrollY
-      document.body.style.overflow = ''
-      document.body.style.position = ''
-      document.body.style.top = ''
-      document.body.style.width = ''
-      requestAnimationFrame(() => {
-        window.scrollTo(0, savedY)
-      })
-    }
+    document.body.style.overflow = isOpen ? 'hidden' : ''
   }
 )
 
 onUnmounted(() => {
   if (!import.meta.client || typeof document === 'undefined') return
   document.body.style.overflow = ''
-  document.body.style.position = ''
-  document.body.style.top = ''
-  document.body.style.width = ''
 })
 </script>
 

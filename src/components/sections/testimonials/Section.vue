@@ -12,33 +12,33 @@
     </p>
 
     <CarouselNavigation
-      ref="navigationRef"
-      :show-arrows="testimonials.length > cardsPerView && !isMobile"
-      :is-first="currentIndex === 0"
-      :is-last="currentIndex >= maxIndex"
-      :current-index="currentIndex"
-      :slide-width="slideWidth"
-      @previous="handlePrevious"
-      @next="handleNext"
-      @mouse-enter="handleMouseEnter"
-      @mouse-leave="handleMouseLeave"
-      @mouse-move="handleMouseMove"
-      @touch-start="handleTouchStart"
-      @touch-move="handleTouchMove"
-      @touch-end="handleTouchEnd"
-    >
-      <div
-        v-for="testimonial in testimonials"
-        :key="testimonial.id"
-        class="testimonial-card-wrapper"
-        :style="{ width: `${slideWidth}%` }"
+        ref="navigationRef"
+        :show-arrows="testimonials.length > cardsPerView && !isMobile"
+        :is-first="currentIndex === 0"
+        :is-last="currentIndex >= maxIndex"
+        :current-index="currentIndex"
+        :slide-width="slideWidth"
+        @previous="handlePrevious"
+        @next="handleNext"
+        @mouse-enter="handleMouseEnter"
+        @mouse-leave="handleMouseLeave"
+        @mouse-move="handleMouseMove"
+        @touch-start="handleTouchStart"
+        @touch-move="handleTouchMove"
+        @touch-end="handleTouchEnd"
       >
-        <TestimonialCard
-          :testimonial="testimonial"
-          @click="handleCardClick"
-          @read-more="handleCardClick"
-        />
-      </div>
+        <div
+          v-for="testimonial in testimonials"
+          :key="testimonial.id"
+          class="testimonial-card-wrapper"
+          :style="{ width: `${slideWidth}%` }"
+        >
+          <TestimonialCard
+            :testimonial="testimonial"
+            @click="handleCardClick"
+            @read-more="handleCardClick"
+          />
+        </div>
     </CarouselNavigation>
 
     <CarouselPagination
@@ -145,7 +145,7 @@ function handleGoToSlide(index: number) {
   startAutoplay()
 }
 
-function handleCardClick(testimonial: typeof testimonials[0]) {
+function handleCardClick(testimonial: (typeof testimonials)[0]) {
   openModal(testimonial)
 }
 
