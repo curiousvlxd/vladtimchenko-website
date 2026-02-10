@@ -86,11 +86,14 @@ watch(
       document.body.style.top = `-${scrollY}px`
       document.body.style.width = '100%'
     } else {
+      const savedY = scrollY
       document.body.style.overflow = ''
       document.body.style.position = ''
       document.body.style.top = ''
       document.body.style.width = ''
-      window.scrollTo({ top: scrollY })
+      requestAnimationFrame(() => {
+        window.scrollTo(0, savedY)
+      })
     }
   }
 )

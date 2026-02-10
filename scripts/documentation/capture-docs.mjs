@@ -24,59 +24,55 @@ async function capture(page, outPath) {
   await page.screenshot({ path: outPath, type: 'png' })
 }
 
+async function gotoReady(page, url, selector) {
+  await page.goto(url, { waitUntil: 'domcontentloaded', timeout: 60000 })
+  await page.waitForSelector(selector, { timeout: 20000 })
+  await page.waitForTimeout(300)
+}
+
+async function shot(page, outDir, name, index) {
+  const filename = `${index}-${name}.png`
+  await capture(page, path.join(outDir, filename))
+  console.log(filename)
+  return index + 1
+}
+
 async function main() {
   fs.mkdirSync(OUT_DIR, { recursive: true })
 
   const browser = await chromium.launch()
   const context = await browser.newContext({
     viewport: VIEWPORT,
-    deviceScaleFactor: DEVICE_SCALE_FACTOR
+    deviceScaleFactor: DEVICE_SCALE_FACTOR,
+    reducedMotion: 'reduce'
   })
   const page = await context.newPage()
+
   let index = 1
 
   await page.setViewportSize(VIEWPORT_ABOUT)
-  await page.goto(`${BASE_URL}/`, { waitUntil: 'networkidle' })
-  await page.waitForSelector('main', { timeout: 15000 })
-  await page.waitForSelector('[data-section="about"]', { timeout: 5000 })
-  const name1 = `${index}-home-about-section.png`
-  await capture(page, path.join(OUT_DIR, name1))
-  console.log(name1)
-  index++
+  await gotoReady(page, `${BASE_URL}/`, 'main')
+  await page.waitForSelector('[data-section="about"]', { timeout: 8000 })
+  index = await shot(page, OUT_DIR, 'home-about-section', index)
 
   await page.setViewportSize(VIEWPORT)
-  await page.goto(`${BASE_URL}/cv`, { waitUntil: 'networkidle' })
-  await page.waitForSelector('main, .cv-page', { timeout: 15000 })
-  const name2 = `${index}-home-cv.png`
-  await capture(page, path.join(OUT_DIR, name2))
-  console.log(name2)
-  index++
+  await gotoReady(page, `${BASE_URL}/cv`, 'main, .cv-page')
+  index = await shot(page, OUT_DIR, 'home-cv', index)
 
-  await page.goto(`${BASE_URL}/`, { waitUntil: 'networkidle' })
-  await page.waitForSelector('main', { timeout: 15000 })
+  await gotoReady(page, `${BASE_URL}/`, 'main')
   for (const sectionId of HOME_SECTIONS.slice(1)) {
     await page.evaluate((id) => document.getElementById(id)?.scrollIntoView({ block: 'start', behavior: 'instant' }), sectionId)
-    await page.waitForSelector(`[data-section="${sectionId}"]`, { timeout: 5000 })
-    const name = `${index}-home-${sectionId}-section.png`
-    await capture(page, path.join(OUT_DIR, name))
-    console.log(name)
-    index++
+    await page.waitForSelector(`[data-section="${sectionId}"]`, { timeout: 8000 })
+    index = await shot(page, OUT_DIR, `home-${sectionId}-section`, index)
   }
 
-  await page.goto(`${BASE_URL}/feed`, { waitUntil: 'networkidle' })
-  await page.waitForSelector('main, [class*="max-w-4xl"]', { timeout: 15000 })
-  const feedListName = `${index}-feed-list.png`
-  await capture(page, path.join(OUT_DIR, feedListName))
-  console.log(feedListName)
-  index++
+  await gotoReady(page, `${BASE_URL}/feed`, 'main, [class*="max-w-4xl"]')
+  index = await shot(page, OUT_DIR, 'feed-list', index)
 
   const firstPostLink = await page.locator('ul a[href^="/feed/"]').first().getAttribute('href').catch(() => null)
   if (firstPostLink) {
-    await page.goto(`${BASE_URL}${firstPostLink}`, { waitUntil: 'networkidle' })
-    await page.waitForSelector('main, article, [class*="prose"]', { timeout: 15000 })
-    const articleName = `${index}-feed-first-article.png`
-    await capture(page, path.join(OUT_DIR, articleName))
-    console.log(articleName)
+    await gotoReady(page, `${BASE_URL}${firstPostLink}`, 'main, article, [class*="prose"]')
+    index = await shot(page, OUT_DIR, 'feed-first-article', index)
   }
 
   await browser.close()
