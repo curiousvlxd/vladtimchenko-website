@@ -9,7 +9,7 @@ export const ASSETS = {
 export const HEADLINE = 'Software Engineer • Cloud-native .NET' as const
 
 export const CONTACT = {
-  EMAIL: 'vlxdtimchenko@gmail.com',
+  EMAIL: 'contact@vladtimchenko.dev',
   GITHUB: 'https://github.com/curiousvlxd',
   LINKEDIN: 'https://www.linkedin.com/in/vladtimchenko/',
   TELEGRAM: 'https://t.me/curiousvlxd',

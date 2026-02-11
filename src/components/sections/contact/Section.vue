@@ -104,11 +104,9 @@
 
       <input type="text" name="_gotcha" hidden>
 
-      <div class="contact-form-actions flex flex-col items-start pt-2 sm:pt-4" :style="contactActionsStyle">
-        <div class="contact-turnstile-slot w-full" :style="turnstileSlotStyle">
-          <ContactTurnstileWidget ref="contactTurnstileRef" />
-        </div>
+      <ContactTurnstileWidget ref="contactTurnstileRef" class="contact-turnstile-host" />
 
+      <div class="contact-form-actions flex flex-col items-start pt-2 sm:pt-4">
         <button
           type="submit"
           :disabled="contactSubmitting"
@@ -139,8 +137,6 @@ import StatusModal from '~/components/modals/status/StatusModal.vue'
 import ContactTurnstileWidget from '~/components/sections/contact/TurnstileWidget.client.vue'
 import {
   buildFormspreeEndpoint,
-  CONTACT_FORM_ACTIONS_GAP_PX,
-  CONTACT_TURNSTILE_SLOT_MIN_HEIGHT_PX,
   MESSAGE_TEXTAREA_MIN_HEIGHT_PX,
   MESSAGE_TEXTAREA_MAX_HEIGHT_PX
 } from '~/constants/contact/contact-form'
@@ -189,13 +185,6 @@ const messageTextareaStyle = computed(() => ({
   minHeight: `${MESSAGE_TEXTAREA_MIN_HEIGHT_PX}px`,
   maxHeight: `${MESSAGE_TEXTAREA_MAX_HEIGHT_PX}px`
 }))
-const contactActionsStyle = computed(() => ({
-  rowGap: `${CONTACT_FORM_ACTIONS_GAP_PX}px`
-}))
-const turnstileSlotStyle = computed(() => ({
-  minHeight: `${CONTACT_TURNSTILE_SLOT_MIN_HEIGHT_PX}px`
-}))
-
 const config = useRuntimeConfig().public
 const contactFormAction = computed(() => {
   const formId = (config.formspreeFormId as string)?.trim()
@@ -246,6 +235,13 @@ watch(contactMessage, () => {
 
 .contact-message-textarea::-webkit-scrollbar-thumb:hover {
   background: rgba(24, 183, 164, 0.7);
+}
+
+.contact-turnstile-host {
+  display: block;
+  width: 0;
+  height: 0;
+  overflow: hidden;
 }
 </style>
 

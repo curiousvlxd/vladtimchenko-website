@@ -6,6 +6,11 @@ export function useTextareaAutoResize(maxHeightPx: number, minHeightPx = 0) {
 
     if (!textarea) return
 
+    if (!textarea.value.trim()) {
+      textarea.style.height = `${minHeightPx}px`
+      return
+    }
+
     textarea.style.height = 'auto'
     textarea.style.height = `${Math.max(minHeightPx, Math.min(textarea.scrollHeight, maxHeightPx))}px`
   }

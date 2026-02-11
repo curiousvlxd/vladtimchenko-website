@@ -32,9 +32,6 @@ function render() {
   if (!siteKey || !containerRef.value || (window as any).turnstile?.render == null) return
   widgetId = (window as any).turnstile.render(containerRef.value, {
     sitekey: siteKey,
-    theme: 'dark',
-    size: 'normal',
-    appearance: 'interaction-only',
     callback: (t: string) => {
       token.value = t
     },
