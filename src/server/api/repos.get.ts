@@ -1,15 +1,6 @@
 import type { GitHubRepoResponse } from '../utils/github'
-
-const FEATURED_REPOS = [
-  'curiousvlxd/linkedin-badge-renderer',
-  'curiousvlxd/sentinel',
-  'curiousvlxd/well-insight-engine-backend',
-  'curiousvlxd/meety-backend',
-  'curiousvlxd/WellBites',
-  'curiousvlxd/gruvbox-ua-iterm'
-] as const
-
-const CACHE_MAX_AGE = 3600
+import { CACHE } from '~/constants/runtime/cache'
+import { FEATURED_REPOS } from '~/constants/repos/repos'
 
 interface RepoMeta {
   name: string
@@ -52,7 +43,11 @@ function toRepoMeta(fullName: string, res: GitHubRepoResponse | null): RepoMeta 
 
 export default defineEventHandler(async (event): Promise<RepoMeta[]> => {
   setHeader(event, 'Content-Type', 'application/json')
-  setHeader(event, 'Cache-Control', `public, s-maxage=${CACHE_MAX_AGE}, stale-while-revalidate`)
+  setHeader(
+    event,
+    'Cache-Control',
+    `public, s-maxage=${CACHE.DEFAULT_MAX_AGE_SECONDS}, stale-while-revalidate`
+  )
 
   const results: RepoMeta[] = []
   for (const fullName of FEATURED_REPOS) {

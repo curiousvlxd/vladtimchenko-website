@@ -1,11 +1,13 @@
 import { serverQueryContent } from '#content/server'
+import { requireSiteUrl } from '~/utils/site-url'
+import { CACHE } from '~/constants/runtime/cache'
 
 export default defineEventHandler(async (event) => {
   setHeader(event, 'Content-Type', 'application/xml; charset=utf-8')
-  setHeader(event, 'Cache-Control', 'public, max-age=3600')
+  setHeader(event, 'Cache-Control', `public, max-age=${CACHE.DEFAULT_MAX_AGE_SECONDS}`)
   const config = useRuntimeConfig(event)
-  const base = (config.public?.siteUrl || 'https://vladtimchenko.dev').replace(/\/+$/, '')
-  const { SITEMAP_PATHS } = await import('~/constants/navigation')
+  const base = requireSiteUrl(config.public?.siteUrl)
+  const { SITEMAP_PATHS } = await import('~/constants/navigation/menu')
   const staticUrls = SITEMAP_PATHS.map(
     (p) => `<url><loc>${base}${p}</loc></url>`
   )

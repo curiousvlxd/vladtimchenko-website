@@ -55,14 +55,14 @@
 </template>
 
 <script setup lang="ts">
-import { testimonials } from '../../../data/testimonials'
-import { TESTIMONIAL_CONSTANTS } from '../../../constants/testimonials'
-import { useResponsive } from '../../../composables/useResponsive'
-import { useCarousel } from '../../../composables/useCarousel'
-import { useSwipe } from '../../../composables/useSwipe'
-import { useHoverScroll } from '../../../composables/useHoverScroll'
-import { useTestimonialModal } from '../../../composables/useTestimonialModal'
-import { useAutoplay } from '../../../composables/useAutoplay'
+import { TESTIMONIAL_CONSTANTS } from '~/constants/testimonials/testimonials'
+import { testimonials } from '~/data/testimonials'
+import { useResponsive } from '~/composables/testimonials/useResponsive'
+import { useCarousel } from '~/composables/testimonials/useCarousel'
+import { useSwipe } from '~/composables/testimonials/useSwipe'
+import { useHoverScroll } from '~/composables/testimonials/useHoverScroll'
+import { useTestimonialModal } from '~/composables/testimonials/useTestimonialModal'
+import { useAutoplay } from '~/composables/testimonials/useAutoplay'
 import CarouselNavigation from './CarouselNavigation.vue'
 import CarouselPagination from './CarouselPagination.vue'
 import TestimonialCard from './TestimonialCard.vue'
@@ -76,13 +76,11 @@ defineProps<{
 const { isMobile } = useResponsive()
 const testimonialsRef = ref(testimonials)
 
-const cardsPerView = computed(() => {
-  if (isMobile.value) return TESTIMONIAL_CONSTANTS.CARDS_PER_VIEW.MOBILE
-  if (typeof window !== 'undefined' && window.innerWidth < TESTIMONIAL_CONSTANTS.TABLET_BREAKPOINT) {
-    return TESTIMONIAL_CONSTANTS.CARDS_PER_VIEW.TABLET
-  }
-  return TESTIMONIAL_CONSTANTS.CARDS_PER_VIEW.DESKTOP
-})
+const cardsPerView = computed(() =>
+  isMobile.value
+    ? TESTIMONIAL_CONSTANTS.CARDS_PER_VIEW.MOBILE
+    : TESTIMONIAL_CONSTANTS.CARDS_PER_VIEW.DESKTOP
+)
 
 const {
   currentIndex,
@@ -180,3 +178,4 @@ onMounted(() => {
   }
 }
 </style>
+

@@ -1,0 +1,83 @@
+.safe-area-pad {
+  padding-bottom: env(safe-area-inset-bottom, 0);
+}
+
+.pdf-modal-box {
+  padding-bottom: env(safe-area-inset-bottom, 0);
+}
+
+.pdf-modal-gradient {
+  background: radial-gradient(
+    ellipse 120% 80% at 50% 0%,
+    rgba(24, 183, 164, 0.08) 0%,
+    rgba(24, 183, 164, 0.02) 45%,
+    transparent 65%
+  );
+}
+
+.pdf-modal-enter-active,
+.pdf-modal-leave-active {
+  transition: opacity 0.25s ease;
+}
+
+.pdf-modal-enter-active .pdf-modal-box,
+.pdf-modal-leave-active .pdf-modal-box {
+  transition: transform 0.25s ease, opacity 0.25s ease;
+}
+
+.pdf-modal-enter-from,
+.pdf-modal-leave-to {
+  opacity: 0;
+}
+
+.pdf-modal-enter-from .pdf-modal-box,
+.pdf-modal-leave-to .pdf-modal-box {
+  opacity: 0;
+  transform: scale(0.96) translateY(8px);
+}
+
+.pdf-modal-loading-bar {
+  animation: pdf-loading 1.2s ease-in-out infinite;
+  width: 40%;
+}
+
+@keyframes pdf-loading {
+  0% {
+    transform: translateX(-100%);
+  }
+
+  50% {
+    transform: translateX(150%);
+  }
+
+  100% {
+    transform: translateX(-100%);
+  }
+}
+
+.pdf-loader-enter-active,
+.pdf-loader-leave-active {
+  transition: opacity 0.2s ease;
+}
+
+.pdf-loader-enter-from,
+.pdf-loader-leave-to {
+  opacity: 0;
+}
+
+.pdf-content-area {
+  min-height: 0;
+}
+
+.pdf-iframe,
+.pdf-embed {
+  height: 100%;
+  min-height: 400px;
+}
+
+@media (min-width: 640px) {
+  .pdf-iframe,
+  .pdf-embed {
+    min-height: 60vh;
+  }
+}

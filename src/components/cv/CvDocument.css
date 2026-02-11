@@ -1,0 +1,15 @@
+.cv-heading {
+  margin-bottom: 0.25rem;
+}
+
+.cv-link {
+  color: rgb(37, 99, 235);
+  text-decoration: underline;
+}
+
+@media print {
+  .cv-link {
+    color: rgb(37, 99, 235) !important;
+    text-decoration: underline !important;
+  }
+}

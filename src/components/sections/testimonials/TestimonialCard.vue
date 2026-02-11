@@ -58,7 +58,7 @@
 <script setup lang="ts">
 import type { Testimonial } from '../../../data/testimonials'
 import { getParagraphs, getInitials, needsReadMore } from '../../../utils/testimonials'
-import { motionItem } from '../../../constants/motion'
+import { motionItem } from '~/constants/ui/motion'
 
 const props = defineProps<{
   testimonial: Testimonial
@@ -127,3 +127,4 @@ watch(textRef, (el) => {
   }
 }
 </style>
+

@@ -1,0 +1,7 @@
+.section-nav-sidebar {
+  position: fixed;
+  top: 50%;
+  right: max(1rem, calc((100vw - 72rem) / 2 - 1rem));
+  transform: translateY(-50%);
+  z-index: 30;
+}

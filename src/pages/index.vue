@@ -11,7 +11,7 @@
     />
 
     <PdfModal
-      v-model="diploma.open"
+      v-model="isDiplomaOpen"
       :pdf-url="diploma.pdfUrl"
       :title="diploma.title"
     />
@@ -28,7 +28,7 @@
       </div>
       <div class="mt-2.5 pt-2 border-t border-white/[0.06] px-2 pb-[max(0.5rem,env(safe-area-inset-bottom))]">
         <p class="text-center text-sm text-muted flex flex-wrap items-center justify-center gap-x-2 gap-y-1 py-0.5">
-          <span>© {{ new Date().getFullYear() }} {{ home?.name ?? 'Vlad Timchenko' }}</span>
+          <span>© {{ new Date().getFullYear() }} {{ home?.name ?? SITE_NAME }}</span>
           <span aria-hidden="true" class="text-muted/60">·</span>
           <a
             :href="siteRepo?.url || siteRepoUrl"
@@ -59,7 +59,11 @@
 </template>
 
 <script setup lang="ts">
-import homeData from '../data/content/home.json'
+import homeData from '~/data/content/home.json'
+import PdfModal from '~/components/modals/pdf/PdfModal.vue'
+import { SITE_NAME } from '~/constants/app/site'
+import { useDiplomaModal } from '~/composables/modals/useDiplomaModal'
+import { useSectionNav } from '~/composables/navigation/useSectionNav'
 
 const homeReady = ref(false)
 const home = homeData as { name?: string; sectionTabs?: { id: string; label: string }[] }
@@ -76,6 +80,12 @@ const tabs = computed(() => home?.sectionTabs ?? [
 const { activeSection, firstTabId, scrollToSection } = useSectionNav(tabs)
 const diploma = useDiplomaModal()
 const openDiploma = diploma.openDiploma
+const isDiplomaOpen = computed({
+  get: () => diploma.open.value,
+  set: (value: boolean) => {
+    diploma.open.value = value
+  }
+})
 
 const nuxtApp = useNuxtApp()
 const { public: { siteRepoUrl } } = useRuntimeConfig()
@@ -90,3 +100,4 @@ const { data: siteRepo } = await useFetch<{ stars: number; url: string }>('/api/
   overflow: visible;
 }
 </style>
+

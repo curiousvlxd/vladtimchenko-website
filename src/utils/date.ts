@@ -1,7 +1,7 @@
 const DEFAULT_LOCALE = 'en-US'
 
 export function formatBlogDate(
-  date: string,
+  date: string | undefined,
   options: { month?: 'short' | 'long' } = {}
 ): string {
   if (!date) return ''

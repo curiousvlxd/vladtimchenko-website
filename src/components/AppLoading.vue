@@ -3,7 +3,7 @@
     <div
       v-show="loading"
       class="fixed inset-0 z-[100] flex flex-col items-center justify-center gap-6 bg-bg"
-      aria-hidden="!loading"
+      :aria-hidden="!loading"
     >
       <img
         :src="logoSrc"

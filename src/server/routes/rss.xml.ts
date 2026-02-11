@@ -1,10 +1,20 @@
 import { serverQueryContent } from '#content/server'
+import { requireSiteUrl } from '~/utils/site-url'
+import { CACHE } from '~/constants/runtime/cache'
+import {
+  FEED_META_TITLE,
+  SITE_DESCRIPTION
+} from '~/constants/app/site'
 
 export default defineEventHandler(async (event) => {
   setHeader(event, 'Content-Type', 'application/rss+xml; charset=utf-8')
-  setHeader(event, 'Cache-Control', 'public, max-age=0, s-maxage=3600, stale-while-revalidate=86400')
+  setHeader(
+    event,
+    'Cache-Control',
+    `public, max-age=0, s-maxage=${CACHE.DEFAULT_MAX_AGE_SECONDS}, stale-while-revalidate=${CACHE.STALE_WHILE_REVALIDATE_SECONDS}`
+  )
   const config = useRuntimeConfig(event)
-  const base = (config.public?.siteUrl || 'https://vladtimchenko.dev').replace(/\/+$/, '')
+  const base = requireSiteUrl(config.public?.siteUrl)
   let items = ''
   try {
     const posts = await serverQueryContent(event)
@@ -29,9 +39,9 @@ export default defineEventHandler(async (event) => {
   return `<?xml version="1.0" encoding="UTF-8"?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
-    <title>Vlad Timchenko · Feed</title>
+    <title>${FEED_META_TITLE}</title>
     <link>${base}/feed</link>
-    <description>Software Engineer • Cloud-native .NET</description>
+    <description>${SITE_DESCRIPTION}</description>
     <language>en-us</language>
     <lastBuildDate>${lastBuildDate}</lastBuildDate>
     <atom:link href="${base}/rss.xml" rel="self" type="application/rss+xml"/>

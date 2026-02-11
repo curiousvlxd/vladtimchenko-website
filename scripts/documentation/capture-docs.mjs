@@ -8,13 +8,14 @@ import {
   VIEWPORT,
   VIEWPORT_ABOUT,
   DEVICE_SCALE_FACTOR,
+  DEFAULT_BASE_URL,
   HOME_SECTIONS,
   hideDevtools,
   sleep
 } from './doc-screenshots-lib.mjs'
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url))
-const BASE_URL = process.argv[2] || process.env.BASE_URL || 'http://localhost:3000'
+const BASE_URL = process.argv[2] || process.env.BASE_URL || DEFAULT_BASE_URL
 const OUT_DIR = process.env.SCREENSHOTS_DIR || __dirname
 
 async function capture(page, outPath) {
@@ -25,7 +26,7 @@ async function capture(page, outPath) {
 }
 
 async function gotoReady(page, url, selector) {
-  await page.goto(url, { waitUntil: 'domcontentloaded', timeout: 60000 })
+  await page.goto(url, { waitUntil: 'load', timeout: 60000 })
   await page.waitForSelector(selector, { timeout: 20000 })
   await page.waitForTimeout(300)
 }

@@ -22,7 +22,7 @@
       <div
         ref="carouselRef"
         class="testimonials-carousel flex"
-        :style="{ transform: `translate3d(-${currentIndex * slideWidth}%, 0, 0) translateZ(0)` }"
+        :style="carouselStyle"
         @touchstart="$emit('touch-start', $event)"
         @touchmove="$emit('touch-move', $event)"
         @touchend="$emit('touch-end', $event)"
@@ -46,13 +46,21 @@
 </template>
 
 <script setup lang="ts">
-defineProps<{
+import { TESTIMONIAL_CONSTANTS } from '~/constants/testimonials/testimonials'
+
+const props = defineProps<{
   showArrows: boolean
   isFirst: boolean
   isLast: boolean
   currentIndex: number
   slideWidth: number
 }>()
+
+const carouselStyle = computed(() => ({
+  transform: `translate3d(-${props.currentIndex * props.slideWidth}%, 0, 0) translateZ(0)`,
+  '--carousel-duration': `${TESTIMONIAL_CONSTANTS.CAROUSEL_TRANSITION_DURATION_MS}ms`,
+  '--carousel-easing': TESTIMONIAL_CONSTANTS.CAROUSEL_TRANSITION_EASING
+}))
 
 defineEmits<{
   previous: []
@@ -88,6 +96,7 @@ defineExpose({
   width: 100%;
   flex-shrink: 0;
   backface-visibility: hidden;
-  transition: transform 0.45s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  transition: transform var(--carousel-duration, 0.45s) var(--carousel-easing, cubic-bezier(0.25, 0.46, 0.45, 0.94));
 }
 </style>
+

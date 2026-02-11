@@ -1,0 +1,58 @@
+.status-modal-overlay {
+  @apply fixed inset-0 z-[110] flex items-center justify-center p-4;
+  background: rgba(0, 0, 0, 0.8);
+  backdrop-filter: blur(4px);
+}
+
+.status-modal-card {
+  @apply relative w-full max-w-md flex flex-col items-center;
+  padding: 2.5rem 2rem;
+  border-radius: 1rem;
+  border: 1px solid rgba(24, 183, 164, 0.2);
+  background: rgba(24, 183, 164, 0.05);
+  box-shadow:
+    0 25px 50px -12px rgba(0, 0, 0, 0.5),
+    0 0 40px -10px rgba(24, 183, 164, 0.15);
+}
+
+.status-modal-close {
+  @apply absolute top-4 right-4 w-8 h-8 rounded-lg flex items-center justify-center cursor-pointer transition-all duration-200 shrink-0;
+  background: rgba(24, 183, 164, 0.1);
+  border: 1px solid rgba(24, 183, 164, 0.2);
+  color: #e6f1f4;
+}
+
+.status-modal-close:hover {
+  background: rgba(24, 183, 164, 0.2);
+  border-color: rgba(24, 183, 164, 0.4);
+  color: #18b7a4;
+}
+
+.status-modal-content {
+  @apply flex flex-col items-center text-center gap-3;
+}
+
+.status-modal-icon {
+  @apply w-10 h-10 rounded-full flex items-center justify-center border;
+}
+
+.status-modal-enter-active,
+.status-modal-leave-active {
+  transition: opacity 0.25s ease;
+}
+
+.status-modal-enter-active .status-modal-card,
+.status-modal-leave-active .status-modal-card {
+  transition: transform 0.25s ease, opacity 0.25s ease;
+}
+
+.status-modal-enter-from,
+.status-modal-leave-to {
+  opacity: 0;
+}
+
+.status-modal-enter-from .status-modal-card,
+.status-modal-leave-to .status-modal-card {
+  opacity: 0;
+  transform: scale(0.98) translateY(8px);
+}

@@ -39,7 +39,7 @@
                 <div class="font-semibold text-base text-muted-pale leading-tight">{{ testimonial.author }}</div>
                 <div class="text-sm text-muted-light mt-1 leading-tight">
                   {{ testimonial.position }}
-                  <span v-if="testimonial.company"> · {{ testimonial.company }}</span>
+                  <span v-if="testimonial.company"> - {{ testimonial.company }}</span>
                 </div>
               </div>
             </div>
@@ -65,8 +65,8 @@
 </template>
 
 <script setup lang="ts">
-import type { Testimonial } from '../../../data/testimonials'
-import { getParagraphs, getInitials } from '../../../utils/testimonials'
+import type { Testimonial } from '~/data/testimonials'
+import { getInitials, getParagraphs } from '~/utils/testimonials'
 
 const props = defineProps<{
   testimonial: Testimonial | null
@@ -84,47 +84,6 @@ const initials = computed(() =>
   props.testimonial ? getInitials(props.testimonial.author) : ''
 )
 
-watch(
-  () => props.testimonial,
-  (value) => {
-    if (!import.meta.client || typeof document === 'undefined') return
-    document.body.style.overflow = value ? 'hidden' : ''
-  }
-)
-
-onUnmounted(() => {
-  if (!import.meta.client || typeof document === 'undefined') return
-  document.body.style.overflow = ''
-})
 </script>
+<style scoped src="./TestimonialModal.css"></style>
 
-<style scoped>
-.testimonial-modal-enter-active,
-.testimonial-modal-leave-active {
-  transition: opacity 0.25s ease;
-}
-
-.testimonial-modal-enter-active > div,
-.testimonial-modal-leave-active > div {
-  transition: transform 0.25s ease, opacity 0.25s ease;
-}
-
-.testimonial-modal-enter-from,
-.testimonial-modal-leave-to {
-  opacity: 0;
-}
-
-.testimonial-modal-enter-from > div,
-.testimonial-modal-leave-to > div {
-  opacity: 0;
-  transform: scale(0.98) translateY(8px);
-}
-
-@media (max-width: 640px) {
-  .card-gradient-animated {
-    padding: 24px;
-    max-height: 85vh;
-    margin: 8px;
-  }
-}
-</style>

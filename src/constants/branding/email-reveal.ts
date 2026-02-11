@@ -1,0 +1,5 @@
+export const EMAIL_REVEAL = {
+  POPUP_GAP_PX: 8,
+  TAIL_HALF_WIDTH_PX: 6,
+  COPIED_RESET_MS: 2000
+} as const

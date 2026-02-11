@@ -9,54 +9,34 @@
       </svg>
       Back to Feed
     </NuxtLink>
-    <div v-if="pending" class="animate-pulse space-y-6">
-      <div class="h-9 w-3/4 rounded bg-teal/20" />
-      <div class="flex gap-3">
-        <div class="h-4 w-24 rounded bg-teal/10" />
-        <div class="h-4 w-16 rounded bg-teal/10" />
-      </div>
-      <div class="space-y-3 pt-4">
-        <div class="h-4 w-full rounded bg-teal/10" />
-        <div class="h-4 w-full rounded bg-teal/10" />
-        <div class="h-4 w-2/3 rounded bg-teal/10" />
-        <div class="h-4 w-full rounded bg-teal/10" />
-        <div class="h-4 w-4/5 rounded bg-teal/10" />
-      </div>
-    </div>
+
+    <FeedArticleSkeleton v-if="pending" />
+
     <article v-else-if="page" class="prose prose-invert max-w-none">
-      <header class="mb-8">
-        <h1 class="font-display text-3xl sm:text-4xl font-bold text-muted-pale">
-          {{ page.title }}
-        </h1>
-        <div class="mt-4 flex flex-wrap items-center gap-3 text-sm text-muted">
-          <time :datetime="page.date">{{ formatBlogDate(page.date, { month: 'long' }) }}</time>
-          <span v-if="readingTime">· {{ readingTime.text }}</span>
-          <span v-if="page.tags?.length" class="flex gap-2">
-            <NuxtLink
-              v-for="tag in page.tags"
-              :key="tag"
-              :to="getTagLink(tag)"
-              class="px-1.5 py-0.5 rounded bg-teal/15 text-teal-light hover:bg-teal/25"
-            >
-              {{ tag }}
-            </NuxtLink>
-          </span>
-        </div>
-      </header>
+      <FeedArticleHeader
+        :title="page.title ?? 'Post'"
+        :date="page.date ?? ''"
+        :tags="page.tags"
+        :reading-time-text="readingTime?.text ?? null"
+        :get-tag-link="getTagLink"
+      />
       <ContentRenderer v-if="page.body" :value="page" tag="div" class="content-body" />
     </article>
+
     <section v-else-if="pageError" class="text-muted-light">
       <p>Failed to load post.</p>
     </section>
+
     <section v-else-if="!page" class="text-muted-light">
       <p>Post not found.</p>
     </section>
+
     <section v-if="page && giscusEnabled" class="mt-12 pt-8 border-t border-teal/20">
       <h2 class="font-display text-xl font-semibold text-muted-pale mb-4">Comments</h2>
       <div class="min-h-[200px] rounded-2xl border border-teal/20 bg-bg-card/50 overflow-hidden">
         <ClientOnly>
           <GiscusComments
-            :repo="config.giscusRepo"
+            :repo="giscusRepo!"
             :repo-id="config.giscusRepoId"
             :category="config.giscusCategory"
             :category-id="config.giscusCategoryId"
@@ -79,6 +59,15 @@
 </template>
 
 <script setup lang="ts">
+import type { Repo } from '@giscus/vue'
+import FeedArticleHeader from '~/components/feed/FeedArticleHeader.vue'
+import FeedArticleSkeleton from '~/components/feed/FeedArticleSkeleton.vue'
+import GiscusComments from '~/components/feed/GiscusComments.client.vue'
+import { FEED } from '~/constants/feed/feed'
+import { PUBLIC_ASSETS } from '~/constants/app/public-assets'
+import { SITE_NAME } from '~/constants/app/site'
+import { omitQueryParam } from '~/utils/route-query'
+
 const route = useRoute()
 const slug = computed(() => route.params.slug as string)
 
@@ -91,7 +80,7 @@ const readingTime = computed(() => {
   if (!p?.body) return null
   const text = JSON.stringify(p.body)
   const words = text.split(/\s+/).filter(Boolean).length
-  const minutes = Math.max(1, Math.ceil(words / 200))
+  const minutes = Math.max(1, Math.ceil(words / FEED.WORDS_PER_MINUTE))
   return { text: `${minutes} min read` }
 })
 
@@ -101,7 +90,7 @@ watch([pending, page, pageError], () => {
   if (!page.value) throw createError({ statusCode: 404, statusMessage: 'Post not found' })
 }, { immediate: true })
 
-const pageTitle = computed(() => `${page.value?.title ?? 'Post'} · Vlad Timchenko`)
+const pageTitle = computed(() => `${page.value?.title ?? 'Post'} - ${SITE_NAME}`)
 const pageDescription = computed(() => (page.value?.description ?? (page.value as { excerpt?: string })?.excerpt) ?? '')
 
 useHead({
@@ -117,50 +106,55 @@ useHead({
 })
 
 const config = useRuntimeConfig().public
+
+function isGiscusRepo(value: string | undefined): value is Repo {
+  return typeof value === 'string' && value.includes('/')
+}
+
+const giscusRepo = computed<Repo | null>(() =>
+  isGiscusRepo(config.giscusRepo) ? config.giscusRepo : null
+)
+
 const giscusEnabled = computed(
   () =>
     Boolean(
-      config.giscusRepo &&
-        config.giscusRepoId &&
-        config.giscusCategory &&
-        config.giscusCategoryId
+      giscusRepo.value &&
+      config.giscusRepoId &&
+      config.giscusCategory &&
+      config.giscusCategoryId
     )
 )
 
 const requestURL = import.meta.server ? useRequestURL() : null
+const localhostNames = new Set<string>(FEED.LOCAL_HOSTNAMES)
 
 const giscusTheme = computed(() => {
-  const localHosts = ['localhost', '127.0.0.1', '0.0.0.0', '[::1]']
-
   if (import.meta.server) {
     const origin = requestURL?.origin || ''
     const hostname = requestURL?.hostname || ''
-    const isLocalhost = localHosts.includes(hostname)
+    const isLocalhost = localhostNames.has(hostname)
     if (isLocalhost) return 'dark'
-    return `${origin}${config.giscusThemePath || '/giscus-theme.css'}`
+    return `${origin}${config.giscusThemePath || PUBLIC_ASSETS.GISCUS_THEME}`
   }
 
   if (typeof window === 'undefined') return ''
 
   const { origin, hostname } = window.location
-  const isLocalhost = localHosts.includes(hostname)
+  const isLocalhost = localhostNames.has(hostname)
   if (isLocalhost) return 'dark'
 
-  return `${origin}${config.giscusThemePath || '/giscus-theme.css'}`
+  return `${origin}${config.giscusThemePath || PUBLIC_ASSETS.GISCUS_THEME}`
 })
 
 const giscusTerm = computed(() => `/feed/${slug.value}`)
 
 const backToFeedLink = computed(() => {
-  const query = { ...route.query }
-  delete query.giscus
+  const query = omitQueryParam(route.query, FEED.QUERY_PARAM_GISCUS)
   return { path: '/feed', query }
 })
 
 function getTagLink(tag: string) {
-  const query = { ...route.query }
-  delete query.giscus
+  const query = omitQueryParam(route.query, FEED.QUERY_PARAM_GISCUS)
   return { path: '/feed', query: { ...query, tag } }
 }
-
 </script>

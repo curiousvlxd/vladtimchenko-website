@@ -1,0 +1,28 @@
+.testimonial-modal-enter-active,
+.testimonial-modal-leave-active {
+  transition: opacity 0.25s ease;
+}
+
+.testimonial-modal-enter-active > div,
+.testimonial-modal-leave-active > div {
+  transition: transform 0.25s ease, opacity 0.25s ease;
+}
+
+.testimonial-modal-enter-from,
+.testimonial-modal-leave-to {
+  opacity: 0;
+}
+
+.testimonial-modal-enter-from > div,
+.testimonial-modal-leave-to > div {
+  opacity: 0;
+  transform: scale(0.98) translateY(8px);
+}
+
+@media (max-width: 640px) {
+  .card-gradient-animated {
+    padding: 24px;
+    max-height: 85vh;
+    margin: 8px;
+  }
+}

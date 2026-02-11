@@ -12,8 +12,8 @@
 </template>
 
 <script setup lang="ts">
-import type { IconName } from '~/constants/icons'
-import { getIcon } from '~/constants/icons'
+import type { IconName } from '~/constants/ui/icons'
+import { getIcon } from '~/constants/ui/icons'
 
 const props = withDefaults(
   defineProps<{ name: IconName; viewBox?: string }>(),
@@ -21,3 +21,4 @@ const props = withDefaults(
 )
 const icon = computed(() => getIcon(props.name))
 </script>
+
