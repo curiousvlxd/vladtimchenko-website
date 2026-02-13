@@ -10,6 +10,7 @@ import {
   DEVICE_SCALE_FACTOR,
   DEFAULT_BASE_URL,
   HOME_SECTIONS,
+  applyScreenshotFrame,
   hideDevtools,
   sleep
 } from './doc-screenshots-lib.mjs'
@@ -21,8 +22,9 @@ const OUT_DIR = process.env.SCREENSHOTS_DIR || __dirname
 async function capture(page, outPath) {
   await sleep(600)
   await hideDevtools(page)
+  await applyScreenshotFrame(page)
   await sleep(200)
-  await page.screenshot({ path: outPath, type: 'png' })
+  await page.screenshot({ path: outPath, type: 'png', omitBackground: true })
 }
 
 async function gotoReady(page, url, selector) {

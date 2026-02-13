@@ -56,8 +56,15 @@ import {
   FEED_META_TITLE
 } from '~/constants/app/site'
 import { omitQueryParam } from '~/utils/route-query'
+import { getSocialImageUrl } from '~/utils/social-image'
 
 const route = useRoute()
+const { public: { siteUrl } } = useRuntimeConfig()
+const feedSocialImage = getSocialImageUrl(siteUrl, {
+  title: FEED_META_TITLE,
+  subtitle: FEED_META_DESCRIPTION,
+  section: 'Feed'
+})
 
 const { data: raw, pending } = await useAsyncData('feed-list', () =>
   queryContent('/feed').sort({ date: -1 }).only(['title', 'description', 'date', 'tags', '_path']).find()
@@ -109,8 +116,11 @@ useHead({
     { name: 'description', content: FEED_META_DESCRIPTION },
     { property: 'og:title', content: FEED_META_TITLE },
     { property: 'og:description', content: FEED_META_DESCRIPTION },
+    { property: 'og:image', content: feedSocialImage },
+    { name: 'twitter:card', content: 'summary_large_image' },
     { name: 'twitter:title', content: FEED_META_TITLE },
-    { name: 'twitter:description', content: FEED_META_DESCRIPTION }
+    { name: 'twitter:description', content: FEED_META_DESCRIPTION },
+    { name: 'twitter:image', content: feedSocialImage }
   ]
 })
 

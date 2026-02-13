@@ -36,7 +36,6 @@
           <TestimonialCard
             :testimonial="testimonial"
             @click="handleCardClick"
-            @read-more="handleCardClick"
           />
         </div>
     </CarouselNavigation>

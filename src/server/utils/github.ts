@@ -5,8 +5,9 @@ function getHeaders(): Record<string, string> {
     Accept: 'application/vnd.github.v3+json',
     'User-Agent': 'vladtimchenko'
   }
-  const token = process.env.GITHUB_TOKEN
-  if (token) headers.Authorization = `Bearer ${token}`
+
+  const { githubToken } = useRuntimeConfig()
+  if (githubToken) headers.Authorization = `Bearer ${githubToken}`
   return headers
 }
 

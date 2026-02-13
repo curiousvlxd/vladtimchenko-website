@@ -13,9 +13,9 @@ import { requireSiteUrl } from '~/utils/site-url'
 import {
   SITE_DESCRIPTION,
   SITE_NAME,
-  SITE_OG_IMAGE_PATH,
   SITE_TITLE
 } from '~/constants/app/site'
+import { getSocialImageUrl } from '~/utils/social-image'
 
 const route = useRoute()
 const config = useRuntimeConfig()
@@ -26,7 +26,11 @@ const canonicalUrl = computed(() => {
   return `${siteUrl}${path}`
 })
 
-const ogImage = `${siteUrl}${SITE_OG_IMAGE_PATH}`
+const ogImage = getSocialImageUrl(config.public?.siteUrl as string | undefined, {
+  title: SITE_TITLE,
+  subtitle: SITE_DESCRIPTION,
+  section: 'Home'
+})
 
 useHead({
   link: [{ rel: 'canonical', href: canonicalUrl }],

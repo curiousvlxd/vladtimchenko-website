@@ -60,25 +60,7 @@
               </div>
             </div>
             <template v-else>
-              <Transition name="pdf-loader">
-                <div
-                  v-if="pdfLoading"
-                  class="absolute inset-0 z-10 flex flex-col items-center justify-center gap-6 bg-[#0d1218]"
-                  aria-hidden="true"
-                >
-                  <img
-                    :src="logoSrc"
-                    alt=""
-                    width="80"
-                    height="80"
-                    class="shrink-0 opacity-90"
-                    style="width: 80px; height: 80px; object-fit: contain;"
-                  />
-                  <div class="w-40 sm:w-52 h-1 rounded-full bg-bg-card overflow-hidden">
-                    <div class="h-full rounded-full bg-teal pdf-modal-loading-bar" />
-                  </div>
-                </div>
-              </Transition>
+              <ModalLoader :show="Boolean(iframeSrc) && pdfLoading" />
               <iframe
                 v-if="iframeSrc"
                 :key="'iframe-' + iframeSrc"
@@ -96,7 +78,7 @@
 </template>
 
 <script setup lang="ts">
-import { ASSETS } from '~/constants'
+import ModalLoader from '~/components/ui/ModalLoader.vue'
 import { PDF_MODAL } from '~/constants/modals/pdf-modal'
 import { useBodyScrollLock } from '~/composables/core/useBodyScrollLock'
 import { useEscapeKey } from '~/composables/core/useEscapeKey'
@@ -107,8 +89,6 @@ const props = defineProps<{
   pdfUrl: MaybeRef<string>
   title?: MaybeRef<string>
 }>()
-
-const logoSrc = ASSETS.LOGO
 
 const emit = defineEmits<{ 'update:modelValue': [value: boolean] }>()
 

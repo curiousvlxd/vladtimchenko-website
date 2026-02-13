@@ -61,9 +61,10 @@
 <script setup lang="ts">
 import homeData from '~/data/content/home.json'
 import PdfModal from '~/components/modals/pdf/PdfModal.vue'
-import { SITE_NAME } from '~/constants/app/site'
+import { SITE_DESCRIPTION, SITE_NAME, SITE_TITLE } from '~/constants/app/site'
 import { useDiplomaModal } from '~/composables/modals/useDiplomaModal'
 import { useSectionNav } from '~/composables/navigation/useSectionNav'
+import { getSocialImageUrl } from '~/utils/social-image'
 
 const homeReady = ref(false)
 const home = homeData as { name?: string; sectionTabs?: { id: string; label: string }[] }
@@ -88,7 +89,21 @@ const isDiplomaOpen = computed({
 })
 
 const nuxtApp = useNuxtApp()
-const { public: { siteRepoUrl } } = useRuntimeConfig()
+const { public: { siteRepoUrl, siteUrl } } = useRuntimeConfig()
+const socialImage = getSocialImageUrl(siteUrl, {
+  title: SITE_TITLE,
+  subtitle: SITE_DESCRIPTION,
+  section: 'Home'
+})
+
+useHead({
+  meta: [
+    { property: 'og:image', content: socialImage },
+    { name: 'twitter:card', content: 'summary_large_image' },
+    { name: 'twitter:image', content: socialImage }
+  ]
+})
+
 const { data: siteRepo } = await useFetch<{ stars: number; url: string }>('/api/site-repo', {
   key: 'site-repo',
   getCachedData: (key) => nuxtApp.payload.data[key] || nuxtApp.static.data[key]

@@ -25,10 +25,14 @@
 
           <div class="overflow-y-auto flex-1 min-h-0 p-8 pt-4">
             <div class="flex items-center gap-2 mb-4 pb-3 border-b border-teal/20">
-              <div class="w-6 h-6 flex items-center justify-center bg-[#0077b5] rounded text-white shrink-0">
+              <div
+                class="w-6 h-6 flex items-center justify-center rounded shrink-0 bg-[#0077b5] text-white"
+              >
                 <AppIcon name="linkedin" viewBox="0 0 24 24" class="w-4 h-4" />
               </div>
-              <span class="text-[11px] font-medium text-muted-light uppercase tracking-wider">LinkedIn Recommendation</span>
+              <span class="text-[11px] font-medium text-muted-light uppercase tracking-wider">
+                LinkedIn Recommendation
+              </span>
             </div>
 
             <div class="flex items-center gap-3 mb-4">
@@ -55,7 +59,7 @@
             </div>
 
             <div class="mt-6 pt-5 border-t border-teal/20 text-sm text-muted-light">
-              {{ testimonial.date }}
+              <div>{{ testimonial.date }}</div>
             </div>
           </div>
         </div>
@@ -83,7 +87,5 @@ const paragraphs = computed(() =>
 const initials = computed(() =>
   props.testimonial ? getInitials(props.testimonial.author) : ''
 )
-
 </script>
 <style scoped src="./TestimonialModal.css"></style>
-

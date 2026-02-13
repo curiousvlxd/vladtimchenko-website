@@ -36,35 +36,6 @@
   transform: scale(0.96) translateY(8px);
 }
 
-.pdf-modal-loading-bar {
-  animation: pdf-loading 1.2s ease-in-out infinite;
-  width: 40%;
-}
-
-@keyframes pdf-loading {
-  0% {
-    transform: translateX(-100%);
-  }
-
-  50% {
-    transform: translateX(150%);
-  }
-
-  100% {
-    transform: translateX(-100%);
-  }
-}
-
-.pdf-loader-enter-active,
-.pdf-loader-leave-active {
-  transition: opacity 0.2s ease;
-}
-
-.pdf-loader-enter-from,
-.pdf-loader-leave-to {
-  opacity: 0;
-}
-
 .pdf-content-area {
   min-height: 0;
 }

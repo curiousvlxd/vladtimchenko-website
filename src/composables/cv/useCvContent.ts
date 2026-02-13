@@ -6,6 +6,7 @@ import { volunteeringEntries } from '~/data/volunteering'
 import { CV_PAGE } from '~/constants/cv/cv'
 import { SITE_NAME } from '~/constants/app/site'
 import { requireSiteUrl } from '~/utils/site-url'
+import { getSocialImageUrl } from '~/utils/social-image'
 
 interface CvHomeContent {
   name?: string
@@ -31,7 +32,11 @@ export function useCvContent() {
   const cvUrl = `${siteUrl}${CV_PAGE.PATH}`
   const cvTitle = `${CV_PAGE.TITLE_PREFIX}${homeName || SITE_NAME}`
   const cvDescription = CV_PAGE.DESCRIPTION
-  const imageUrl = `${siteUrl}${CV_PAGE.OG_IMAGE_PATH}`
+  const imageUrl = getSocialImageUrl(config.public.siteUrl, {
+    title: cvTitle,
+    subtitle: cvDescription,
+    section: 'CV'
+  })
 
   useHead({
     title: cvTitle,
