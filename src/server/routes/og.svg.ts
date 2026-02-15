@@ -1,5 +1,5 @@
-import { CACHE } from '~/constants/runtime/cache'
-import { SITE_NAME } from '~/constants/app/site'
+import { CACHE } from '~/common/constants/runtime/cache'
+import { SITE_NAME } from '~/common/constants/app/site'
 
 const OG_WIDTH = 1200
 const OG_HEIGHT = 630

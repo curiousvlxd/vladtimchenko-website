@@ -1,10 +1,5 @@
 <template>
-  <DocumentSkeleton
-    v-show="!cvReady"
-    :sections="skeletonSections"
-  />
-
-  <div v-show="cvReady" class="cv-page mx-auto max-w-5xl px-4 sm:px-6 py-8 sm:py-12">
+  <div class="cv-page mx-auto max-w-5xl px-4 sm:px-6 py-8 sm:py-12">
     <div class="cv-actions no-print mb-6 flex flex-wrap items-center gap-3">
       <NuxtLink to="/" class="inline-flex items-center gap-2 text-sm text-muted-light hover:text-teal transition-colors">
         <AppIcon name="back" class="w-4 h-4" />
@@ -40,12 +35,13 @@
 </template>
 
 <script setup lang="ts">
-import CvDocument from '~/components/cv/CvDocument.vue'
-import DocumentSkeleton from '~/components/ui/skeleton/DocumentSkeleton.vue'
-import { useCvContent } from '~/composables/cv/useCvContent'
-import { useCvPdfExport } from '~/composables/cv/useCvPdfExport'
-import { CV_PAGE } from '~/constants/cv/cv'
-import { CV_SKELETON } from '~/constants/ui/skeleton'
+import CvDocument from '~/features/cv/components/CvDocument.vue'
+import { useCvContent } from '~/features/cv/composables/useCvContent'
+import { useCvPdfExport } from '~/features/cv/composables/useCvPdfExport'
+import { CV_PAGE } from '~/features/cv/constants'
+import { SITE_NAME } from '~/common/constants/app/site'
+import { getSocialImageUrl } from '~/utils/social-image'
+import { requireSiteUrl } from '~/utils/site-url'
 
 const {
   homeName,
@@ -56,18 +52,6 @@ const {
   volunteeringEntries
 } = useCvContent()
 
-const cvReady = ref(false)
-
-const skeletonSections = [
-  { id: 'profile', titleWidth: '4rem' },
-  { id: 'skills', titleWidth: '6rem', lines: ['100%'] },
-  {
-    id: 'experience',
-    titleWidth: '7rem',
-    entryCount: CV_SKELETON.EXPERIENCE_ENTRY_COUNT
-  }
-]
-
 const { pdfExporting, exportPdf } = useCvPdfExport(() => ({
   homeName,
   profileText,
@@ -77,10 +61,46 @@ const { pdfExporting, exportPdf } = useCvPdfExport(() => ({
   volunteeringEntries
 }))
 
-onMounted(() => {
-  nextTick(() => {
-    cvReady.value = true
-  })
+const { public: { siteUrl } } = useRuntimeConfig()
+const absoluteSiteUrl = requireSiteUrl(siteUrl)
+const pageTitle = `CV - ${SITE_NAME}`
+const pageDescription = 'Detailed CV of Vlad Timchenko: backend engineering, cloud-native .NET, production systems, and recent experience.'
+const socialImage = getSocialImageUrl(siteUrl, {
+  title: pageTitle,
+  subtitle: pageDescription,
+  section: 'CV',
+  url: '/cv'
+})
+
+useHead({
+  title: pageTitle,
+  meta: [
+    { name: 'description', content: pageDescription },
+    { property: 'og:title', content: pageTitle },
+    { property: 'og:description', content: pageDescription },
+    { property: 'og:image', content: socialImage },
+    { property: 'og:type', content: 'profile' },
+    { name: 'twitter:card', content: 'summary_large_image' },
+    { name: 'twitter:title', content: pageTitle },
+    { name: 'twitter:description', content: pageDescription },
+    { name: 'twitter:image', content: socialImage }
+  ],
+  script: [
+    {
+      type: 'application/ld+json',
+      children: JSON.stringify({
+        '@context': 'https://schema.org',
+        '@type': 'ProfilePage',
+        name: pageTitle,
+        description: pageDescription,
+        url: `${absoluteSiteUrl}/cv`,
+        mainEntity: {
+          '@type': 'Person',
+          name: homeName.value || SITE_NAME
+        }
+      })
+    }
+  ]
 })
 </script>
 

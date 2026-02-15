@@ -1,4 +1,4 @@
-import { CACHE } from '~/constants/runtime/cache'
+import { CACHE } from '~/common/constants/runtime/cache'
 
 export default defineEventHandler(async (event) => {
   setHeader(event, 'Content-Type', 'application/json')

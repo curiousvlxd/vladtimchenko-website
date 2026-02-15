@@ -1,6 +1,6 @@
 import type { GitHubRepoResponse } from '../utils/github'
-import { CACHE } from '~/constants/runtime/cache'
-import { FEATURED_REPOS } from '~/constants/repos/repos'
+import { CACHE } from '~/common/constants/runtime/cache'
+import { FEATURED_REPOS } from '~/features/repos/constants'
 
 interface RepoMeta {
   name: string

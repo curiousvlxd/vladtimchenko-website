@@ -1,10 +1,10 @@
 import { serverQueryContent } from '#content/server'
 import { requireSiteUrl } from '~/utils/site-url'
-import { CACHE } from '~/constants/runtime/cache'
+import { CACHE } from '~/common/constants/runtime/cache'
 import {
   FEED_META_TITLE,
   SITE_DESCRIPTION
-} from '~/constants/app/site'
+} from '~/common/constants/app/site'
 
 export default defineEventHandler(async (event) => {
   setHeader(event, 'Content-Type', 'application/rss+xml; charset=utf-8')

@@ -2,11 +2,8 @@ export const VIEWPORT = { width: 1280, height: 800 }
 export const VIEWPORT_ABOUT = { width: 1280, height: 1100 }
 export const DEVICE_SCALE_FACTOR = 2
 export const DEFAULT_BASE_URL = 'http://localhost:3000'
-export const SCREENSHOT_FRAME = {
-  inset: 12,
-  radius: 16,
-  borderColor: 'rgba(24, 183, 164, 0.3)',
-  shadow: '0 16px 34px rgba(0,0,0,0.24), inset 0 0 0 1px rgba(24,183,164,0.12)'
+export const SCREENSHOT_FINAL_CROP = {
+  radius: 32
 }
 
 export const HOME_SECTIONS = ['about', 'experience', 'volunteering', 'education', 'testimonials', 'projects', 'contact']
@@ -34,9 +31,9 @@ export async function hideDevtools(page) {
   }, DEVMODS_SELECTORS)
 }
 
-export async function applyScreenshotFrame(page) {
-  await page.evaluate((frame) => {
-    const styleId = 'doc-screenshot-frame-style'
+export async function applyScreenshotLayout(page) {
+  await page.evaluate(() => {
+    const styleId = 'doc-screenshot-layout-style'
     let style = document.getElementById(styleId)
     if (!style) {
       style = document.createElement('style')
@@ -44,43 +41,52 @@ export async function applyScreenshotFrame(page) {
       document.head.appendChild(style)
     }
 
-    const rootCandidates = ['#__nuxt', '#__layout', '[data-v-app]', 'body > div:first-child']
-    const appRoot = rootCandidates
-      .map((selector) => document.querySelector(selector))
-      .find((node) => node instanceof HTMLElement)
-
-    if (!(appRoot instanceof HTMLElement)) return
-
-    document.documentElement.setAttribute('data-doc-screenshot-frame', '1')
-    appRoot.setAttribute('data-doc-screenshot-root', '1')
+    document.documentElement.setAttribute('data-doc-screenshot-layout', '1')
 
     style.textContent = `
-      html[data-doc-screenshot-frame='1'],
-      html[data-doc-screenshot-frame='1'] body {
-        background: transparent !important;
+      html[data-doc-screenshot-layout='1'] {
+        scrollbar-gutter: auto !important;
       }
 
-      html[data-doc-screenshot-frame='1'] body {
-        margin: 0 !important;
-        padding: ${frame.inset}px !important;
-        box-sizing: border-box !important;
+      html[data-doc-screenshot-layout='1'],
+      html[data-doc-screenshot-layout='1'] body {
+        scrollbar-width: none !important;
       }
 
-      html[data-doc-screenshot-frame='1'] [data-doc-screenshot-root='1'] {
-        min-height: calc(100vh - ${frame.inset * 2}px) !important;
-        border-radius: ${frame.radius}px !important;
-        overflow: hidden !important;
-        border: 1px solid ${frame.borderColor} !important;
-        box-shadow: ${frame.shadow} !important;
-      }
-
-      html[data-doc-screenshot-frame='1'] .layout-footer {
-        left: ${frame.inset}px !important;
-        right: ${frame.inset}px !important;
-        bottom: ${frame.inset}px !important;
+      html[data-doc-screenshot-layout='1']::-webkit-scrollbar,
+      html[data-doc-screenshot-layout='1'] body::-webkit-scrollbar {
+        width: 0 !important;
+        height: 0 !important;
       }
     `
-  }, SCREENSHOT_FRAME)
+  })
+}
+
+export async function saveFinalRoundedScreenshot(buffer, outPath, viewport, options = SCREENSHOT_FINAL_CROP) {
+  const sharp = (await import('sharp')).default
+  const source = sharp(buffer)
+  const metadata = await source.metadata()
+
+  if (!metadata.width || !metadata.height || !viewport?.width || !viewport?.height) {
+    await source.png().toFile(outPath)
+    return
+  }
+
+  const scaleX = metadata.width / viewport.width
+  const scaleY = metadata.height / viewport.height
+  const radiusPx = Math.max(0, Math.round(options.radius * Math.min(scaleX, scaleY)))
+
+  const cropWidth = Math.max(1, metadata.width)
+  const cropHeight = Math.max(1, metadata.height)
+
+  const maskSvg = Buffer.from(
+    `<svg width="${cropWidth}" height="${cropHeight}" xmlns="http://www.w3.org/2000/svg"><rect x="0" y="0" width="${cropWidth}" height="${cropHeight}" rx="${radiusPx}" ry="${radiusPx}" fill="#fff"/></svg>`
+  )
+
+  await source
+    .composite([{ input: maskSvg, blend: 'dest-in' }])
+    .png()
+    .toFile(outPath)
 }
 
 export function sleep(ms) {

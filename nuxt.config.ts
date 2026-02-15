@@ -1,5 +1,5 @@
 import { resolve } from 'node:path'
-import { PUBLIC_ASSETS } from './src/constants/app/public-assets'
+import { PUBLIC_ASSETS } from './src/common/constants/app/public-assets'
 import {
   DEFAULT_GISCUS_CATEGORY,
   DEFAULT_GISCUS_CATEGORY_ID,
@@ -9,12 +9,12 @@ import {
   DEFAULT_GITHUB_SITE_REPO,
   DEFAULT_SITE_REPO_URL,
   DEFAULT_SITE_URL
-} from './src/constants/runtime/runtime-config'
+} from './src/common/constants/runtime/runtime-config'
 import {
   SITE_DESCRIPTION,
   SITE_KEYWORDS,
   SITE_TITLE
-} from './src/constants/app/site'
+} from './src/common/constants/app/site'
 
 export default defineNuxtConfig({
   compatibilityDate: '2025-02-07',
@@ -24,6 +24,17 @@ export default defineNuxtConfig({
   },
   devtools: { enabled: true },
   modules: ['@nuxt/content', '@nuxtjs/tailwindcss', '@vueuse/motion/nuxt'],
+  components: {
+    dirs: [
+      { path: '~/common/components', pathPrefix: true },
+      { path: '~/features/home/components', pathPrefix: true },
+      { path: '~/features/feed/components', pathPrefix: true },
+      { path: '~/features/cv/components', pathPrefix: true },
+      { path: '~/features/contact/components', pathPrefix: true },
+      { path: '~/features/modals/components', pathPrefix: true },
+      { path: '~/features/testimonials/components', pathPrefix: true }
+    ]
+  },
 
   nitro: {
     preset: 'cloudflare_pages',
@@ -67,6 +78,8 @@ export default defineNuxtConfig({
         { charset: 'utf-8' },
         { name: 'viewport', content: 'width=device-width, initial-scale=1' },
         { name: 'description', content: SITE_DESCRIPTION },
+        { name: 'robots', content: 'index,follow,max-image-preview:large,max-snippet:-1,max-video-preview:-1' },
+        { name: 'googlebot', content: 'index,follow,max-image-preview:large,max-snippet:-1,max-video-preview:-1' },
         { name: 'keywords', content: SITE_KEYWORDS },
         { name: 'msapplication-TileColor', content: '#05090E' },
         { name: 'msapplication-TileImage', content: PUBLIC_ASSETS.MSTILE },
@@ -82,6 +95,7 @@ export default defineNuxtConfig({
         { rel: 'mask-icon', href: PUBLIC_ASSETS.MASK_ICON, color: '#18B7A4' },
         { rel: 'alternate', type: 'application/rss+xml', title: 'RSS Feed', href: '/rss.xml' },
         { rel: 'prefetch', href: '/feed' },
+        { rel: 'prefetch', href: '/cv' },
         { rel: 'preconnect', href: 'https://fonts.googleapis.com' },
         { rel: 'preconnect', href: 'https://fonts.gstatic.com', crossorigin: '' },
         { rel: 'stylesheet', href: 'https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&family=Space+Grotesk:wght@400;500;600;700&display=swap' }

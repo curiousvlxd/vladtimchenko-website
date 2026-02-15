@@ -1,5 +1,5 @@
 import { requireSiteUrl } from '~/utils/site-url'
-import { CACHE } from '~/constants/runtime/cache'
+import { CACHE } from '~/common/constants/runtime/cache'
 
 export default defineEventHandler((event) => {
   const config = useRuntimeConfig(event)
@@ -9,6 +9,7 @@ export default defineEventHandler((event) => {
   return `User-agent: *
 Allow: /
 
+Host: ${base}
 Sitemap: ${base}/sitemap.xml
 Sitemap: ${base}/rss.xml
 `

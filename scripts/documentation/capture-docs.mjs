@@ -10,7 +10,8 @@ import {
   DEVICE_SCALE_FACTOR,
   DEFAULT_BASE_URL,
   HOME_SECTIONS,
-  applyScreenshotFrame,
+  applyScreenshotLayout,
+  saveFinalRoundedScreenshot,
   hideDevtools,
   sleep
 } from './doc-screenshots-lib.mjs'
@@ -22,9 +23,10 @@ const OUT_DIR = process.env.SCREENSHOTS_DIR || __dirname
 async function capture(page, outPath) {
   await sleep(600)
   await hideDevtools(page)
-  await applyScreenshotFrame(page)
+  await applyScreenshotLayout(page)
   await sleep(200)
-  await page.screenshot({ path: outPath, type: 'png', omitBackground: true })
+  const screenshot = await page.screenshot({ type: 'png', omitBackground: true })
+  await saveFinalRoundedScreenshot(screenshot, outPath, page.viewportSize())
 }
 
 async function gotoReady(page, url, selector) {

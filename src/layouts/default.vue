@@ -14,7 +14,7 @@ import {
   SITE_DESCRIPTION,
   SITE_NAME,
   SITE_TITLE
-} from '~/constants/app/site'
+} from '~/common/constants/app/site'
 import { getSocialImageUrl } from '~/utils/social-image'
 
 const route = useRoute()

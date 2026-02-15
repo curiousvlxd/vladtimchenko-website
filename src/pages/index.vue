@@ -1,7 +1,6 @@
 <template>
   <div class="home-content-container flex gap-8 lg:gap-12 mx-auto max-w-6xl px-4 sm:px-6 pt-8 sm:pt-10 pb-[7rem] sm:pb-[7rem] lg:pb-12">
-    <HomeMainSkeleton v-show="!homeReady" class="min-w-0 flex-1 max-w-4xl" />
-    <HomeMain v-show="homeReady" :open-diploma="openDiploma" @mounted="homeReady = true" />
+    <HomeMain :open-diploma="openDiploma" />
 
     <LayoutSectionNavSidebar
       :sections="tabs"
@@ -28,20 +27,20 @@
       </div>
       <div class="mt-2.5 pt-2 border-t border-white/[0.06] px-2 pb-[max(0.5rem,env(safe-area-inset-bottom))]">
         <p class="text-center text-sm text-muted flex flex-wrap items-center justify-center gap-x-2 gap-y-1 py-0.5">
-          <span>© {{ new Date().getFullYear() }} {{ home?.name ?? SITE_NAME }}</span>
-          <span aria-hidden="true" class="text-muted/60">·</span>
+          <span>&copy; {{ new Date().getFullYear() }} {{ home?.name ?? SITE_NAME }}</span>
+          <span aria-hidden="true" class="text-muted/60">&middot;</span>
           <a
             :href="siteRepo?.url || siteRepoUrl"
             target="_blank"
             rel="noopener noreferrer"
             class="inline-flex items-center gap-1.5 text-muted-light hover:text-teal transition-colors"
           >
-            <span aria-hidden="true">★</span>
+            <span aria-hidden="true">&#9733;</span>
             <span v-if="siteRepo && siteRepo.stars >= 0">{{ siteRepo.stars }}</span>
-            <span v-if="siteRepo">·</span>
+            <span v-if="siteRepo">&middot;</span>
             <span>View source on GitHub</span>
           </a>
-          <span aria-hidden="true" class="text-muted/60">·</span>
+          <span aria-hidden="true" class="text-muted/60">&middot;</span>
           <a
             href="/rss.xml"
             target="_blank"
@@ -60,13 +59,12 @@
 
 <script setup lang="ts">
 import homeData from '~/data/content/home.json'
-import PdfModal from '~/components/modals/pdf/PdfModal.vue'
-import { SITE_DESCRIPTION, SITE_NAME, SITE_TITLE } from '~/constants/app/site'
-import { useDiplomaModal } from '~/composables/modals/useDiplomaModal'
-import { useSectionNav } from '~/composables/navigation/useSectionNav'
+import PdfModal from '~/features/modals/components/pdf/PdfModal.vue'
+import { SITE_DESCRIPTION, SITE_NAME, SITE_TITLE } from '~/common/constants/app/site'
+import { useDiplomaModal } from '~/features/modals/composables/useDiplomaModal'
+import { useSectionNav } from '~/features/navigation/composables/useSectionNav'
 import { getSocialImageUrl } from '~/utils/social-image'
 
-const homeReady = ref(false)
 const home = homeData as { name?: string; sectionTabs?: { id: string; label: string }[] }
 
 const tabs = computed(() => home?.sectionTabs ?? [
@@ -104,8 +102,9 @@ useHead({
   ]
 })
 
-const { data: siteRepo } = await useFetch<{ stars: number; url: string }>('/api/site-repo', {
+const { data: siteRepo } = useLazyFetch<{ stars: number; url: string }>('/api/site-repo', {
   key: 'site-repo',
+  default: () => null,
   getCachedData: (key) => nuxtApp.payload.data[key] || nuxtApp.static.data[key]
 })
 </script>
@@ -115,4 +114,3 @@ const { data: siteRepo } = await useFetch<{ stars: number; url: string }>('/api/
   overflow: visible;
 }
 </style>
-

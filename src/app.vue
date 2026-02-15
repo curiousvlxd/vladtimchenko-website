@@ -3,7 +3,16 @@
     <AppLoading v-if="loading" />
 
     <NuxtLayout>
-      <NuxtPage />
+      <NuxtPage>
+        <template #default="{ Component, route }">
+          <Suspense :timeout="0">
+            <component :is="Component" />
+            <template #fallback>
+              <AppRouteSkeleton :path="route?.path" />
+            </template>
+          </Suspense>
+        </template>
+      </NuxtPage>
     </NuxtLayout>
   </div>
 </template>

@@ -48,13 +48,13 @@
 </template>
 
 <script setup lang="ts">
-import FeedListItem, { type FeedListPost } from '~/components/feed/FeedListItem.vue'
-import FeedListSkeleton from '~/components/feed/FeedListSkeleton.vue'
-import { FEED } from '~/constants/feed/feed'
+import FeedListItem, { type FeedListPost } from '~/features/feed/components/FeedListItem.vue'
+import FeedListSkeleton from '~/features/feed/components/FeedListSkeleton.vue'
+import { FEED } from '~/features/feed/constants'
 import {
   FEED_META_DESCRIPTION,
   FEED_META_TITLE
-} from '~/constants/app/site'
+} from '~/common/constants/app/site'
 import { omitQueryParam } from '~/utils/route-query'
 import { getSocialImageUrl } from '~/utils/social-image'
 
@@ -66,8 +66,14 @@ const feedSocialImage = getSocialImageUrl(siteUrl, {
   section: 'Feed'
 })
 
-const { data: raw, pending } = await useAsyncData('feed-list', () =>
-  queryContent('/feed').sort({ date: -1 }).only(['title', 'description', 'date', 'tags', '_path']).find()
+const { data: raw, pending } = useLazyAsyncData<FeedListPost[]>(
+  'feed-list',
+  () =>
+    queryContent('/feed')
+      .sort({ date: -1 })
+      .only(['title', 'description', 'date', 'tags', '_path'])
+      .find() as Promise<FeedListPost[]>,
+  { default: () => [] }
 )
 
 const searchQuery = ref('')
