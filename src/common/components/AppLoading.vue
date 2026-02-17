@@ -3,6 +3,7 @@
     <div
       v-show="loading"
       class="fixed inset-0 z-[100] flex flex-col items-center justify-center gap-6 bg-bg"
+      :class="isBlockingInput ? 'pointer-events-auto' : 'pointer-events-none'"
       :aria-hidden="!loading"
     >
       <img
@@ -37,6 +38,7 @@ const appReady = useState('app-ready', () => !shouldShowInitially)
 const logoSrc = ASSETS.LOGO
 
 const progress = ref(0)
+const isBlockingInput = ref(shouldShowInitially)
 let startedAt = 0
 let timer: ReturnType<typeof setInterval> | null = null
 
@@ -73,6 +75,7 @@ watch(
   appReady,
   (ready) => {
     if (!ready || !loading.value) return
+    isBlockingInput.value = false
     if (timer) {
       clearInterval(timer)
       timer = null

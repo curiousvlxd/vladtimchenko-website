@@ -28,10 +28,10 @@ export default defineNuxtConfig({
     public: resolve(process.cwd(), 'public')
   },
   devtools: { enabled: false },
-  features: {
-    inlineStyles: true
-  },
   modules: ['@nuxt/content', '@nuxtjs/tailwindcss'],
+  tailwindcss: {
+    cssPath: '~/assets/css/main.css'
+  },
   components: {
     dirs: [
       { path: '~/common/components', pathPrefix: true },
@@ -53,22 +53,22 @@ export default defineNuxtConfig({
     routeRules: {
       '/': {
         headers: {
-          'Cache-Control': 'public, max-age=0, must-revalidate, no-transform'
+          'Cache-Control': 'public, max-age=0, must-revalidate'
         }
       },
       '/cv': {
         headers: {
-          'Cache-Control': 'public, max-age=0, must-revalidate, no-transform'
+          'Cache-Control': 'public, max-age=0, must-revalidate'
         }
       },
       '/feed': {
         headers: {
-          'Cache-Control': 'public, max-age=0, must-revalidate, no-transform'
+          'Cache-Control': 'public, max-age=0, must-revalidate'
         }
       },
       '/feed/**': {
         headers: {
-          'Cache-Control': 'public, max-age=0, must-revalidate, no-transform'
+          'Cache-Control': 'public, max-age=0, must-revalidate'
         }
       },
       '/_nuxt/**': {
@@ -152,8 +152,6 @@ export default defineNuxtConfig({
     },
     pageTransition: false
   },
-
-  css: ['~/assets/css/main.css'],
 
   runtimeConfig: {
     githubSiteRepo: process.env.GITHUB_SITE_REPO ?? DEFAULT_GITHUB_SITE_REPO,
