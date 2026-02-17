@@ -5,7 +5,7 @@ import { spawn } from 'node:child_process'
 import { fileURLToPath } from 'node:url'
 import { chromium } from 'playwright'
 
-export const DEFAULT_LIGHTHOUSE_OUT_DIR = 'screenshots/performance'
+export const DEFAULT_LIGHTHOUSE_OUT_DIR = 'performance'
 
 export const MOBILE_REPORT_NAME = 'lighthouse-mobile.report.json'
 export const DESKTOP_REPORT_NAME = 'lighthouse-desktop.report.json'

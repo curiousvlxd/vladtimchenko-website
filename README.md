@@ -56,25 +56,31 @@ The workflow:
 
 Concurrency is enabled to cancel in-progress runs on new pushes.
 
-**Screenshots automation:**  
-When src/\*\*, public/\*\*, or relevant config or dependency files change, the workflow:
+**Documentation screenshots automation:**  
+At the end of deploy (when `SITE_URL` is set), the workflow:
 - runs Playwright
 - captures documentation screenshots
-- publishes them to the assets branch under screenshots
+- publishes them to the `assets` branch under `documentation/`
 
-Images are served directly from the assets branch via raw.githubusercontent.com.
+Local run:
+
+```bash
+npm run docs:screenshots -- https://vladtimchenko.dev documentation
+```
 
 **Performance cards automation:**  
-At the end of deploy, the workflow runs Lighthouse (mobile + desktop) against `SITE_URL` and generates two branded PNG cards:
-- `screenshots/performance/lighthouse-mobile.png`
-- `screenshots/performance/lighthouse-desktop.png`
+At the end of deploy (when `SITE_URL` is set), the workflow runs Lighthouse (mobile + desktop) and generates two branded PNG cards:
+- `performance/lighthouse-mobile.png`
+- `performance/lighthouse-desktop.png`
 
 It also saves raw JSON reports in the same folder for diffing across runs.  
 Local run:
 
 ```bash
-npm run lighthouse:cards -- https://vladtimchenko.dev
+npm run lighthouse:cards -- https://vladtimchenko.dev performance
 ```
+
+Images are served directly from the `assets` branch via `raw.githubusercontent.com`.
 
 **Secrets and vars:**
 - CLOUDFLARE_API_TOKEN
@@ -82,7 +88,9 @@ npm run lighthouse:cards -- https://vladtimchenko.dev
 - CF_PAGES_PROJECT
 
 Optional:
-- SITE_URL (base URL for screenshot capture)
+- SITE_URL (base URL for documentation and performance captures)
+- NUXT_PUBLIC_TURNSTILE_SITE_KEY (Cloudflare Turnstile site key for contact form protection)
+- NUXT_PUBLIC_FORMSPREE_FORM_ID (Formspree form ID for contact form submission)
 - GITHUB_SITE_REPO
 - Giscus-related runtime variables
 
@@ -90,75 +98,76 @@ Optional:
 
 ## Showcase
 
-Generated automatically by scripts/documentation/capture-docs.mjs and published to the assets branch.  
+Generated automatically by `scripts/documentation/capture-docs.mjs` and `scripts/performance/generate-lighthouse-cards.mjs`, then published to the `assets` branch under `documentation/` and `performance/`.  
 Used as a visual showcase of layout, content structure, and integrations.
 
 ### Lighthouse - Mobile
 
-![Lighthouse Mobile](https://raw.githubusercontent.com/curiousvlxd/vladtimchenko-website/assets/screenshots/performance/lighthouse-mobile.png)
+![Lighthouse Mobile](https://raw.githubusercontent.com/curiousvlxd/vladtimchenko-website/assets/performance/lighthouse-mobile.png)
 
 ---
 
 ### Lighthouse - Desktop
 
-![Lighthouse Desktop](https://raw.githubusercontent.com/curiousvlxd/vladtimchenko-website/assets/screenshots/performance/lighthouse-desktop.png)
+![Lighthouse Desktop](https://raw.githubusercontent.com/curiousvlxd/vladtimchenko-website/assets/performance/lighthouse-desktop.png)
 
 ---
 
 ### About
 
-![About](https://raw.githubusercontent.com/curiousvlxd/vladtimchenko-website/assets/screenshots/1-home-about-section.png)
+![About](https://raw.githubusercontent.com/curiousvlxd/vladtimchenko-website/assets/documentation/1-home-about-section.png)
 
 ---
 
 ### CV
 
-![CV](https://raw.githubusercontent.com/curiousvlxd/vladtimchenko-website/assets/screenshots/2-home-cv.png)
+![CV](https://raw.githubusercontent.com/curiousvlxd/vladtimchenko-website/assets/documentation/2-home-cv.png)
 
 ---
 
 ### Experience
 
-![Experience](https://raw.githubusercontent.com/curiousvlxd/vladtimchenko-website/assets/screenshots/3-home-experience-section.png)
+![Experience](https://raw.githubusercontent.com/curiousvlxd/vladtimchenko-website/assets/documentation/3-home-experience-section.png)
 
 ---
 
 ### Volunteering
 
-![Volunteering](https://raw.githubusercontent.com/curiousvlxd/vladtimchenko-website/assets/screenshots/4-home-volunteering-section.png)
+![Volunteering](https://raw.githubusercontent.com/curiousvlxd/vladtimchenko-website/assets/documentation/4-home-volunteering-section.png)
 
 ---
 
 ### Education
 
-![Education](https://raw.githubusercontent.com/curiousvlxd/vladtimchenko-website/assets/screenshots/5-home-education-section.png)
+![Education](https://raw.githubusercontent.com/curiousvlxd/vladtimchenko-website/assets/documentation/5-home-education-section.png)
 
 ---
 
 ### Testimonials
 
-![Testimonials](https://raw.githubusercontent.com/curiousvlxd/vladtimchenko-website/assets/screenshots/6-home-testimonials-section.png)
+![Testimonials](https://raw.githubusercontent.com/curiousvlxd/vladtimchenko-website/assets/documentation/6-home-testimonials-section.png)
 
 ---
 
 ### Projects
 
-![Projects](https://raw.githubusercontent.com/curiousvlxd/vladtimchenko-website/assets/screenshots/7-home-projects-section.png)
+![Projects](https://raw.githubusercontent.com/curiousvlxd/vladtimchenko-website/assets/documentation/7-home-projects-section.png)
 
 ---
 
 ### Get in touch
 
-![Get in touch](https://raw.githubusercontent.com/curiousvlxd/vladtimchenko-website/assets/screenshots/8-home-contact-section.png)
+![Get in touch](https://raw.githubusercontent.com/curiousvlxd/vladtimchenko-website/assets/documentation/8-home-contact-section.png)
 
 ---
 
 ### Feed
 
-![Feed](https://raw.githubusercontent.com/curiousvlxd/vladtimchenko-website/assets/screenshots/9-feed-list.png)
+![Feed](https://raw.githubusercontent.com/curiousvlxd/vladtimchenko-website/assets/documentation/9-feed-list.png)
 
 ---
 
 ### Article
 
-![Article](https://raw.githubusercontent.com/curiousvlxd/vladtimchenko-website/assets/screenshots/10-feed-first-article.png)
+![Article](https://raw.githubusercontent.com/curiousvlxd/vladtimchenko-website/assets/documentation/10-feed-first-article.png)
+

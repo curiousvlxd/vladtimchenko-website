@@ -2,6 +2,7 @@ export const VIEWPORT = { width: 1280, height: 800 }
 export const VIEWPORT_ABOUT = { width: 1280, height: 1100 }
 export const DEVICE_SCALE_FACTOR = 2
 export const DEFAULT_BASE_URL = 'http://localhost:3000'
+export const DEFAULT_DOCS_OUT_DIR = 'documentation'
 export const SCREENSHOT_FINAL_CROP = {
   radius: 32
 }

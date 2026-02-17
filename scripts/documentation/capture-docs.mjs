@@ -1,7 +1,6 @@
 #!/usr/bin/env node
 
 import { chromium } from 'playwright'
-import { fileURLToPath } from 'url'
 import path from 'path'
 import fs from 'fs'
 import {
@@ -9,6 +8,7 @@ import {
   VIEWPORT_ABOUT,
   DEVICE_SCALE_FACTOR,
   DEFAULT_BASE_URL,
+  DEFAULT_DOCS_OUT_DIR,
   HOME_SECTIONS,
   applyScreenshotLayout,
   saveFinalRoundedScreenshot,
@@ -16,9 +16,8 @@ import {
   sleep
 } from './doc-screenshots-lib.mjs'
 
-const __dirname = path.dirname(fileURLToPath(import.meta.url))
 const BASE_URL = process.argv[2] || process.env.BASE_URL || DEFAULT_BASE_URL
-const OUT_DIR = process.env.SCREENSHOTS_DIR || __dirname
+const OUT_DIR = process.argv[3] || process.env.DOCS_OUT_DIR || process.env.SCREENSHOTS_DIR || DEFAULT_DOCS_OUT_DIR
 
 async function capture(page, outPath) {
   await sleep(600)

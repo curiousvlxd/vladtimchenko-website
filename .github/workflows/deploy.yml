@@ -59,25 +59,24 @@ jobs:
         run: npx playwright install chromium --with-deps
 
       - name: Capture docs screenshots
-        if: steps.changes.outputs.screenshots == 'true'
+        if: ${{ steps.changes.outputs.screenshots == 'true' || vars.SITE_URL != '' }}
         env:
           BASE_URL: ${{ vars.SITE_URL }}
-          SCREENSHOTS_DIR: screenshots
-        run: node scripts/documentation/capture-docs.mjs
+          DOCS_OUT_DIR: .assets/documentation
+        run: npm run docs:screenshots -- ${{ vars.SITE_URL }} .assets/documentation
 
       - name: Capture Lighthouse performance cards
-        if: ${{ vars.SITE_URL != '' }}
+        if: ${{ steps.changes.outputs.screenshots == 'true' || vars.SITE_URL != '' }}
         env:
-          LIGHTHOUSE_OUT_DIR: screenshots/performance
-        run: npm run lighthouse:cards -- ${{ vars.SITE_URL }}
+          LIGHTHOUSE_OUT_DIR: .assets/performance
+        run: npm run lighthouse:cards -- ${{ vars.SITE_URL }} .assets/performance
 
-      - name: Publish screenshots to assets branch
+      - name: Publish documentation and performance to assets branch
         if: ${{ steps.changes.outputs.screenshots == 'true' || vars.SITE_URL != '' }}
         uses: peaceiris/actions-gh-pages@v4
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           publish_branch: assets
-          publish_dir: screenshots
-          destination_dir: screenshots
-          commit_message: "chore: update screenshots (${{ github.sha }})"
+          publish_dir: .assets
+          commit_message: "chore: update documentation and performance assets (${{ github.sha }})"
           force_orphan: true

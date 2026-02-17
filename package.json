@@ -8,6 +8,7 @@
     "dev": "cross-env NITRO_NO_UNIX_SOCKET=1 nuxt dev",
     "generate": "nuxt generate",
     "preview": "nuxt preview",
+    "docs:screenshots": "node scripts/documentation/capture-docs.mjs",
     "lighthouse:cards": "node scripts/performance/generate-lighthouse-cards.mjs"
   },
   "dependencies": {
