@@ -23,3 +23,54 @@ const emit = defineEmits<{
   (event: 'click', payload: MouseEvent): void
 }>()
 </script>
+
+<style scoped>
+.markdown-renderer :deep(pre) {
+  @apply font-mono text-sm rounded-lg border border-teal/20 bg-bg-card;
+}
+
+.markdown-renderer :deep(code) {
+  @apply font-mono text-teal-light px-1.5 py-0.5 rounded bg-teal/10;
+}
+
+.markdown-renderer :deep(pre code) {
+  @apply p-0 bg-transparent text-inherit;
+}
+
+.markdown-renderer :deep(img) {
+  display: block;
+  width: 100%;
+  max-width: 100%;
+  height: auto;
+  margin: 1.15rem 0 1.6rem;
+  border-radius: 1rem;
+  border: 1px solid rgba(24, 183, 164, 0.2);
+  background: rgba(24, 183, 164, 0.05);
+  box-shadow: none;
+  transition: box-shadow 0.2s ease, border-color 0.2s ease;
+  cursor: zoom-in;
+}
+
+.markdown-renderer :deep(img:hover) {
+  border-color: rgba(24, 183, 164, 0.4);
+  box-shadow: 0 0 24px rgba(24, 183, 164, 0.15);
+}
+
+.markdown-renderer :deep(table) {
+  display: block;
+  overflow-x: auto;
+  width: 100%;
+}
+
+@media (min-width: 768px) {
+  .markdown-renderer :deep(table) {
+    display: table;
+  }
+}
+
+@media (hover: none) {
+  .markdown-renderer :deep(img:hover) {
+    box-shadow: none;
+  }
+}
+</style>

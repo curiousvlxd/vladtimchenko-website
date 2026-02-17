@@ -46,11 +46,16 @@
       <p>Post not found.</p>
     </section>
 
-    <section v-if="page && giscusEnabled" class="mt-12 pt-8 border-t border-teal/20">
+    <section
+      v-if="page && giscusEnabled"
+      ref="commentsSectionRef"
+      class="mt-12 pt-8 border-t border-teal/20"
+    >
       <h2 class="font-display text-xl font-semibold text-muted-pale mb-4">Comments</h2>
       <div class="min-h-[200px] rounded-2xl border border-teal/20 bg-bg-card/50 overflow-hidden">
         <ClientOnly>
           <GiscusComments
+            v-if="shouldMountComments"
             :repo="giscusRepo!"
             :repo-id="config.giscusRepoId"
             :category="config.giscusCategory"
@@ -64,6 +69,7 @@
             :theme="giscusTheme"
             lang="en"
           />
+          <div v-else class="min-h-[200px]" />
           <template #fallback>
             <div class="min-h-[200px]" />
           </template>
@@ -98,6 +104,8 @@ const route = useRoute()
 const slug = computed(() => route.params.slug as string)
 type LightboxImage = { src: string; alt: string }
 const lightboxImage = ref<LightboxImage | null>(null)
+const commentsSectionRef = ref<HTMLElement | null>(null)
+const commentsVisible = ref(false)
 
 const { data: page, pending, error: pageError } = useLazyAsyncData(`feed-${slug.value}`, () =>
   queryContent('/feed', slug.value).findOne()
@@ -192,6 +200,9 @@ const giscusTheme = computed(() => {
 })
 
 const giscusTerm = computed(() => `/feed/${slug.value}`)
+const shouldMountComments = computed(
+  () => giscusEnabled.value && commentsVisible.value
+)
 
 const backToFeedLink = computed(() => {
   const query = omitQueryParam(route.query, FEED.QUERY_PARAM_GISCUS)
@@ -251,5 +262,38 @@ function handleImageModalModelValue(value: boolean) {
 
 watch(() => route.fullPath, () => {
   closeImageLightbox()
+})
+
+let commentsObserver: IntersectionObserver | null = null
+
+onMounted(() => {
+  if (typeof IntersectionObserver === 'undefined') {
+    commentsVisible.value = true
+    return
+  }
+
+  commentsObserver = new IntersectionObserver(
+    (entries) => {
+      if (!entries.some((entry) => entry.isIntersecting)) return
+      commentsVisible.value = true
+      commentsObserver?.disconnect()
+      commentsObserver = null
+    },
+    { rootMargin: '200px 0px' }
+  )
+
+  if (commentsSectionRef.value) {
+    commentsObserver.observe(commentsSectionRef.value)
+  }
+})
+
+watch([commentsSectionRef, giscusEnabled], ([el, enabled]) => {
+  if (!enabled || !el || commentsVisible.value || !commentsObserver) return
+  commentsObserver.observe(el)
+})
+
+onUnmounted(() => {
+  commentsObserver?.disconnect()
+  commentsObserver = null
 })
 </script>

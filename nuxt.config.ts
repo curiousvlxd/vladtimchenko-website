@@ -28,6 +28,9 @@ export default defineNuxtConfig({
     public: resolve(process.cwd(), 'public')
   },
   devtools: { enabled: false },
+  features: {
+    inlineStyles: true
+  },
   modules: ['@nuxt/content', '@nuxtjs/tailwindcss'],
   components: {
     dirs: [
@@ -48,6 +51,26 @@ export default defineNuxtConfig({
       autoSubfolderIndex: false
     },
     routeRules: {
+      '/': {
+        headers: {
+          'Cache-Control': 'public, max-age=0, must-revalidate, no-transform'
+        }
+      },
+      '/cv': {
+        headers: {
+          'Cache-Control': 'public, max-age=0, must-revalidate, no-transform'
+        }
+      },
+      '/feed': {
+        headers: {
+          'Cache-Control': 'public, max-age=0, must-revalidate, no-transform'
+        }
+      },
+      '/feed/**': {
+        headers: {
+          'Cache-Control': 'public, max-age=0, must-revalidate, no-transform'
+        }
+      },
       '/_nuxt/**': {
         headers: {
           'Cache-Control': 'public, max-age=31536000, immutable'
@@ -66,7 +89,15 @@ export default defineNuxtConfig({
   spaLoadingTemplate: false,
   experimental: {
     appManifest: true,
-    lazyHydration: true
+    lazyHydration: true,
+    defaults: {
+      nuxtLink: {
+        prefetch: false,
+        prefetchOn: {
+          visibility: false
+        }
+      }
+    }
   },
 
   content: {

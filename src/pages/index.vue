@@ -91,7 +91,6 @@ const isDiplomaOpen = computed({
   }
 })
 
-const nuxtApp = useNuxtApp()
 const { public: { siteRepoUrl, siteUrl } } = useRuntimeConfig()
 const socialImage = getSocialImageUrl(siteUrl, {
   title: SITE_TITLE,
@@ -120,11 +119,60 @@ useHead({
   ]
 })
 
-const { data: siteRepo } = useLazyFetch<{ stars: number; url: string }>('/api/site-repo', {
-  key: 'site-repo',
-  server: false,
-  default: () => null,
-  getCachedData: (key) => nuxtApp.payload.data[key] || nuxtApp.static.data[key]
+const siteRepo = ref<{ stars: number; url: string } | null>(null)
+
+let siteRepoLoaded = false
+let siteRepoIdleTimer: ReturnType<typeof setTimeout> | null = null
+const siteRepoInteractionEvents: Array<keyof WindowEventMap> = [
+  'pointerdown',
+  'keydown',
+  'touchstart'
+]
+
+async function loadSiteRepo() {
+  if (siteRepoLoaded) return
+  siteRepoLoaded = true
+  if (siteRepoIdleTimer) {
+    clearTimeout(siteRepoIdleTimer)
+    siteRepoIdleTimer = null
+  }
+  siteRepoInteractionEvents.forEach((eventName) => {
+    window.removeEventListener(eventName, loadSiteRepo)
+  })
+
+  try {
+    siteRepo.value = await $fetch<{ stars: number; url: string }>('/api/site-repo')
+  } catch {
+    siteRepo.value = null
+  }
+}
+
+onMounted(() => {
+  siteRepoInteractionEvents.forEach((eventName) => {
+    window.addEventListener(eventName, loadSiteRepo, { once: true, passive: true })
+  })
+
+  siteRepoIdleTimer = setTimeout(() => {
+    if ('requestIdleCallback' in window) {
+      window.requestIdleCallback(() => {
+        void loadSiteRepo()
+      }, { timeout: 1500 })
+      return
+    }
+
+    void loadSiteRepo()
+  }, 2600)
+})
+
+onUnmounted(() => {
+  if (siteRepoIdleTimer) {
+    clearTimeout(siteRepoIdleTimer)
+    siteRepoIdleTimer = null
+  }
+
+  siteRepoInteractionEvents.forEach((eventName) => {
+    window.removeEventListener(eventName, loadSiteRepo)
+  })
 })
 </script>
 

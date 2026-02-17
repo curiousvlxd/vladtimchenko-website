@@ -8,18 +8,21 @@
     />
 
     <LazyExperienceSection
+      class="defer-render"
       :hydrate-on-visible="{ rootMargin: '280px' }"
       :title="home.experience?.title"
       :entries="experienceEntries"
     />
 
     <LazyVolunteeringSection
+      class="defer-render"
       :hydrate-on-visible="{ rootMargin: '240px' }"
       :title="home.volunteering?.title"
       :entries="volunteeringEntries"
     />
 
     <LazyEducationSection
+      class="defer-render"
       :hydrate-on-visible="{ rootMargin: '220px' }"
       :title="home.education?.title"
       :entries="educationEntries"
@@ -27,18 +30,21 @@
     />
 
     <LazyTestimonialsSection
+      class="defer-render"
       :hydrate-on-visible="{ rootMargin: '220px' }"
       :title="home.testimonials?.title"
       :description="home.testimonials?.description"
     />
 
     <LazyProjectsSection
+      class="defer-render"
       :hydrate-on-visible="{ rootMargin: '220px' }"
       :title="home.projects?.title"
       :description="home.projects?.description"
     />
 
     <LazyContactSection
+      class="defer-render"
       :hydrate-on-visible="{ rootMargin: '180px' }"
       :title="home.contact?.title"
       :description="home.contact?.description"
