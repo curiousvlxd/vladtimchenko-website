@@ -17,7 +17,7 @@ import {
 } from './src/common/constants/app/site'
 
 const PRIMARY_GOOGLE_FONTS_STYLESHEET =
-  'https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap'
+  'https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap'
 const SECONDARY_GOOGLE_FONTS_STYLESHEET =
   'https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500&family=Space+Grotesk:wght@400;500;600;700&display=swap'
 
@@ -27,8 +27,8 @@ export default defineNuxtConfig({
   dir: {
     public: resolve(process.cwd(), 'public')
   },
-  devtools: { enabled: true },
-  modules: ['@nuxt/content', '@nuxtjs/tailwindcss', '@vueuse/motion/nuxt'],
+  devtools: { enabled: false },
+  modules: ['@nuxt/content', '@nuxtjs/tailwindcss'],
   components: {
     dirs: [
       { path: '~/common/components', pathPrefix: true },
@@ -48,6 +48,11 @@ export default defineNuxtConfig({
       autoSubfolderIndex: false
     },
     routeRules: {
+      '/_nuxt/**': {
+        headers: {
+          'Cache-Control': 'public, max-age=31536000, immutable'
+        }
+      },
       '/giscus-theme.css': {
         headers: {
           'Access-Control-Allow-Origin': '*',
@@ -60,7 +65,8 @@ export default defineNuxtConfig({
 
   spaLoadingTemplate: false,
   experimental: {
-    appManifest: true
+    appManifest: true,
+    lazyHydration: true
   },
 
   content: {
@@ -125,12 +131,12 @@ export default defineNuxtConfig({
       siteRepoUrl: process.env.NUXT_PUBLIC_SITE_REPO_URL || DEFAULT_SITE_REPO_URL,
       turnstileSiteKey: process.env.NUXT_PUBLIC_TURNSTILE_SITE_KEY ?? '',
       formspreeFormId: process.env.NUXT_PUBLIC_FORMSPREE_FORM_ID ?? '',
-       giscusRepo: process.env.GISCUS_REPO ?? DEFAULT_GISCUS_REPO,
-       giscusRepoId: process.env.GISCUS_REPO_ID ?? DEFAULT_GISCUS_REPO_ID,
-       giscusCategory: process.env.GISCUS_CATEGORY ?? DEFAULT_GISCUS_CATEGORY,
-       giscusCategoryId: process.env.GISCUS_CATEGORY_ID ?? DEFAULT_GISCUS_CATEGORY_ID,
-       giscusThemePath: process.env.GISCUS_THEME_PATH ?? DEFAULT_GISCUS_THEME_PATH,
-       secondaryFontsStylesheet: SECONDARY_GOOGLE_FONTS_STYLESHEET
-     }
-   }
+      giscusRepo: process.env.GISCUS_REPO ?? DEFAULT_GISCUS_REPO,
+      giscusRepoId: process.env.GISCUS_REPO_ID ?? DEFAULT_GISCUS_REPO_ID,
+      giscusCategory: process.env.GISCUS_CATEGORY ?? DEFAULT_GISCUS_CATEGORY,
+      giscusCategoryId: process.env.GISCUS_CATEGORY_ID ?? DEFAULT_GISCUS_CATEGORY_ID,
+      giscusThemePath: process.env.GISCUS_THEME_PATH ?? DEFAULT_GISCUS_THEME_PATH,
+      secondaryFontsStylesheet: SECONDARY_GOOGLE_FONTS_STYLESHEET
+    }
+  }
 })

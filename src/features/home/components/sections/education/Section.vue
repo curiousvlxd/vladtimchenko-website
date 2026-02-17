@@ -13,7 +13,6 @@
         v-for="entry in entries"
         :key="`${entry.school}-${entry.degree}`"
         class="card-gradient-animated rounded-2xl border border-teal/20 bg-[rgba(24,183,164,0.05)] p-6 sm:p-8 transition-all duration-300 hover:border-teal/40 hover:shadow-[0_0_24px_rgba(24,183,164,0.15)]"
-        v-motion="motionItem"
       >
         <div class="flex flex-wrap items-center justify-between gap-4">
           <div>
@@ -45,7 +44,6 @@
 </template>
 
 <script setup lang="ts">
-import { motionItem } from '~/common/constants/ui/motion'
 import type { EducationEntry } from '~/data/education'
 
 defineEmits<{

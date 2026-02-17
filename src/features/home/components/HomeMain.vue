@@ -7,35 +7,39 @@
       :paragraphs="home.about?.paragraphs"
     />
 
-    <SectionsExperienceSection
+    <LazyExperienceSection
+      :hydrate-on-visible="{ rootMargin: '280px' }"
       :title="home.experience?.title"
       :entries="experienceEntries"
     />
 
-    <SectionsVolunteeringSection
+    <LazyVolunteeringSection
+      :hydrate-on-visible="{ rootMargin: '240px' }"
       :title="home.volunteering?.title"
       :entries="volunteeringEntries"
     />
 
-    <SectionsEducationSection
+    <LazyEducationSection
+      :hydrate-on-visible="{ rootMargin: '220px' }"
       :title="home.education?.title"
       :entries="educationEntries"
       @open-diploma="props.openDiploma"
     />
 
-    <SectionsTestimonialsSection
+    <LazyTestimonialsSection
+      :hydrate-on-visible="{ rootMargin: '220px' }"
       :title="home.testimonials?.title"
       :description="home.testimonials?.description"
     />
 
-    <SectionsProjectsSection
+    <LazyProjectsSection
+      :hydrate-on-visible="{ rootMargin: '220px' }"
       :title="home.projects?.title"
       :description="home.projects?.description"
-      :repos="reposList"
-      :pending="reposPending"
     />
 
-    <SectionsContactSection
+    <LazyContactSection
+      :hydrate-on-visible="{ rootMargin: '180px' }"
       :title="home.contact?.title"
       :description="home.contact?.description"
     />
@@ -48,7 +52,6 @@ import homeData from '~/data/content/home.json'
 import { educationEntries, type EducationEntry } from '~/data/education'
 import { experienceEntries } from '~/data/experience'
 import { volunteeringEntries } from '~/data/volunteering'
-import type { RepoMeta } from '~/types/repos'
 
 const props = defineProps<{
   openDiploma: (entry: EducationEntry) => void
@@ -64,24 +67,28 @@ const home = homeData as {
   contact?: { title?: string; description?: string }
 }
 
-const nuxtApp = useNuxtApp()
-const { data: repos, pending } = useLazyFetch<RepoMeta[] | null>('/api/repos', {
-  key: 'repos',
-  server: false,
-  default: () => null,
-  getCachedData: (key) => nuxtApp.payload.data[key] || nuxtApp.static.data[key]
-})
-
-const reposList = computed(() => (Array.isArray(repos.value) ? repos.value : []))
-const reposPending = computed(() => pending.value || !Array.isArray(repos.value))
-
-const emit = defineEmits<{
-  mounted: []
-}>()
-
-onMounted(() => {
-  nextTick(() => {
-    emit('mounted')
-  })
-})
+const LazyExperienceSection = defineLazyHydrationComponent(
+  'visible',
+  () => import('~/features/home/components/sections/experience/Section.vue')
+)
+const LazyVolunteeringSection = defineLazyHydrationComponent(
+  'visible',
+  () => import('~/features/home/components/sections/volunteering/Section.vue')
+)
+const LazyEducationSection = defineLazyHydrationComponent(
+  'visible',
+  () => import('~/features/home/components/sections/education/Section.vue')
+)
+const LazyTestimonialsSection = defineLazyHydrationComponent(
+  'visible',
+  () => import('~/features/testimonials/components/sections/testimonials/Section.vue')
+)
+const LazyProjectsSection = defineLazyHydrationComponent(
+  'visible',
+  () => import('~/features/home/components/sections/projects/DeferredSection.vue')
+)
+const LazyContactSection = defineLazyHydrationComponent(
+  'visible',
+  () => import('~/features/contact/components/sections/contact/Section.vue')
+)
 </script>

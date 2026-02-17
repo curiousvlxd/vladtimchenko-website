@@ -11,7 +11,6 @@
     <div class="flex flex-wrap items-center gap-3 mb-6">
       <div
         class="inline-flex flex-col rounded-2xl border border-teal/30 bg-gradient-to-br from-teal/15 to-teal/5 px-6 py-4 shadow-[0_0_0_1px_rgba(24,183,164,0.08),0_4px_12px_-2px_rgba(0,0,0,0.2)]"
-        v-motion="motionItem"
       >
         <span class="font-display text-lg font-semibold tracking-tight text-teal">
           {{ totalExperienceDisplay }}
@@ -20,7 +19,6 @@
 
       <div
         class="inline-flex flex-col rounded-2xl border border-teal/30 bg-gradient-to-br from-teal/15 to-teal/5 px-6 py-4 shadow-[0_0_0_1px_rgba(24,183,164,0.08),0_4px_12px_-2px_rgba(0,0,0,0.2)]"
-        v-motion="motionItem"
       >
         <span class="text-xs font-medium uppercase tracking-wider text-teal mb-0.5">
           Domains
@@ -42,7 +40,6 @@
 </template>
 
 <script setup lang="ts">
-import { motionItem } from '~/common/constants/ui/motion'
 import {
   EXPERIENCE_DOMAINS,
   getTotalExperienceDisplay,

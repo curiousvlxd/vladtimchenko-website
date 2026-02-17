@@ -1,7 +1,6 @@
 <template>
   <article
     class="card-gradient-animated rounded-2xl border border-teal/20 bg-[rgba(24,183,164,0.05)] overflow-hidden hover:border-teal/40 hover:shadow-[0_0_24px_rgba(24,183,164,0.15)] transition-all duration-300 cursor-pointer h-full flex flex-col p-6 sm:p-8 min-h-[320px]"
-    v-motion="motionItem"
     @click="$emit('click', testimonial)"
   >
     <div class="flex items-center gap-2 mb-4 pb-3 border-b border-teal/20">
@@ -67,7 +66,6 @@
 import type { Testimonial } from '~/data/testimonials'
 import { getParagraphs, getInitials } from '~/utils/testimonials'
 import { TESTIMONIAL_CONSTANTS } from '~/features/testimonials/constants'
-import { motionItem } from '~/common/constants/ui/motion'
 
 const props = defineProps<{
   testimonial: Testimonial

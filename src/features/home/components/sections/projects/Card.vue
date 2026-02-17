@@ -1,7 +1,6 @@
 <template>
   <article
     class="card-gradient-animated group relative rounded-2xl border border-teal/20 bg-[rgba(24,183,164,0.05)] p-6 transition-all duration-300 hover:border-teal/40 hover:shadow-[0_0_24px_rgba(24,183,164,0.15)] hover:scale-[1.02]"
-    v-motion="motionItem"
   >
     <h3 class="font-display font-semibold text-lg text-muted-pale">
       {{ repo.name }}
@@ -56,7 +55,6 @@
 </template>
 
 <script setup lang="ts">
-import { motionItem } from '~/common/constants/ui/motion'
 import type { RepoMeta } from '~/types/repos'
 
 defineProps<{ repo: RepoMeta }>()

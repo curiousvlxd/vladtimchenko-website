@@ -1,7 +1,6 @@
 <template>
   <li
     class="group relative card-gradient-animated rounded-2xl border border-teal/20 bg-[rgba(24,183,164,0.05)] p-6 hover:border-teal/30 transition-colors overflow-hidden"
-    v-motion="motionItem"
   >
     <div class="block group">
       <NuxtLink
@@ -40,7 +39,6 @@
 
 <script setup lang="ts">
 import type { RouteLocationRaw } from 'vue-router'
-import { motionItem } from '~/common/constants/ui/motion'
 
 export interface FeedListPost {
   _path: string

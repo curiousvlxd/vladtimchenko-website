@@ -54,8 +54,16 @@ jobs:
               - package-lock.json
               - tailwind.config.ts
 
-      - name: Install Playwright browsers
+      - name: Cache Playwright browsers
         if: ${{ steps.changes.outputs.screenshots == 'true' || vars.SITE_URL != '' }}
+        uses: actions/cache@v4
+        id: playwright-cache
+        with:
+          path: ~/.cache/ms-playwright
+          key: ${{ runner.os }}-playwright-${{ hashFiles('package-lock.json') }}
+
+      - name: Install Playwright Chromium
+        if: ${{ (steps.changes.outputs.screenshots == 'true' || vars.SITE_URL != '') && steps.playwright-cache.outputs.cache-hit != 'true' }}
         run: npx playwright install chromium --with-deps
 
       - name: Capture docs screenshots

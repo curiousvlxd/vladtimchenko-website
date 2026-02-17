@@ -1,4 +1,11 @@
 const SECONDARY_FONT_LINK_ID = 'vt-secondary-fonts'
+const WAIT_AFTER_LOAD_MS = 4500
+const INTERACTION_EVENTS: Array<keyof WindowEventMap> = [
+  'pointerdown',
+  'keydown',
+  'touchstart',
+  'wheel'
+]
 
 function appendSecondaryFonts(href: string) {
   if (!href || document.getElementById(SECONDARY_FONT_LINK_ID)) return
@@ -21,14 +28,42 @@ export default defineNuxtPlugin(() => {
   const href = String(secondaryFontsStylesheet ?? '')
   if (!href) return
 
+  let loaded = false
+  let delayedTimer: ReturnType<typeof setTimeout> | null = null
+
+  const loadDuringIdle = () => {
+    delayedTimer = setTimeout(() => {
+      if ('requestIdleCallback' in window) {
+        window.requestIdleCallback(load, { timeout: 1500 })
+        return
+      }
+
+      load()
+    }, WAIT_AFTER_LOAD_MS)
+  }
+
   const load = () => {
+    if (loaded) return
+    loaded = true
+    if (delayedTimer) {
+      clearTimeout(delayedTimer)
+      delayedTimer = null
+    }
+    window.removeEventListener('load', loadDuringIdle)
+    INTERACTION_EVENTS.forEach((eventName) => {
+      window.removeEventListener(eventName, load)
+    })
     appendSecondaryFonts(href)
   }
 
-  if ('requestIdleCallback' in window) {
-    window.requestIdleCallback(load, { timeout: 2000 })
+  INTERACTION_EVENTS.forEach((eventName) => {
+    window.addEventListener(eventName, load, { once: true, passive: true })
+  })
+
+  if (document.readyState === 'complete') {
+    loadDuringIdle()
     return
   }
 
-  window.setTimeout(load, 800)
+  window.addEventListener('load', loadDuringIdle, { once: true })
 })

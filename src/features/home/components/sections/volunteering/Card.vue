@@ -1,7 +1,6 @@
 <template>
   <article
     class="card-gradient-animated rounded-2xl border border-teal/20 bg-[rgba(24,183,164,0.05)] overflow-hidden hover:border-teal/30 transition-colors"
-    v-motion="motionItem"
   >
     <div class="p-6 sm:p-8">
       <div class="flex flex-wrap items-baseline justify-between gap-2">
@@ -56,7 +55,6 @@
 </template>
 
 <script setup lang="ts">
-import { motionItem } from '~/common/constants/ui/motion'
 import {
   formatVolunteeringPeriod,
   type VolunteeringEntry
