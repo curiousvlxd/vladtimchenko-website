@@ -3,7 +3,6 @@
     id="about"
     data-section="about"
     class="card-gradient-animated rounded-2xl border border-teal/20 bg-[rgba(24,183,164,0.05)] p-6 sm:p-8 mb-8 scroll-mt-24 sm:scroll-mt-28"
-    v-motion="motionFade"
   >
     <h2 class="font-display text-2xl font-semibold text-muted-pale mb-4">
       {{ title }}
@@ -21,8 +20,6 @@
 </template>
 
 <script setup lang="ts">
-import { motionFade } from '~/common/constants/ui/motion'
-
 withDefaults(
   defineProps<{
     title?: string

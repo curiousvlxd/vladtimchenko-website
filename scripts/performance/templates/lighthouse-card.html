@@ -1,0 +1,225 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Lighthouse {{MODE}} card</title>
+    <style>
+      :root {
+        --bg: #05090E;
+        --bg-card: #0D1218;
+        --teal: #18B7A4;
+        --teal-soft: rgba(24, 183, 164, 0.2);
+        --text-main: #E6FFF7;
+        --text-muted: #9FB8B2;
+      }
+      * { box-sizing: border-box; }
+      body {
+        margin: 0;
+        background:
+          radial-gradient(70rem 40rem at 10% -20%, rgba(24, 183, 164, 0.18), transparent 55%),
+          radial-gradient(60rem 35rem at 110% 120%, rgba(24, 183, 164, 0.12), transparent 55%),
+          var(--bg);
+        color: var(--text-main);
+        font-family: Inter, "Space Grotesk", "Segoe UI", sans-serif;
+      }
+      .canvas {
+        width: 1600px;
+        height: 900px;
+        padding: 44px;
+      }
+      .frame {
+        width: 100%;
+        height: 100%;
+        border: 1px solid rgba(24, 183, 164, 0.28);
+        border-radius: 28px;
+        background: linear-gradient(180deg, rgba(13,18,24,0.96), rgba(8,12,16,0.98));
+        box-shadow: 0 32px 80px rgba(0, 0, 0, 0.42);
+        padding: 36px;
+        display: grid;
+        grid-template-rows: auto auto 1fr auto;
+        gap: 20px;
+      }
+      .eyebrow {
+        letter-spacing: 0.22em;
+        text-transform: uppercase;
+        color: var(--text-muted);
+        font-size: 13px;
+      }
+      .title {
+        margin: 0;
+        font-size: 48px;
+        line-height: 1.05;
+        font-weight: 700;
+      }
+      .subtitle {
+        margin: 0;
+        color: var(--text-muted);
+        font-size: 18px;
+      }
+      .top {
+        display: grid;
+        grid-template-columns: 300px 1fr;
+        gap: 30px;
+        align-items: center;
+      }
+      .score-wrap {
+        display: flex;
+        justify-content: center;
+      }
+      .score-ring {
+        width: 210px;
+        height: 210px;
+        border-radius: 999px;
+        background: conic-gradient({{RING_COLOR}} {{SCORE_FILL}}%, rgba(255,255,255,0.08) {{SCORE_FILL}}%);
+        display: grid;
+        place-items: center;
+        box-shadow: inset 0 0 0 1px rgba(255,255,255,0.06);
+      }
+      .score-core {
+        width: 166px;
+        height: 166px;
+        border-radius: 999px;
+        background: #0a1015;
+        display: grid;
+        place-items: center;
+        border: 1px solid rgba(255,255,255,0.08);
+      }
+      .score-value {
+        font-size: 56px;
+        font-weight: 700;
+        line-height: 1;
+      }
+      .score-label {
+        margin-top: -6px;
+        color: var(--text-muted);
+        font-size: 13px;
+        letter-spacing: 0.14em;
+        text-transform: uppercase;
+      }
+      .metrics {
+        display: grid;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: 12px;
+      }
+      .metric {
+        border: 1px solid rgba(24, 183, 164, 0.22);
+        border-radius: 14px;
+        background: rgba(24, 183, 164, 0.06);
+        padding: 12px 14px;
+      }
+      .metric-key {
+        font-size: 12px;
+        letter-spacing: 0.12em;
+        text-transform: uppercase;
+        color: var(--text-muted);
+      }
+      .metric-value {
+        margin-top: 6px;
+        font-size: 22px;
+        font-weight: 600;
+      }
+      .content {
+        display: grid;
+        grid-template-columns: 1.2fr 1fr;
+        gap: 20px;
+      }
+      .panel {
+        border: 1px solid rgba(255,255,255,0.08);
+        border-radius: 16px;
+        padding: 16px 18px;
+        background: rgba(255,255,255,0.02);
+      }
+      .panel h3 {
+        margin: 0;
+        font-size: 14px;
+        color: var(--text-muted);
+        text-transform: uppercase;
+        letter-spacing: 0.1em;
+        font-weight: 600;
+      }
+      .lcp {
+        margin-top: 10px;
+        font-size: 18px;
+        line-height: 1.45;
+      }
+      ul {
+        margin: 10px 0 0 0;
+        padding-left: 20px;
+      }
+      li {
+        margin-bottom: 8px;
+        color: #CBE3DD;
+        font-size: 16px;
+      }
+      .footer {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        color: var(--text-muted);
+        font-size: 14px;
+      }
+      .url {
+        max-width: 960px;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+      }
+      .pill {
+        padding: 6px 12px;
+        border-radius: 999px;
+        border: 1px solid rgba(24, 183, 164, 0.35);
+        background: rgba(24, 183, 164, 0.12);
+        color: #B2F3E8;
+        font-size: 12px;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="canvas">
+      <div class="frame">
+        <div>
+          <div class="eyebrow">Automated Performance Snapshot</div>
+          <h1 class="title">Lighthouse {{MODE}} Report</h1>
+          <p class="subtitle">vladtimchenko.dev design language card</p>
+        </div>
+        <div class="top">
+          <div class="score-wrap">
+            <div class="score-ring">
+              <div class="score-core">
+                <div>
+                  <div class="score-value">{{SCORE}}</div>
+                  <div class="score-label">Score</div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="metrics">
+            <div class="metric"><div class="metric-key">FCP</div><div class="metric-value">{{FCP}}</div></div>
+            <div class="metric"><div class="metric-key">LCP</div><div class="metric-value">{{LCP}}</div></div>
+            <div class="metric"><div class="metric-key">TBT</div><div class="metric-value">{{TBT}}</div></div>
+            <div class="metric"><div class="metric-key">TTFB</div><div class="metric-value">{{TTFB}}</div></div>
+            <div class="metric"><div class="metric-key">TTI</div><div class="metric-value">{{TTI}}</div></div>
+            <div class="metric"><div class="metric-key">CLS</div><div class="metric-value">{{CLS}}</div></div>
+          </div>
+        </div>
+        <div class="content">
+          <div class="panel">
+            <h3>LCP Element</h3>
+            <div class="lcp">{{LCP_ELEMENT}}</div>
+          </div>
+          <div class="panel">
+            <h3>Top Bottlenecks</h3>
+            <ul>{{BOTTLENECKS}}</ul>
+          </div>
+        </div>
+        <div class="footer">
+          <div class="url">{{URL}}</div>
+          <div class="pill">scripts/performance/generate-lighthouse-cards.mjs | {{GENERATED}}</div>
+        </div>
+      </div>
+    </div>
+  </body>
+</html>

@@ -32,7 +32,7 @@
       :title="home.projects?.title"
       :description="home.projects?.description"
       :repos="reposList"
-      :pending="pending"
+      :pending="reposPending"
     />
 
     <SectionsContactSection
@@ -65,13 +65,15 @@ const home = homeData as {
 }
 
 const nuxtApp = useNuxtApp()
-const { data: repos, pending } = useLazyFetch<RepoMeta[]>('/api/repos', {
+const { data: repos, pending } = useLazyFetch<RepoMeta[] | null>('/api/repos', {
   key: 'repos',
-  default: () => [],
+  server: false,
+  default: () => null,
   getCachedData: (key) => nuxtApp.payload.data[key] || nuxtApp.static.data[key]
 })
 
 const reposList = computed(() => (Array.isArray(repos.value) ? repos.value : []))
+const reposPending = computed(() => pending.value || !Array.isArray(repos.value))
 
 const emit = defineEmits<{
   mounted: []

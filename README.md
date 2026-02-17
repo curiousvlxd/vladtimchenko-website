@@ -64,6 +64,18 @@ When src/\*\*, public/\*\*, or relevant config or dependency files change, the w
 
 Images are served directly from the assets branch via raw.githubusercontent.com.
 
+**Performance cards automation:**  
+At the end of deploy, the workflow runs Lighthouse (mobile + desktop) against `SITE_URL` and generates two branded PNG cards:
+- `screenshots/performance/lighthouse-mobile.png`
+- `screenshots/performance/lighthouse-desktop.png`
+
+It also saves raw JSON reports in the same folder for diffing across runs.  
+Local run:
+
+```bash
+npm run lighthouse:cards -- https://vladtimchenko.dev
+```
+
 **Secrets and vars:**
 - CLOUDFLARE_API_TOKEN
 - CLOUDFLARE_ACCOUNT_ID
@@ -80,6 +92,18 @@ Optional:
 
 Generated automatically by scripts/documentation/capture-docs.mjs and published to the assets branch.  
 Used as a visual showcase of layout, content structure, and integrations.
+
+### Lighthouse - Mobile
+
+![Lighthouse Mobile](https://raw.githubusercontent.com/curiousvlxd/vladtimchenko-website/assets/screenshots/performance/lighthouse-mobile.png)
+
+---
+
+### Lighthouse - Desktop
+
+![Lighthouse Desktop](https://raw.githubusercontent.com/curiousvlxd/vladtimchenko-website/assets/screenshots/performance/lighthouse-desktop.png)
+
+---
 
 ### About
 

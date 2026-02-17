@@ -49,10 +49,10 @@ export default defineEventHandler(async (event): Promise<RepoMeta[]> => {
     `public, s-maxage=${CACHE.DEFAULT_MAX_AGE_SECONDS}, stale-while-revalidate`
   )
 
-  const results: RepoMeta[] = []
-  for (const fullName of FEATURED_REPOS) {
-    const res = await fetchRepo(fullName)
-    results.push(toRepoMeta(fullName, res))
-  }
-  return results
+  return Promise.all(
+    FEATURED_REPOS.map(async (fullName) => {
+      const res = await fetchRepo(fullName)
+      return toRepoMeta(fullName, res)
+    })
+  )
 })

@@ -23,9 +23,9 @@
         ref="carouselRef"
         class="testimonials-carousel flex"
         :style="carouselStyle"
-        @touchstart="$emit('touch-start', $event)"
-        @touchmove="$emit('touch-move', $event)"
-        @touchend="$emit('touch-end', $event)"
+        @touchstart.passive="$emit('touch-start', $event)"
+        @touchmove.passive="$emit('touch-move', $event)"
+        @touchend.passive="$emit('touch-end', $event)"
       >
         <slot />
       </div>
@@ -90,12 +90,14 @@ defineExpose({
 .carousel-viewport {
   overflow: hidden;
   isolation: isolate;
+  touch-action: pan-y;
 }
 
 .testimonials-carousel {
   width: 100%;
   flex-shrink: 0;
   backface-visibility: hidden;
+  will-change: transform;
   transition: transform var(--carousel-duration, 0.45s) var(--carousel-easing, cubic-bezier(0.25, 0.46, 0.45, 0.94));
 }
 </style>

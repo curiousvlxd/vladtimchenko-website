@@ -7,7 +7,7 @@
           v-for="link in headerLinks"
           :key="link.to"
           :to="getNavTo(link.to)"
-          prefetch
+          no-prefetch
           class="layout-header__link"
           :class="{ 'layout-header__link--active': isActive(link) }"
         >

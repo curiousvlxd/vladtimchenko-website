@@ -1,6 +1,8 @@
 export const PUBLIC_ASSETS = {
   LOGO: '/logo.svg',
   PHOTO: '/me.jpg',
+  PHOTO_WEBP_360: '/me-360.webp',
+  PHOTO_WEBP_560: '/me-560.webp',
   MANIFEST: '/site.webmanifest',
   FAVICON: '/favicon.ico',
   FAVICON_32: '/favicon-32x32.png',

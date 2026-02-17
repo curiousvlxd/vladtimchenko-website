@@ -16,6 +16,11 @@ import {
   SITE_TITLE
 } from './src/common/constants/app/site'
 
+const PRIMARY_GOOGLE_FONTS_STYLESHEET =
+  'https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap'
+const SECONDARY_GOOGLE_FONTS_STYLESHEET =
+  'https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500&family=Space+Grotesk:wght@400;500;600;700&display=swap'
+
 export default defineNuxtConfig({
   compatibilityDate: '2025-02-07',
   srcDir: 'src/',
@@ -54,6 +59,9 @@ export default defineNuxtConfig({
   },
 
   spaLoadingTemplate: false,
+  experimental: {
+    appManifest: true
+  },
 
   content: {
     sources: {
@@ -94,11 +102,15 @@ export default defineNuxtConfig({
         { rel: 'manifest', href: PUBLIC_ASSETS.MANIFEST },
         { rel: 'mask-icon', href: PUBLIC_ASSETS.MASK_ICON, color: '#18B7A4' },
         { rel: 'alternate', type: 'application/rss+xml', title: 'RSS Feed', href: '/rss.xml' },
-        { rel: 'prefetch', href: '/feed' },
-        { rel: 'prefetch', href: '/cv' },
         { rel: 'preconnect', href: 'https://fonts.googleapis.com' },
         { rel: 'preconnect', href: 'https://fonts.gstatic.com', crossorigin: '' },
-        { rel: 'stylesheet', href: 'https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&family=Space+Grotesk:wght@400;500;600;700&display=swap' }
+        { rel: 'preload', href: PRIMARY_GOOGLE_FONTS_STYLESHEET, as: 'style' },
+        {
+          rel: 'stylesheet',
+          href: PRIMARY_GOOGLE_FONTS_STYLESHEET,
+          media: 'print',
+          onload: "this.media='all'"
+        }
       ]
     },
     pageTransition: false
@@ -113,11 +125,12 @@ export default defineNuxtConfig({
       siteRepoUrl: process.env.NUXT_PUBLIC_SITE_REPO_URL || DEFAULT_SITE_REPO_URL,
       turnstileSiteKey: process.env.NUXT_PUBLIC_TURNSTILE_SITE_KEY ?? '',
       formspreeFormId: process.env.NUXT_PUBLIC_FORMSPREE_FORM_ID ?? '',
-      giscusRepo: process.env.GISCUS_REPO ?? DEFAULT_GISCUS_REPO,
-      giscusRepoId: process.env.GISCUS_REPO_ID ?? DEFAULT_GISCUS_REPO_ID,
-      giscusCategory: process.env.GISCUS_CATEGORY ?? DEFAULT_GISCUS_CATEGORY,
-      giscusCategoryId: process.env.GISCUS_CATEGORY_ID ?? DEFAULT_GISCUS_CATEGORY_ID,
-      giscusThemePath: process.env.GISCUS_THEME_PATH ?? DEFAULT_GISCUS_THEME_PATH
-    }
-  }
+       giscusRepo: process.env.GISCUS_REPO ?? DEFAULT_GISCUS_REPO,
+       giscusRepoId: process.env.GISCUS_REPO_ID ?? DEFAULT_GISCUS_REPO_ID,
+       giscusCategory: process.env.GISCUS_CATEGORY ?? DEFAULT_GISCUS_CATEGORY,
+       giscusCategoryId: process.env.GISCUS_CATEGORY_ID ?? DEFAULT_GISCUS_CATEGORY_ID,
+       giscusThemePath: process.env.GISCUS_THEME_PATH ?? DEFAULT_GISCUS_THEME_PATH,
+       secondaryFontsStylesheet: SECONDARY_GOOGLE_FONTS_STYLESHEET
+     }
+   }
 })

@@ -20,9 +20,13 @@
 }
 
 @media (max-width: 640px) {
-  .card-gradient-animated {
-    padding: 24px;
-    max-height: 85vh;
+  .testimonial-modal-card {
+    max-height: calc(100dvh - 16px);
     margin: 8px;
+  }
+
+  .testimonial-modal-close {
+    top: 12px;
+    right: 12px;
   }
 }

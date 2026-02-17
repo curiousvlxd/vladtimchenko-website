@@ -55,7 +55,7 @@ jobs:
               - tailwind.config.ts
 
       - name: Install Playwright browsers
-        if: steps.changes.outputs.screenshots == 'true'
+        if: ${{ steps.changes.outputs.screenshots == 'true' || vars.SITE_URL != '' }}
         run: npx playwright install chromium --with-deps
 
       - name: Capture docs screenshots
@@ -65,8 +65,14 @@ jobs:
           SCREENSHOTS_DIR: screenshots
         run: node scripts/documentation/capture-docs.mjs
 
+      - name: Capture Lighthouse performance cards
+        if: ${{ vars.SITE_URL != '' }}
+        env:
+          LIGHTHOUSE_OUT_DIR: screenshots/performance
+        run: npm run lighthouse:cards -- ${{ vars.SITE_URL }}
+
       - name: Publish screenshots to assets branch
-        if: steps.changes.outputs.screenshots == 'true'
+        if: ${{ steps.changes.outputs.screenshots == 'true' || vars.SITE_URL != '' }}
         uses: peaceiris/actions-gh-pages@v4
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}

@@ -10,6 +10,7 @@
     />
 
     <PdfModal
+      v-if="isDiplomaOpen"
       v-model="isDiplomaOpen"
       :pdf-url="diploma.pdfUrl"
       :title="diploma.title"
@@ -59,11 +60,15 @@
 
 <script setup lang="ts">
 import homeData from '~/data/content/home.json'
-import PdfModal from '~/features/modals/components/pdf/PdfModal.vue'
+import { PUBLIC_ASSETS } from '~/common/constants/app/public-assets'
 import { SITE_DESCRIPTION, SITE_NAME, SITE_TITLE } from '~/common/constants/app/site'
 import { useDiplomaModal } from '~/features/modals/composables/useDiplomaModal'
 import { useSectionNav } from '~/features/navigation/composables/useSectionNav'
 import { getSocialImageUrl } from '~/utils/social-image'
+
+const PdfModal = defineAsyncComponent(
+  () => import('~/features/modals/components/pdf/PdfModal.vue')
+)
 
 const home = homeData as { name?: string; sectionTabs?: { id: string; label: string }[] }
 
@@ -93,8 +98,21 @@ const socialImage = getSocialImageUrl(siteUrl, {
   subtitle: SITE_DESCRIPTION,
   section: 'Home'
 })
+const heroImageSrcSet = `${PUBLIC_ASSETS.PHOTO_WEBP_360} 360w, ${PUBLIC_ASSETS.PHOTO_WEBP_560} 560w`
+const heroImageSizes = '(max-width: 640px) 144px, 176px'
 
 useHead({
+  link: [
+    {
+      rel: 'preload',
+      as: 'image',
+      href: PUBLIC_ASSETS.PHOTO_WEBP_560,
+      type: 'image/webp',
+      fetchpriority: 'high',
+      imagesrcset: heroImageSrcSet,
+      imagesizes: heroImageSizes
+    }
+  ],
   meta: [
     { property: 'og:image', content: socialImage },
     { name: 'twitter:card', content: 'summary_large_image' },
@@ -104,6 +122,7 @@ useHead({
 
 const { data: siteRepo } = useLazyFetch<{ stars: number; url: string }>('/api/site-repo', {
   key: 'site-repo',
+  server: false,
   default: () => null,
   getCachedData: (key) => nuxtApp.payload.data[key] || nuxtApp.static.data[key]
 })

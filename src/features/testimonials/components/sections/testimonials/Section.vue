@@ -102,15 +102,38 @@ const containerRef = computed<HTMLElement | null>(() => {
   return exposed.containerRef?.value ?? null
 })
 
-const { startAutoplay } = useAutoplay(() => {
-  next()
+function restartAutoplay() {
+  if (isMobile.value) return
   startAutoplay()
+}
+
+const { startAutoplay, stopAutoplay } = useAutoplay(() => {
+  next()
+  restartAutoplay()
 })
 
-const { handleTouchStart, handleTouchMove, handleTouchEnd } = useSwipe(
+const {
+  handleTouchStart: onSwipeTouchStart,
+  handleTouchMove: onSwipeTouchMove,
+  handleTouchEnd: onSwipeTouchEnd
+} = useSwipe(
   () => next(),
   () => previous()
 )
+
+function handleTouchStart(event: TouchEvent) {
+  stopAutoplay()
+  onSwipeTouchStart(event)
+}
+
+function handleTouchMove(event: TouchEvent) {
+  onSwipeTouchMove(event)
+}
+
+function handleTouchEnd(event: TouchEvent) {
+  onSwipeTouchEnd(event)
+  restartAutoplay()
+}
 
 const { handleMouseEnter, handleMouseLeave, handleMouseMove } = useHoverScroll(
   containerRef,
@@ -119,40 +142,45 @@ const { handleMouseEnter, handleMouseLeave, handleMouseMove } = useHoverScroll(
   maxIndex,
   () => {
     previous()
-    startAutoplay()
+    restartAutoplay()
   },
   () => {
     next()
-    startAutoplay()
+    restartAutoplay()
   }
 )
 
 function handlePrevious() {
   previous()
-  startAutoplay()
+  restartAutoplay()
 }
 
 function handleNext() {
   next()
-  startAutoplay()
+  restartAutoplay()
 }
 
 function handleGoToSlide(index: number) {
   goToSlide(index)
-  startAutoplay()
+  restartAutoplay()
 }
 
 function handleCardClick(testimonial: (typeof testimonials)[0]) {
   openModal(testimonial)
 }
 
-watch(isMobile, () => {
+watch(isMobile, (mobile) => {
   resetIndex()
+  if (mobile) {
+    stopAutoplay()
+    return
+  }
+  restartAutoplay()
 })
 
 onMounted(() => {
-  if (import.meta.client) {
-    startAutoplay()
+  if (import.meta.client && !isMobile.value) {
+    restartAutoplay()
   }
 })
 </script>

@@ -25,12 +25,19 @@
 </template>
 
 <script setup lang="ts">
-const loading = useState('app-loading', () => true)
-const appReady = useState('app-ready', () => false)
 import { ASSETS } from '~/common/constants'
+
+const LOADER_COOKIE_KEY = 'vt-initial-loader-shown'
+const MIN_VISIBLE_MS = 120
+const loaderShown = useCookie(LOADER_COOKIE_KEY, { sameSite: 'lax' })
+const shouldShowInitially = loaderShown.value !== '1'
+
+const loading = useState('app-loading', () => shouldShowInitially)
+const appReady = useState('app-ready', () => !shouldShowInitially)
 const logoSrc = ASSETS.LOGO
 
 const progress = ref(0)
+let startedAt = 0
 let timer: ReturnType<typeof setInterval> | null = null
 
 function startProgress() {
@@ -46,22 +53,36 @@ function startProgress() {
 }
 
 onMounted(() => {
+  if (!loading.value) {
+    return
+  }
+
+  loaderShown.value = '1'
+  startedAt = Date.now()
   progress.value = 10
   startProgress()
+
+  requestAnimationFrame(() => {
+    requestAnimationFrame(() => {
+      appReady.value = true
+    })
+  })
 })
 
 watch(
   appReady,
   (ready) => {
-    if (!ready) return
+    if (!ready || !loading.value) return
     if (timer) {
       clearInterval(timer)
       timer = null
     }
     progress.value = 100
+    const visibleFor = Date.now() - startedAt
+    const remaining = Math.max(0, MIN_VISIBLE_MS - visibleFor)
     setTimeout(() => {
       loading.value = false
-    }, 200)
+    }, remaining)
   },
   { immediate: true }
 )

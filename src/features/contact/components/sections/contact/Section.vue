@@ -1,5 +1,6 @@
 <template>
   <section
+    ref="contactSectionRef"
     id="contact"
     data-section="contact"
     class="card-gradient-animated rounded-2xl border border-teal/20 bg-[rgba(24,183,164,0.05)] p-6 sm:p-8 scroll-mt-24 sm:scroll-mt-28 transition-all duration-300 hover:border-teal/40 hover:shadow-[0_0_24px_rgba(24,183,164,0.15)]"
@@ -104,7 +105,11 @@
 
       <input type="text" name="_gotcha" hidden>
 
-      <ContactTurnstileWidget ref="contactTurnstileRef" class="contact-turnstile-host" />
+      <ContactTurnstileWidget
+        v-if="shouldMountTurnstile"
+        ref="contactTurnstileRef"
+        class="contact-turnstile-host"
+      />
 
       <div class="contact-form-actions flex flex-col items-start pt-2 sm:pt-4">
         <button
@@ -175,7 +180,10 @@ const {
   submit: onContactSubmit
 } = useContactForm()
 
+const contactSectionRef = ref<HTMLElement | null>(null)
+const shouldMountTurnstile = ref(false)
 const contactTurnstileRef = ref<InstanceType<typeof ContactTurnstileWidget> | null>(null)
+let turnstileObserver: IntersectionObserver | null = null
 
 const {
   textareaRef: messageTextareaRef,
@@ -192,8 +200,17 @@ const contactFormAction = computed(() => {
 })
 
 function handleContactSubmit() {
+  enableTurnstile()
   const token = unref(contactTurnstileRef.value?.token) ?? null
   onContactSubmit(token)
+}
+
+function enableTurnstile() {
+  if (shouldMountTurnstile.value) return
+
+  shouldMountTurnstile.value = true
+  turnstileObserver?.disconnect()
+  turnstileObserver = null
 }
 
 watch([contactModalOpen, contactModalVariant], ([open, variant]) => {
@@ -206,10 +223,37 @@ onMounted(() => {
   nextTick(() => {
     adjustTextareaHeight()
   })
+
+  if (!import.meta.client || typeof IntersectionObserver === 'undefined') {
+    enableTurnstile()
+    return
+  }
+
+  const sectionElement = contactSectionRef.value
+  if (!sectionElement) {
+    enableTurnstile()
+    return
+  }
+
+  turnstileObserver = new IntersectionObserver(
+    (entries) => {
+      if (entries.some((entry) => entry.isIntersecting)) {
+        enableTurnstile()
+      }
+    },
+    { rootMargin: '320px 0px' }
+  )
+
+  turnstileObserver.observe(sectionElement)
 })
 
 watch(contactMessage, () => {
   nextTick(adjustTextareaHeight)
+})
+
+onUnmounted(() => {
+  turnstileObserver?.disconnect()
+  turnstileObserver = null
 })
 </script>
 

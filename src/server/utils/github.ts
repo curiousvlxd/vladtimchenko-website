@@ -1,4 +1,5 @@
 const GITHUB_API = 'https://api.github.com'
+const GITHUB_REQUEST_TIMEOUT_MS = 3000
 
 function getHeaders(): Record<string, string> {
   const headers: Record<string, string> = {
@@ -26,7 +27,8 @@ export interface GitHubRepoResponse {
 export async function fetchRepo(fullName: string): Promise<GitHubRepoResponse | null> {
   try {
     return await $fetch<GitHubRepoResponse>(`${GITHUB_API}/repos/${fullName}`, {
-      headers: getHeaders()
+      headers: getHeaders(),
+      timeout: GITHUB_REQUEST_TIMEOUT_MS
     })
   } catch {
     return null
