@@ -1,4 +1,6 @@
 import fs from 'node:fs/promises'
+import http from 'node:http'
+import https from 'node:https'
 import path from 'node:path'
 import process from 'node:process'
 import { spawn } from 'node:child_process'
@@ -194,6 +196,17 @@ async function runCommand(command, args) {
   })
 }
 
+async function warmTargetUrl(url) {
+  await new Promise((resolve) => {
+    const client = url.startsWith('https') ? https : http
+    const request = client.get(url, (response) => {
+      response.resume()
+      response.once('end', resolve)
+    })
+    request.once('error', () => resolve())
+  })
+}
+
 export async function runLighthouseReport({ url, outputPath, desktop = false }) {
   const args = [
     '--yes',
@@ -203,11 +216,14 @@ export async function runLighthouseReport({ url, outputPath, desktop = false }) 
     '--output=json',
     `--output-path=${outputPath}`,
     '--chrome-flags=--headless=new',
-    '--quiet'
+    '--quiet',
+    '--throttling-method=simulate'
   ]
 
   if (desktop) {
     args.push('--preset=desktop')
+  } else {
+    args.push('--emulated-form-factor=mobile')
   }
 
   await runCommand(getNpxCommand(), args)
@@ -238,6 +254,9 @@ export async function generateLighthouseCards({ targetUrl, outDir, generatedAt, 
   const desktopReportPath = path.join(resolvedOutDir, DESKTOP_REPORT_NAME)
   const mobileImagePath = path.join(resolvedOutDir, MOBILE_IMAGE_NAME)
   const desktopImagePath = path.join(resolvedOutDir, DESKTOP_IMAGE_NAME)
+
+  logger.log(`Warming target URL ${targetUrl}`)
+  await warmTargetUrl(targetUrl)
 
   logger.log(`Running Lighthouse mobile for ${targetUrl}`)
   await runLighthouseReport({ url: targetUrl, outputPath: mobileReportPath, desktop: false })

@@ -20,6 +20,15 @@ const PRIMARY_GOOGLE_FONTS_STYLESHEET =
   'https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap'
 const SECONDARY_GOOGLE_FONTS_STYLESHEET =
   'https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500&family=Space+Grotesk:wght@400;500;600;700&display=swap'
+const HTML_BROWSER_CACHE_CONTROL = 'public, max-age=0, must-revalidate'
+const HTML_EDGE_CACHE_CONTROL = 'public, max-age=600, stale-while-revalidate=86400'
+const IMMUTABLE_ASSET_CACHE_CONTROL = 'public, max-age=31536000, immutable'
+const HTML_CACHE_HEADERS = {
+  'Cache-Control': HTML_BROWSER_CACHE_CONTROL,
+  'CDN-Cache-Control': HTML_EDGE_CACHE_CONTROL,
+  'Cloudflare-CDN-Cache-Control': HTML_EDGE_CACHE_CONTROL,
+  Vary: 'Accept-Encoding'
+}
 
 export default defineNuxtConfig({
   compatibilityDate: '2025-02-07',
@@ -53,27 +62,27 @@ export default defineNuxtConfig({
     routeRules: {
       '/': {
         headers: {
-          'Cache-Control': 'public, max-age=0, must-revalidate'
+          ...HTML_CACHE_HEADERS
         }
       },
       '/cv': {
         headers: {
-          'Cache-Control': 'public, max-age=0, must-revalidate'
+          ...HTML_CACHE_HEADERS
         }
       },
       '/feed': {
         headers: {
-          'Cache-Control': 'public, max-age=0, must-revalidate'
+          ...HTML_CACHE_HEADERS
         }
       },
       '/feed/**': {
         headers: {
-          'Cache-Control': 'public, max-age=0, must-revalidate'
+          ...HTML_CACHE_HEADERS
         }
       },
       '/_nuxt/**': {
         headers: {
-          'Cache-Control': 'public, max-age=31536000, immutable'
+          'Cache-Control': IMMUTABLE_ASSET_CACHE_CONTROL
         }
       },
       '/giscus-theme.css': {

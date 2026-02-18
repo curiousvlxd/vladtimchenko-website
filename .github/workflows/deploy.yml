@@ -40,6 +40,16 @@ jobs:
           accountId: ${{ vars.CLOUDFLARE_ACCOUNT_ID }}
           command: pages deploy dist --project-name=${{ vars.CF_PAGES_PROJECT }} --branch=main
 
+      - name: Purge Cloudflare cache (after deploy)
+        run: |
+          set -e
+          resp=$(curl -sS -X POST "https://api.cloudflare.com/client/v4/zones/${{ secrets.CLOUDFLARE_ZONE_ID }}/purge_cache" \
+            -H "Authorization: Bearer ${{ secrets.CLOUDFLARE_API_TOKEN }}" \
+            -H "Content-Type: application/json" \
+            --data '{"purge_everything":true}')
+          echo "$resp"
+          echo "$resp" | jq -e '.success == true' >/dev/null
+
       - name: Detect screenshot-relevant changes
         id: changes
         uses: dorny/paths-filter@v3
