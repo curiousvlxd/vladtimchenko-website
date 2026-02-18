@@ -8,21 +8,81 @@ function looksLikeUrl(value) {
   return Boolean(value && /^https?:\/\//i.test(value))
 }
 
-function parseCliArgs(argv) {
-  const firstArg = argv[2]
-  const secondArg = argv[3]
+function readOptionValue(args, index, token) {
+  const equalsIndex = token.indexOf('=')
+  if (equalsIndex !== -1) {
+    return { value: token.slice(equalsIndex + 1), nextIndex: index }
+  }
 
-  if (looksLikeUrl(firstArg)) {
-    return {
-      targetUrl: firstArg,
-      outDir: secondArg
+  const nextToken = args[index + 1]
+  if (!nextToken || nextToken.startsWith('--')) {
+    throw new Error(`Option ${token} requires a value`)
+  }
+
+  return { value: nextToken, nextIndex: index + 1 }
+}
+
+function parseCliArgs(argv) {
+  const args = argv.slice(2)
+  const positional = []
+  const options = {
+    targetUrl: null,
+    outDir: null,
+    mobileManifest: null,
+    desktopManifest: null,
+    mobileReportPath: null,
+    desktopReportPath: null
+  }
+
+  for (let index = 0; index < args.length; index += 1) {
+    const token = args[index]
+    if (!token.startsWith('--')) {
+      positional.push(token)
+      continue
+    }
+
+    const optionName = token.slice(2).split('=')[0]
+    const { value, nextIndex } = readOptionValue(args, index, token)
+    index = nextIndex
+
+    switch (optionName) {
+      case 'url':
+        options.targetUrl = value
+        break
+      case 'out-dir':
+        options.outDir = value
+        break
+      case 'mobile-manifest':
+        options.mobileManifest = value
+        break
+      case 'desktop-manifest':
+        options.desktopManifest = value
+        break
+      case 'mobile-report-path':
+        options.mobileReportPath = value
+        break
+      case 'desktop-report-path':
+        options.desktopReportPath = value
+        break
+      default:
+        throw new Error(`Unknown option: --${optionName}`)
     }
   }
 
-  return {
-    targetUrl: process.env.LIGHTHOUSE_URL || process.env.BASE_URL,
-    outDir: firstArg
+  if (positional.length > 0) {
+    if (looksLikeUrl(positional[0])) {
+      if (!options.targetUrl) {
+        options.targetUrl = positional[0]
+      }
+      if (!options.outDir && positional[1]) {
+        options.outDir = positional[1]
+      }
+    } else if (!options.outDir) {
+      options.outDir = positional[0]
+    }
   }
+
+  return options
 }
 
 function parseManifest(manifestRaw, label) {
@@ -76,12 +136,12 @@ async function loadReport({ manifestRaw, reportPath, label }) {
   )
 }
 
-const { targetUrl: targetUrlArg, outDir: outDirArg } = parseCliArgs(process.argv)
-const outDir = outDirArg || process.env.LIGHTHOUSE_OUT_DIR || DEFAULT_LIGHTHOUSE_OUT_DIR
-const mobileManifest = process.env.LIGHTHOUSE_MOBILE_MANIFEST
-const desktopManifest = process.env.LIGHTHOUSE_DESKTOP_MANIFEST
-const mobileReportPath = process.env.LIGHTHOUSE_MOBILE_REPORT_PATH
-const desktopReportPath = process.env.LIGHTHOUSE_DESKTOP_REPORT_PATH
+const cli = parseCliArgs(process.argv)
+const outDir = cli.outDir || process.env.LIGHTHOUSE_OUT_DIR || DEFAULT_LIGHTHOUSE_OUT_DIR
+const mobileManifest = cli.mobileManifest || process.env.LIGHTHOUSE_MOBILE_MANIFEST
+const desktopManifest = cli.desktopManifest || process.env.LIGHTHOUSE_DESKTOP_MANIFEST
+const mobileReportPath = cli.mobileReportPath || process.env.LIGHTHOUSE_MOBILE_REPORT_PATH
+const desktopReportPath = cli.desktopReportPath || process.env.LIGHTHOUSE_DESKTOP_REPORT_PATH
 const generatedAt = new Date().toISOString()
 
 async function main() {
@@ -97,7 +157,9 @@ async function main() {
   })
 
   const targetUrl =
-    targetUrlArg ||
+    cli.targetUrl ||
+    process.env.LIGHTHOUSE_URL ||
+    process.env.BASE_URL ||
     mobileReport.finalUrl ||
     mobileReport.requestedUrl ||
     desktopReport.finalUrl ||
@@ -124,7 +186,8 @@ main().catch((error) => {
   console.error(error)
   console.error(
     'Usage: node scripts/performance/generate-lighthouse-cards.mjs [url] [outDir] ' +
-      '(requires LIGHTHOUSE_MOBILE_MANIFEST/LIGHTHOUSE_DESKTOP_MANIFEST or *_REPORT_PATH envs)'
+      '[--url <url>] [--out-dir <dir>] [--mobile-report-path <path>] [--desktop-report-path <path>] ' +
+      '[--mobile-manifest <json>] [--desktop-manifest <json>]'
   )
   process.exit(1)
 })

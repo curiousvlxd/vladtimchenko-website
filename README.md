@@ -69,7 +69,8 @@ npm run docs:screenshots -- https://vladtimchenko.dev documentation
 
 **Performance cards automation:**  
 The `performance` job:
-- runs Lighthouse via `treosh/lighthouse-ci-action` (mobile + desktop)
+- runs Lighthouse via [`treosh/lighthouse-ci-action`](https://github.com/treosh/lighthouse-ci-action) (mobile + desktop)
+- warms the root URL (`/`) via `curl` before Lighthouse runs
 - passes action `manifest` outputs into `scripts/performance/generate-lighthouse-cards.mjs`
 - generates:
   - `performance/lighthouse-mobile.png`
@@ -79,9 +80,9 @@ The `performance` job:
 Renderer local run from existing Lighthouse reports:
 
 ```bash
-LIGHTHOUSE_MOBILE_REPORT_PATH=./path/to/mobile.report.json \
-LIGHTHOUSE_DESKTOP_REPORT_PATH=./path/to/desktop.report.json \
-npm run lighthouse:cards -- https://vladtimchenko.dev performance
+npm run lighthouse:cards -- https://vladtimchenko.dev performance \
+  --mobile-report-path ./path/to/mobile.report.json \
+  --desktop-report-path ./path/to/desktop.report.json
 ```
 
 `publish-assets` downloads both artifacts and publishes `.assets` into the `assets` branch.
@@ -91,9 +92,9 @@ Images are served directly from the `assets` branch via `raw.githubusercontent.c
 - CLOUDFLARE_API_TOKEN
 - CLOUDFLARE_ACCOUNT_ID
 - CF_PAGES_PROJECT
+- SITE_URL (base URL used by documentation and performance jobs)
 
 Optional:
-- SITE_URL (base URL for documentation and performance captures)
 - NUXT_PUBLIC_TURNSTILE_SITE_KEY (Cloudflare Turnstile site key for contact form protection)
 - NUXT_PUBLIC_FORMSPREE_FORM_ID (Formspree form ID for contact form submission)
 - GITHUB_SITE_REPO

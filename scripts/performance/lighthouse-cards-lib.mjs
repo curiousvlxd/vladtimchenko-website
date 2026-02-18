@@ -56,10 +56,45 @@ function sumBy(items, key) {
   return (items || []).reduce((sum, item) => sum + (Number(item?.[key]) || 0), 0)
 }
 
+function pickNodeLabel(nodeLike) {
+  return nodeLike?.nodeLabel || nodeLike?.snippet || null
+}
+
+function findNodeInAuditItems(items) {
+  for (const item of items || []) {
+    const directLabel = pickNodeLabel(item)
+    if (directLabel) {
+      return directLabel
+    }
+
+    const nestedNodeLabel = pickNodeLabel(item?.node)
+    if (nestedNodeLabel) {
+      return nestedNodeLabel
+    }
+
+    for (const row of item?.items || []) {
+      const rowLabel = pickNodeLabel(row) || pickNodeLabel(row?.node)
+      if (rowLabel) {
+        return rowLabel
+      }
+    }
+  }
+
+  return null
+}
+
 function findLcpNodeLabel(report) {
-  const lcpBreakdown = report.audits['lcp-breakdown-insight']
-  const node = lcpBreakdown?.details?.items?.find((item) => item?.type === 'node')
-  return node?.nodeLabel || node?.snippet || 'n/a'
+  const audits = report.audits || {}
+  const candidates = ['lcp-breakdown-insight', 'largest-contentful-paint-element']
+
+  for (const auditId of candidates) {
+    const label = findNodeInAuditItems(audits[auditId]?.details?.items)
+    if (label) {
+      return label
+    }
+  }
+
+  return 'n/a'
 }
 
 export function extractSummary(report) {

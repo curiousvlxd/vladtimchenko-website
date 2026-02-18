@@ -129,12 +129,8 @@ jobs:
         if: ${{ steps.playwright-cache.outputs.cache-hit != 'true' }}
         run: npx playwright install chromium --with-deps
 
-      - name: Warm target
-        run: |
-          for path in / /cv /feed; do
-            curl -sS -L -o /dev/null "${{ vars.SITE_URL }}${path}"
-          done
-          sleep 2
+      - name: Warm root
+        run: curl -sS -L -o /dev/null "${{ vars.SITE_URL }}/"
 
       - name: Run Lighthouse (mobile)
         id: lighthouse-mobile
