@@ -46,21 +46,20 @@ All routes are generated dynamically from content and config.
 
 **Hosting:** Cloudflare Pages
 
-**CI/CD:** GitHub Actions on push to main.
+**CI/CD:** GitHub Actions with a single workflow (`deploy.yml`) on push to `main`.
 
-The workflow:
-1. Checks out the repository
-2. Runs npm ci
-3. Builds the app (npm run build)
-4. Deploys the dist output to Cloudflare Pages via Wrangler
+Pipeline jobs:
+1. `deploy` builds and deploys to Cloudflare Pages.
+2. `documentation` and `performance` run in parallel with `needs: deploy`.
+3. `publish-assets` runs with `needs: [documentation, performance]` and publishes `.assets` to the `assets` branch.
 
 Concurrency is enabled to cancel in-progress runs on new pushes.
 
 **Documentation screenshots automation:**  
-At the end of deploy (when `SITE_URL` is set), the workflow:
+The `documentation` job:
 - runs Playwright
-- captures documentation screenshots
-- publishes them to the `assets` branch under `documentation/`
+- captures screenshots
+- uploads artifact `documentation-assets`
 
 Local run:
 
@@ -69,17 +68,23 @@ npm run docs:screenshots -- https://vladtimchenko.dev documentation
 ```
 
 **Performance cards automation:**  
-At the end of deploy (when `SITE_URL` is set), the workflow runs Lighthouse (mobile + desktop) and generates two branded PNG cards:
-- `performance/lighthouse-mobile.png`
-- `performance/lighthouse-desktop.png`
+The `performance` job:
+- runs Lighthouse via `treosh/lighthouse-ci-action` (mobile + desktop)
+- passes action `manifest` outputs into `scripts/performance/generate-lighthouse-cards.mjs`
+- generates:
+  - `performance/lighthouse-mobile.png`
+  - `performance/lighthouse-desktop.png`
+  - raw JSON reports with the same naming as before
 
-It also saves raw JSON reports in the same folder for diffing across runs.  
-Local run:
+Renderer local run from existing Lighthouse reports:
 
 ```bash
+LIGHTHOUSE_MOBILE_REPORT_PATH=./path/to/mobile.report.json \
+LIGHTHOUSE_DESKTOP_REPORT_PATH=./path/to/desktop.report.json \
 npm run lighthouse:cards -- https://vladtimchenko.dev performance
 ```
 
+`publish-assets` downloads both artifacts and publishes `.assets` into the `assets` branch.
 Images are served directly from the `assets` branch via `raw.githubusercontent.com`.
 
 **Secrets and vars:**

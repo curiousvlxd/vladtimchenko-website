@@ -1,9 +1,5 @@
 import fs from 'node:fs/promises'
-import http from 'node:http'
-import https from 'node:https'
 import path from 'node:path'
-import process from 'node:process'
-import { spawn } from 'node:child_process'
 import { fileURLToPath } from 'node:url'
 import { chromium } from 'playwright'
 
@@ -18,10 +14,6 @@ const __dirname = path.dirname(fileURLToPath(import.meta.url))
 const CARD_TEMPLATE_PATH = path.join(__dirname, 'templates', 'lighthouse-card.html')
 
 let cardTemplatePromise = null
-
-function getNpxCommand() {
-  return process.platform === 'win32' ? 'npx.cmd' : 'npx'
-}
 
 function escapeHtml(value) {
   return String(value)
@@ -179,56 +171,6 @@ async function buildCardHtmlFromTemplate({ mode, url, summary, generated }) {
   return html
 }
 
-async function runCommand(command, args) {
-  await new Promise((resolve, reject) => {
-    const child = spawn(command, args, {
-      stdio: 'inherit',
-      shell: process.platform === 'win32'
-    })
-    child.once('error', reject)
-    child.once('close', (code) => {
-      if (code === 0) {
-        resolve()
-        return
-      }
-      reject(new Error(`Command failed with exit code ${code}: ${command} ${args.join(' ')}`))
-    })
-  })
-}
-
-async function warmTargetUrl(url) {
-  await new Promise((resolve) => {
-    const client = url.startsWith('https') ? https : http
-    const request = client.get(url, (response) => {
-      response.resume()
-      response.once('end', resolve)
-    })
-    request.once('error', () => resolve())
-  })
-}
-
-export async function runLighthouseReport({ url, outputPath, desktop = false }) {
-  const args = [
-    '--yes',
-    'lighthouse',
-    url,
-    '--only-categories=performance',
-    '--output=json',
-    `--output-path=${outputPath}`,
-    '--chrome-flags=--headless=new',
-    '--quiet',
-    '--throttling-method=simulate'
-  ]
-
-  if (desktop) {
-    args.push('--preset=desktop')
-  } else {
-    args.push('--emulated-form-factor=mobile')
-  }
-
-  await runCommand(getNpxCommand(), args)
-}
-
 async function renderCard(browser, payload, outputPath) {
   const page = await browser.newPage({
     viewport: { width: 1600, height: 900 },
@@ -240,10 +182,25 @@ async function renderCard(browser, payload, outputPath) {
   await page.close()
 }
 
-export async function generateLighthouseCards({ targetUrl, outDir, generatedAt, logger = console }) {
-  if (!targetUrl) {
-    throw new Error('targetUrl is required')
+export async function generateLighthouseCards({
+  targetUrl,
+  outDir,
+  generatedAt,
+  mobileReport,
+  desktopReport,
+  logger = console
+}) {
+  if (!mobileReport || !desktopReport) {
+    throw new Error('mobileReport and desktopReport are required')
   }
+
+  const resolvedTargetUrl =
+    targetUrl ||
+    mobileReport.finalUrl ||
+    mobileReport.requestedUrl ||
+    desktopReport.finalUrl ||
+    desktopReport.requestedUrl ||
+    'n/a'
 
   const resolvedOutDir = path.resolve(outDir || DEFAULT_LIGHTHOUSE_OUT_DIR)
   const timestamp = generatedAt || new Date().toISOString()
@@ -255,17 +212,9 @@ export async function generateLighthouseCards({ targetUrl, outDir, generatedAt, 
   const mobileImagePath = path.join(resolvedOutDir, MOBILE_IMAGE_NAME)
   const desktopImagePath = path.join(resolvedOutDir, DESKTOP_IMAGE_NAME)
 
-  logger.log(`Warming target URL ${targetUrl}`)
-  await warmTargetUrl(targetUrl)
-
-  logger.log(`Running Lighthouse mobile for ${targetUrl}`)
-  await runLighthouseReport({ url: targetUrl, outputPath: mobileReportPath, desktop: false })
-
-  logger.log(`Running Lighthouse desktop for ${targetUrl}`)
-  await runLighthouseReport({ url: targetUrl, outputPath: desktopReportPath, desktop: true })
-
-  const mobileReport = JSON.parse(await fs.readFile(mobileReportPath, 'utf8'))
-  const desktopReport = JSON.parse(await fs.readFile(desktopReportPath, 'utf8'))
+  logger.log(`Saving Lighthouse reports for ${resolvedTargetUrl}`)
+  await fs.writeFile(mobileReportPath, `${JSON.stringify(mobileReport, null, 2)}\n`, 'utf8')
+  await fs.writeFile(desktopReportPath, `${JSON.stringify(desktopReport, null, 2)}\n`, 'utf8')
 
   const mobileSummary = extractSummary(mobileReport)
   const desktopSummary = extractSummary(desktopReport)
@@ -274,12 +223,12 @@ export async function generateLighthouseCards({ targetUrl, outDir, generatedAt, 
   try {
     await renderCard(
       browser,
-      { mode: 'Mobile', url: targetUrl, summary: mobileSummary, generated: timestamp },
+      { mode: 'Mobile', url: resolvedTargetUrl, summary: mobileSummary, generated: timestamp },
       mobileImagePath
     )
     await renderCard(
       browser,
-      { mode: 'Desktop', url: targetUrl, summary: desktopSummary, generated: timestamp },
+      { mode: 'Desktop', url: resolvedTargetUrl, summary: desktopSummary, generated: timestamp },
       desktopImagePath
     )
   } finally {

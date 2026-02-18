@@ -1,0 +1,15 @@
+{
+  "ci": {
+    "collect": {
+      "numberOfRuns": 1,
+      "settings": {
+        "onlyCategories": ["performance"],
+        "throttlingMethod": "simulate",
+        "preset": "desktop"
+      }
+    },
+    "upload": {
+      "target": "filesystem"
+    }
+  }
+}

@@ -12,6 +12,9 @@ concurrency:
 permissions:
   contents: write
 
+env:
+  NODE_VERSION: 20
+
 jobs:
   deploy:
     runs-on: ubuntu-latest
@@ -24,7 +27,7 @@ jobs:
       - name: Setup Node
         uses: actions/setup-node@v4
         with:
-          node-version: 20
+          node-version: ${{ env.NODE_VERSION }}
           cache: npm
 
       - name: Install deps
@@ -50,47 +53,146 @@ jobs:
           echo "$resp"
           echo "$resp" | jq -e '.success == true' >/dev/null
 
-      - name: Detect screenshot-relevant changes
-        id: changes
-        uses: dorny/paths-filter@v3
+  documentation:
+    needs: [deploy]
+    runs-on: ubuntu-latest
+    environment: Production
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
         with:
-          filters: |
-            screenshots:
-              - src/**
-              - public/**
-              - nuxt.config.*
-              - tsconfig.json
-              - package.json
-              - package-lock.json
-              - tailwind.config.ts
+          node-version: ${{ env.NODE_VERSION }}
+          cache: npm
+
+      - name: Install deps
+        run: npm ci
 
       - name: Cache Playwright browsers
-        if: ${{ steps.changes.outputs.screenshots == 'true' || vars.SITE_URL != '' }}
         uses: actions/cache@v4
         id: playwright-cache
         with:
           path: ~/.cache/ms-playwright
           key: ${{ runner.os }}-playwright-${{ hashFiles('package-lock.json') }}
+          restore-keys: |
+            ${{ runner.os }}-playwright-
 
       - name: Install Playwright Chromium
-        if: ${{ (steps.changes.outputs.screenshots == 'true' || vars.SITE_URL != '') && steps.playwright-cache.outputs.cache-hit != 'true' }}
+        if: ${{ steps.playwright-cache.outputs.cache-hit != 'true' }}
         run: npx playwright install chromium --with-deps
 
       - name: Capture docs screenshots
-        if: ${{ steps.changes.outputs.screenshots == 'true' || vars.SITE_URL != '' }}
         env:
           BASE_URL: ${{ vars.SITE_URL }}
           DOCS_OUT_DIR: .assets/documentation
         run: npm run docs:screenshots -- ${{ vars.SITE_URL }} .assets/documentation
 
-      - name: Capture Lighthouse performance cards
-        if: ${{ steps.changes.outputs.screenshots == 'true' || vars.SITE_URL != '' }}
+      - name: Upload documentation artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: documentation-assets
+          path: .assets/documentation
+          if-no-files-found: error
+          retention-days: 7
+
+  performance:
+    needs: [deploy]
+    runs-on: ubuntu-latest
+    environment: Production
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: npm
+
+      - name: Install deps
+        run: npm ci
+
+      - name: Cache Playwright browsers
+        uses: actions/cache@v4
+        id: playwright-cache
+        with:
+          path: ~/.cache/ms-playwright
+          key: ${{ runner.os }}-playwright-${{ hashFiles('package-lock.json') }}
+          restore-keys: |
+            ${{ runner.os }}-playwright-
+
+      - name: Install Playwright Chromium
+        if: ${{ steps.playwright-cache.outputs.cache-hit != 'true' }}
+        run: npx playwright install chromium --with-deps
+
+      - name: Warm target
+        run: |
+          for path in / /cv /feed; do
+            curl -sS -L -o /dev/null "${{ vars.SITE_URL }}${path}"
+          done
+          sleep 2
+
+      - name: Run Lighthouse (mobile)
+        id: lighthouse-mobile
+        uses: treosh/lighthouse-ci-action@v12
+        with:
+          urls: |
+            ${{ vars.SITE_URL }}
+          runs: 1
+          uploadArtifacts: false
+          configPath: ./.github/lighthouse/lighthouserc.mobile.json
+
+      - name: Run Lighthouse (desktop)
+        id: lighthouse-desktop
+        uses: treosh/lighthouse-ci-action@v12
+        with:
+          urls: |
+            ${{ vars.SITE_URL }}
+          runs: 1
+          uploadArtifacts: false
+          configPath: ./.github/lighthouse/lighthouserc.desktop.json
+
+      - name: Render Lighthouse cards from reports
         env:
+          LIGHTHOUSE_MOBILE_MANIFEST: ${{ steps.lighthouse-mobile.outputs.manifest }}
+          LIGHTHOUSE_DESKTOP_MANIFEST: ${{ steps.lighthouse-desktop.outputs.manifest }}
           LIGHTHOUSE_OUT_DIR: .assets/performance
         run: npm run lighthouse:cards -- ${{ vars.SITE_URL }} .assets/performance
 
+      - name: Upload performance artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: performance-assets
+          path: .assets/performance
+          if-no-files-found: error
+          retention-days: 7
+
+  publish-assets:
+    needs: [documentation, performance]
+    runs-on: ubuntu-latest
+    environment: Production
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Download documentation artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: documentation-assets
+          path: .assets/documentation
+
+      - name: Download performance artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: performance-assets
+          path: .assets/performance
+
       - name: Publish documentation and performance to assets branch
-        if: ${{ steps.changes.outputs.screenshots == 'true' || vars.SITE_URL != '' }}
         uses: peaceiris/actions-gh-pages@v4
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}

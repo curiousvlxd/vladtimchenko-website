@@ -1,0 +1,14 @@
+{
+  "ci": {
+    "collect": {
+      "numberOfRuns": 1,
+      "settings": {
+        "onlyCategories": ["performance"],
+        "throttlingMethod": "simulate"
+      }
+    },
+    "upload": {
+      "target": "filesystem"
+    }
+  }
+}
