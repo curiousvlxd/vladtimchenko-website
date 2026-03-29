@@ -1,19 +1,32 @@
 [
   {
+    "company": "Siemens Energy",
+    "role": "Senior .NET Engineer",
+    "start": "2026-03",
+    "end": null,
+    "location": "Remote",
+    "roleDescription": "",
+    "highlights": [],
+    "techStack": [],
+    "impact": []
+  },
+  {
     "company": "PrivatBank",
     "role": ".NET Engineer",
     "start": "2025-06",
-    "end": null,
+    "end": "2026-03",
     "location": "Remote",
-    "roleDescription": "Backend engineer working on enterprise grade banking systems.",
+    "roleDescription": "Backend engineer working on enterprise grade banking systems at the largest bank in Ukraine, contributing to high-load fintech systems operating on real-time production data.",
     "highlights": [
-      "Develop and maintain cloud native .NET services for high load financial platforms",
-      "Design resilient background processing pipelines and integration services",
-      "Build and optimize time series data pipelines using TimescaleDB",
-      "Implement event driven processing with Kafka and RabbitMQ",
-      "Improve observability, logging, and incident response workflows using Grafana and Prometheus",
-      "Participate in architecture reviews and system modernization initiatives",
-      "Collaborate with distributed cross functional teams"
+      "Developed and maintained cloud-native .NET services for high-load financial platforms on AWS EKS",
+      "Designed resilient background processing pipelines and integration services",
+      "Built and optimized time-series data pipelines using TimescaleDB",
+      "Implemented event-driven processing with Kafka and RabbitMQ",
+      "Improved observability, logging, and incident response workflows with Grafana and Prometheus, including Google Chat alerting",
+      "Integrated AWS Secrets Manager for secure configuration and secret management",
+      "Introduced .NET Aspire to improve local development and testing workflows",
+      "Participated in architecture reviews and system modernization initiatives",
+      "Collaborated with distributed cross-functional teams"
     ],
     "techStack": [
       ".NET",
@@ -31,14 +44,17 @@
       "Kubernetes",
       "Bash",
       "AWS",
+      "AWS EKS",
+      "AWS Secrets Manager",
       "GitLab Runner",
       "Prometheus",
       "Grafana"
     ],
     "impact": [
-      "Strengthened observability and incident response workflows",
-      "Contributed to modernization and long-term maintainability of core systems",
-      "Enhanced stability of internal integrations and data pipelines"
+      "Improved code quality across multiple projects",
+      "Delivered multiple integrations",
+      "Contributed to a large-scale pilot initiative",
+      "Increased reliability of real-time data pipelines"
     ]
   },
   {
